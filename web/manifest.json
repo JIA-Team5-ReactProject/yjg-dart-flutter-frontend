@@ -1,6 +1,6 @@
 {
-    "name": "yjg",
-    "short_name": "yjg",
+    "name": "capstone",
+    "short_name": "capstone",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
