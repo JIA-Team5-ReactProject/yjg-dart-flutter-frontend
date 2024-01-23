@@ -12,6 +12,11 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       backgroundColor: Pallete.mainColor,
       elevation: 0,
+      titleTextStyle: TextStyle(
+        color: Pallete.appBarTitleColor,
+        fontWeight: FontWeight.w200,
+        fontSize: 20,
+      )
     )
   );
 }
