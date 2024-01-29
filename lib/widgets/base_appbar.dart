@@ -32,26 +32,29 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     return AppBar(
-      centerTitle: true,
-      leading: const Icon(
-        Icons.menu,
-        color: Colors.white,
-        size: 30,
-      ),
-      actions: [
-        // 알림창
-        IconButton(
-          onPressed: () {},
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Scaffold.of(context).openDrawer(),
           icon: const Icon(
-            Icons.notifications,
+            Icons.menu,
             color: Colors.white,
             size: 30,
           ),
         ),
-      ],
-      // 앱바 타이틀
-      title: titleWidget,
-    );
+        actions: [
+          // 알림창
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.notifications,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+        ],
+        // 앱바 타이틀
+        title: titleWidget,
+      );
   }
 
   @override
