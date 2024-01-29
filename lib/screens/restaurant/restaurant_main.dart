@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/widgets/base_appbar.dart';
+import 'package:yjg/widgets/bottom_navigation_bar.dart';
+import 'package:yjg/widgets/move_button.dart';
 
 class RestaurantMain extends StatefulWidget {
   const RestaurantMain({super.key});
@@ -11,21 +14,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: const Icon(
-          Icons.menu,
-          color: Colors.white,
-          size: 40,
-        ),
-        backgroundColor: Color.fromARGB(255, 29, 127, 159),
-        title: const Center(
-          child: Text(
-            '식수',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w200),
-          ),
-        ),
-      ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
+      appBar: const BaseAppBar(title: '식수'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -48,24 +38,21 @@ class _RestaurantMainState extends State<RestaurantMain> {
             Container(
               margin: EdgeInsets.all(20),
               alignment: Alignment(-0.85, 0.2),
-              child: Text(
+              child: const Text(
                 '식수 이용하기',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
 
             //이동 버튼 배치
-            Wrap(
+            const Wrap(
               spacing: 30, // 아이템들 사이의 가로 간격
               runSpacing: 30, // 아이템들 사이의 세로 간격
               children: <Widget>[
-                buildButton(context, Icons.backup_table, '식단표', '이번 일주일 식단표',
-                    '/menu_list'),
-                buildButton(
-                    context, Icons.qr_code, '식수 QR', '식사 시 QR 찍기', ''),
-                buildButton(
-                    context, Icons.calendar_month, '주말 식수', '주말 식수 신청', ''),
-                buildButton(context,Icons.assignment_turned_in, '식수 신청', '식사 신청', ''),
+                MoveButton(icon: Icons.backup_table, text1: '식단표', text2: '이번 일주일 식단표', route: '/menu_list'),
+                MoveButton(icon: Icons.qr_code, text1: '식수 QR', text2: '식사 시 QR 찍기', route: ''),
+                MoveButton(icon: Icons.calendar_month, text1: '주말 식수', text2: '주말 식수 신청', route: '/weekend_meal'),
+                MoveButton(icon: Icons.assignment_turned_in, text1: '식단표', text2: '이번 일주일 식단표', route: ''),
               ],
             ),
 
@@ -130,53 +117,6 @@ Widget mealCard(String meal, List<String> menu) {
               )),
           const SizedBox(height: 5),
           Column(children: menu.map((item) => Text(item)).toList()),
-        ],
-      ),
-    ),
-  );
-}
-
-//이동 버튼 위젯 디자인
-var BoxStyle = BoxDecoration(
-  boxShadow: const [
-    // 그림자
-    BoxShadow(
-      color: Color.fromARGB(255, 185, 183, 183), //그림자 색상
-      spreadRadius: 2, // 그림자 넓이
-      blurRadius: 5, // 그림자 흐림도
-      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
-    ),
-  ],
-  border: Border.all(color: Color.fromARGB(255, 139, 139, 139), width: 0.5),
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(15.0),
-);
-
-//이동 버튼 위젯
-Widget buildButton(BuildContext context, IconData icon, String text1,
-    String text2, String route) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.pushNamed(context, route); // 각 버튼에 맞는 페이지로 이동
-    },
-    child: Container(
-      width: 150,
-      height: 170,
-      decoration: BoxStyle,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon,
-              color: Color.fromARGB(255, 29, 127, 159), size: 50.0), // 아이콘
-          SizedBox(height: 10.0), // 아이콘과 글자 사이의 간격
-          Text(
-            text1,
-            style: TextStyle(color: Colors.black, fontSize: 20),
-          ), // 첫 번째 글자
-          Text(
-            text2,
-            style: TextStyle(color: Colors.black, fontSize: 10),
-          ), // 두 번째 글자
         ],
       ),
     ),
