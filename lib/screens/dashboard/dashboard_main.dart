@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/common/mini_rounded_box.dart';
 import 'package:yjg/screens/dashboard/rounded_box.dart';
-import 'package:yjg/screens/restaurant/restaurant_main.dart';
 import 'package:yjg/theme/pallete.dart';
 import 'package:yjg/widgets/base_appbar.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
+import 'package:yjg/widgets/move_button.dart';
 
 class DashboardMain extends StatelessWidget {
   const DashboardMain({super.key});
@@ -41,14 +41,10 @@ class DashboardMain extends StatelessWidget {
                       spacing: 30,
                       runSpacing: 30,
                       children: <Widget>[
-                        buildButton(context, Icons.directions_bus, '버스',
-                            '버스 시간표, 버스 QR', '/bus_main'),
-                        buildButton(context, Icons.restaurant, '식수',
-                            '식수 QR, 식수신청 등', '/restaurant_main'),
-                        buildButton(context, Icons.cut, '미용실', '미용실 예약, 가격표',
-                            '/salon_main'),
-                        buildButton(context, Icons.support_agent, '행정',
-                            '공지사항, AS 요청 등', '/admin_main'),
+                        MoveButton(icon: Icons.directions_bus, text1: '버스', text2: '버스 시간표, 버스 QR', route: '/bus_main'),
+                        MoveButton(icon: Icons.restaurant, text1: '식수', text2: '식수 QR, 식수신청 등', route: '/restaurant_main'),
+                        MoveButton(icon: Icons.cut, text1: '미용실', text2: '미용실 예약, 가격표', route: '/salon_main'),
+                        MoveButton(icon: Icons.support_agent, text1: '행정', text2: '공지사항, AS 요청 등', route: '/admin_main'),
                       ],
                     ),
                   ),
