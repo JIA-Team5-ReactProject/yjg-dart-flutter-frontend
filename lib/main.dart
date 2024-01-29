@@ -4,7 +4,7 @@ import 'package:yjg/screens/restaurant/restaurant_main.dart';
 import 'package:yjg/screens/dashboard/dashboard_main.dart';
 import 'package:yjg/theme/theme.dart';
 
-void main() {
+void main(){ 
   runApp(const MyApp());
 }
 
