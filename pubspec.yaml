@@ -36,6 +36,7 @@ dependencies:
   intl: ^0.17.0
   table_calendar: ^3.0.8
   dotted_line: ^3.2.2
+  group_button: ^5.3.4
 
 dev_dependencies:
   flutter_test:
