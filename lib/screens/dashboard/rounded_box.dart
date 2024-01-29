@@ -7,7 +7,7 @@ class RoundedBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity, // 상자의 너비
-      height: 120, // 상자의 높이
+      height: 170, // 상자의 높이
       decoration: BoxDecoration(
         color: Pallete.mainColor, // 상자의 색상
         borderRadius: BorderRadius.only(

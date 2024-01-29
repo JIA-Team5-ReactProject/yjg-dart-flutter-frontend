@@ -18,7 +18,7 @@ class MiniRoundedBox extends StatelessWidget {
     return Center(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
-        height: 80.0,
+        height: 70.0,
         width: MediaQuery.of(context).size.width * 0.9,
         decoration: BoxDecoration(
           color: Pallete.backgroundColor,
