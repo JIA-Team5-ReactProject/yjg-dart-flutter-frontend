@@ -47,11 +47,11 @@ class MoveButton extends StatelessWidget {
 
 //이동 버튼 위젯 디자인
 var BoxStyle = BoxDecoration(
-  boxShadow: const [
+  boxShadow: [
     // 그림자
     BoxShadow(
-      color: Color.fromARGB(255, 185, 183, 183), //그림자 색상
-      spreadRadius: 2, // 그림자 넓이
+      color: Colors.grey.withOpacity(0.2),
+      spreadRadius: 5, // 그림자 넓이
       blurRadius: 5, // 그림자 흐림도
       offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
     ),
