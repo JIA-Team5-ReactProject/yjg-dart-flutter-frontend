@@ -3,6 +3,7 @@ import 'package:yjg/common/mini_rounded_box.dart';
 import 'package:yjg/screens/dashboard/rounded_box.dart';
 import 'package:yjg/theme/pallete.dart';
 import 'package:yjg/widgets/base_appbar.dart';
+import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/widgets/move_button.dart';
 
@@ -12,8 +13,8 @@ class DashboardMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BaseAppBar(),
-      drawer: const Drawer(),
+      appBar: const BaseAppBar(),
+      drawer: const BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: Column(
         children: <Widget>[

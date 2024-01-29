@@ -35,6 +35,7 @@ dependencies:
   calendar_timeline: ^1.1.2
   intl: ^0.17.0
   table_calendar: ^3.0.8
+  dotted_line: ^3.2.2
 
 dev_dependencies:
   flutter_test:
