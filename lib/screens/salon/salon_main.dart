@@ -63,7 +63,7 @@ class SalonMain extends StatelessWidget {
                   icon: Icons.content_paste_search,
                   text1: '가격표',
                   text2: '미용실 이용 가격 안내',
-                  route: ''),
+                  route: '/price_list'),
             ],
           ),
           SizedBox(height: 20),

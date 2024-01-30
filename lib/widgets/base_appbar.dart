@@ -46,7 +46,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             onPressed: () {},
             icon: const Icon(
-              Icons.notifications,
+              Icons.notifications_none_outlined,
               color: Colors.white,
               size: 30,
             ),

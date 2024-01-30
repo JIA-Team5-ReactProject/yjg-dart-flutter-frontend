@@ -18,7 +18,7 @@ class DashboardMain extends StatelessWidget {
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: Column(
         children: <Widget>[
-          Container(
+          SizedBox(
             height: 540, // Stack의 높이를 조정(Stack은 자식 요소로 크기 결정되므로 크기 조정해줘야 함)
             child: Stack(
               children: <Widget>[
