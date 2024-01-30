@@ -4,6 +4,7 @@ import 'package:yjg/screens/restaurant/menu_list.dart';
 import 'package:yjg/screens/restaurant/restaurant_main.dart';
 import 'package:yjg/screens/dashboard/dashboard_main.dart';
 import 'package:yjg/screens/restaurant/weekend_meal.dart';
+import 'package:yjg/screens/salon/salon_main.dart';
 import 'package:yjg/theme/theme.dart';
 
 void main() async { 
@@ -27,10 +28,16 @@ class MyApp extends StatelessWidget {
 
       //라우트 설정
       routes: {
+        // 최초 실행
         '/dashboard_main': (context) => DashboardMain(),
+
+        // 식수 관련
         '/restaurant_main': (context) => RestaurantMain(),
         '/menu_list': (context) => MenuList(),
-        '/weekend_meal' :(context) => WeekendMeal()
+        '/weekend_meal' :(context) => WeekendMeal(),
+
+        // 미용실 관련
+        '/salon_main': (context) => SalonMain(),
       },
     );
   }
