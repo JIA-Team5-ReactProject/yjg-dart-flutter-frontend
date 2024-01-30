@@ -5,6 +5,7 @@ import 'package:yjg/screens/restaurant/restaurant_main.dart';
 import 'package:yjg/screens/dashboard/dashboard_main.dart';
 import 'package:yjg/screens/restaurant/weekend_meal.dart';
 import 'package:yjg/screens/salon/salon_main.dart';
+import 'package:yjg/screens/salon/salon_price_list.dart';
 import 'package:yjg/theme/theme.dart';
 
 void main() async { 
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
 
         // 미용실 관련
         '/salon_main': (context) => SalonMain(),
+        '/price_list': (context) => SalonPriceList(),
       },
     );
   }
