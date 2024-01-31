@@ -11,6 +11,7 @@ class RestaurantMain extends StatefulWidget {
 }
 
 class _RestaurantMainState extends State<RestaurantMain> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +53,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
                 MoveButton(icon: Icons.backup_table, text1: '식단표', text2: '이번 일주일 식단표', route: '/menu_list'),
                 MoveButton(icon: Icons.qr_code, text1: '식수 QR', text2: '식사 시 QR 찍기', route: ''),
                 MoveButton(icon: Icons.calendar_month, text1: '주말 식수', text2: '주말 식수 신청', route: '/weekend_meal'),
-                MoveButton(icon: Icons.assignment_turned_in, text1: '식단표', text2: '이번 일주일 식단표', route: ''),
+                MoveButton(icon: Icons.assignment_turned_in, text1: '식수 신청', text2: '식사 신청', route: '/meal_application'),
+
               ],
             ),
 
@@ -88,7 +90,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
