@@ -387,6 +387,7 @@ class _MealApplicationState extends State<MealApplication> {
     else if (application == true && deposit == false) {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
+        drawer: const BaseDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
@@ -673,6 +674,7 @@ class _MealApplicationState extends State<MealApplication> {
     else {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
+        drawer: const BaseDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(

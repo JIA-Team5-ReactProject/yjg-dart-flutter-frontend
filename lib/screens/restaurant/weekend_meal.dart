@@ -31,7 +31,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     if (meal_weekend == false) {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
-      drawer: const BaseDrawer(),
+        drawer: const BaseDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
@@ -396,6 +396,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     else if (meal_weekend = true && meal_weekend_deposit == false){
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
+        drawer: const BaseDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
@@ -682,6 +683,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     else {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
+        drawer: const BaseDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
