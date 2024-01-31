@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/widgets/base_appbar.dart';
+import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/widgets/move_button.dart';
 
@@ -17,6 +18,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '식수'),
+      drawer: const BaseDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

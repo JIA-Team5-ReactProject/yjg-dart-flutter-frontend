@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/widgets/base_appbar.dart';
+import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 
 // 메뉴 리스트를 위한 StatefulWidget 선언
@@ -29,6 +30,7 @@ class _MenuListState extends State<MenuList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(title: '식단표'),
+      drawer: const BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: Column(
         children: [
