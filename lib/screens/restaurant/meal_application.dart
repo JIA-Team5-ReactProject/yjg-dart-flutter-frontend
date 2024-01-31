@@ -6,6 +6,7 @@ import 'package:yjg/widgets/base_appbar.dart';
 import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 
+//신청 유형 확인 변수
 var meal_category = '';
 
 //신청 여부 확인 변수
@@ -566,13 +567,13 @@ class _MealApplicationState extends State<MealApplication> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
+                      child: Padding(
                         padding:
                             const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            'B유형',
+                            '$meal_category',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -971,6 +972,8 @@ class _MealApplicationState extends State<MealApplication> {
     );
   }
 
+
+  //취소 질문 버튼
   Future<dynamic> meal_application_cancel(BuildContext context) {
     return showDialog(
       context: context,
