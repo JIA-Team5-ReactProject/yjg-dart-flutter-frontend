@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yjg/theme/pallete.dart';
+import 'package:yjg/theme/palette.dart';
 
 class WhiteMainRoundedBox extends StatelessWidget {
   final IconData iconData; // 아이콘 데이터
@@ -25,7 +25,7 @@ class WhiteMainRoundedBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(
-          color: Pallete.stateColor4.withOpacity(0.5),
+          color: Palette.stateColor4.withOpacity(0.5),
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(20.0),
@@ -42,11 +42,11 @@ class WhiteMainRoundedBox extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
-            backgroundColor: Pallete.mainColor.withOpacity(0.1),
+            backgroundColor: Palette.mainColor.withOpacity(0.1),
             radius: 30.0, 
             child: Icon(
               iconData,
-              color: Pallete.mainColor.withOpacity(0.7),
+              color: Palette.mainColor.withOpacity(0.7),
               size: 30.0,
             ),
           ),
@@ -60,7 +60,7 @@ class WhiteMainRoundedBox extends StatelessWidget {
                   mainText,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Pallete.textColor,
+                    color: Palette.textColor,
                     fontSize: 16.0,
                   ),
                 ),
@@ -68,14 +68,14 @@ class WhiteMainRoundedBox extends StatelessWidget {
                 Text(
                   secondaryText,
                   style: TextStyle(
-                    color: Pallete.stateColor4,
+                    color: Palette.stateColor4,
                   ),
                 ),
                 SizedBox(height: 5.0), // 텍스트 간격 조절
                 Text(
                   actionText,
                   style: TextStyle(
-                    color: Pallete.stateColor3,
+                    color: Palette.stateColor3,
                     fontSize: 12.0
                   ),
                 ),
@@ -85,7 +85,7 @@ class WhiteMainRoundedBox extends StatelessWidget {
           Text(
             timeText,
             style: TextStyle(
-              color: Pallete.mainColor,
+              color: Palette.mainColor,
               fontWeight: FontWeight.bold,
             ),
           ),

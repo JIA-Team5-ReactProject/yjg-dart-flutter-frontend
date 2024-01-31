@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/common/custom_rounded_button.dart';
-import 'package:yjg/theme/pallete.dart';
+import 'package:yjg/theme/palette.dart';
 
 class RoundedBox extends StatelessWidget {
   @override
@@ -9,7 +9,7 @@ class RoundedBox extends StatelessWidget {
       width: double.infinity, // 상자의 너비
       height: 170, // 상자의 높이
       decoration: BoxDecoration(
-        color: Pallete.mainColor, // 상자의 색상
+        color: Palette.mainColor, // 상자의 색상
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20.0), // 왼쪽 아래 모서리 둥글기
           bottomRight: Radius.circular(20.0), // 오른쪽 아래 모서리 둥글기
@@ -37,7 +37,7 @@ class RoundedBox extends StatelessWidget {
                   Text(
                     '김영진님', // TODO: 추후 API 연동 후 사용자 이름으로 변경
                     style:
-                        TextStyle(color: Pallete.backgroundColor, fontSize: 18),
+                        TextStyle(color: Palette.backgroundColor, fontSize: 18),
                   ),
                   SizedBox(height: 10), // 텍스트 - 버튼 간격
                   Row(

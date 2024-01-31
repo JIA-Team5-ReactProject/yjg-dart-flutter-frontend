@@ -1,6 +1,6 @@
 import "package:dotted_line/dotted_line.dart";
 import "package:flutter/material.dart";
-import "package:yjg/theme/pallete.dart";
+import 'package:yjg/theme/palette.dart';
 
 class BaseDrawer extends StatelessWidget {
   const BaseDrawer({super.key});
@@ -18,7 +18,7 @@ class BaseDrawer extends StatelessWidget {
             accountName: const Text('김영진'), // TODO: 추후 통신
             accountEmail: const Text('2201333'),
             decoration: const BoxDecoration(
-              color: Pallete.mainColor,
+              color: Palette.mainColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(10.0),
                 bottomRight: Radius.circular(10.0),
@@ -34,8 +34,8 @@ class BaseDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.schedule),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('시간표'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
@@ -45,7 +45,7 @@ class BaseDrawer extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: DottedLine(
-              dashColor: Pallete.stateColor4,
+              dashColor: Palette.stateColor4,
               dashLength: 2,
               lineLength: double.infinity, // 길이 조절
               lineThickness: 2, // 두께 조절
@@ -62,16 +62,16 @@ class BaseDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.table_chart_outlined),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('식단표'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.event),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('주말 식수'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
@@ -80,7 +80,7 @@ class BaseDrawer extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: DottedLine(
-              dashColor: Pallete.stateColor4,
+              dashColor: Palette.stateColor4,
               dashLength: 2,
               lineLength: double.infinity, // 길이 조절
               lineThickness: 2, // 두께 조절
@@ -97,16 +97,16 @@ class BaseDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.add_task),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('예약'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.content_paste_search),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('가격표'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
@@ -115,7 +115,7 @@ class BaseDrawer extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: DottedLine(
-              dashColor: Pallete.stateColor4,
+              dashColor: Palette.stateColor4,
               dashLength: 2,
               lineLength: double.infinity, // 길이 조절
               lineThickness: 2, // 두께 조절
@@ -132,32 +132,32 @@ class BaseDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.campaign_outlined),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('공지사항'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.construction),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('AS 요청'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.work_history_outlined),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('외박/외출 신청'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.groups_outlined),
-            iconColor: Pallete.mainColor,
-            focusColor: Pallete.mainColor,
+            iconColor: Palette.mainColor,
+            focusColor: Palette.mainColor,
             title: const Text('회의실 예약'),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {},
