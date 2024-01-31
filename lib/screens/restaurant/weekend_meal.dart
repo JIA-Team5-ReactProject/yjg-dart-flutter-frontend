@@ -972,7 +972,7 @@ class _WeekendMealState extends State<WeekendMeal> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, '');
+              Navigator.pop(context);
             },
             child: Text('확인'),
           ),
@@ -1007,7 +1007,7 @@ class _WeekendMealState extends State<WeekendMeal> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/restaurant_main');
+              Navigator.popAndPushNamed(context,'/restaurant_main');
               setState(() {
                 meal_weekend= false;
               });
@@ -1016,7 +1016,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/weekend_meal');
+              Navigator.pop(context);
             },
             child: Text('아니오'),
           ),

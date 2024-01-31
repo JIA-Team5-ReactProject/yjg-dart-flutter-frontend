@@ -965,7 +965,7 @@ class _MealApplicationState extends State<MealApplication> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/meal_application');
+              Navigator.pop(context);
             },
             child: Text('확인'),
           ),
@@ -1001,7 +1001,7 @@ class _MealApplicationState extends State<MealApplication> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/restaurant_main');
+              Navigator.popAndPushNamed(context,'/restaurant_main');
               setState(() {
                 application = false;
               });
@@ -1010,7 +1010,7 @@ class _MealApplicationState extends State<MealApplication> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/meal_application');
+              Navigator.pop(context);
             },
             child: Text('아니오'),
           ),
