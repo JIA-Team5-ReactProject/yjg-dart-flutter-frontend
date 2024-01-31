@@ -3,6 +3,7 @@ import 'package:group_button/group_button.dart';
 import 'package:yjg/common/blue_main_rounded_box.dart';
 import 'package:yjg/common/white_main_rounded_box.dart';
 import 'package:yjg/widgets/base_appbar.dart';
+import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 
 var meal_category = '';
@@ -27,6 +28,7 @@ class _MealApplicationState extends State<MealApplication> {
     if (application == false) {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
+        drawer: const BaseDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(

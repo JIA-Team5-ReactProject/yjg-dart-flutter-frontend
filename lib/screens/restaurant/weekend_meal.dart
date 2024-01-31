@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/widgets/base_appbar.dart';
+import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 import 'package:group_button/group_button.dart';
 
@@ -17,6 +18,7 @@ class _WeekendMealState extends State<WeekendMeal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BaseAppBar(title: '주말식수'),
+      drawer: const BaseDrawer(),
       bottomNavigationBar: CustomBottomNavigationBar(),
       body: SingleChildScrollView(
         child: Column(
