@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yjg/theme/pallete.dart';
+import 'package:yjg/theme/palette.dart';
 
 class MiniRoundedBox extends StatelessWidget {
   final IconData iconData; // 아이콘 데이터
@@ -21,7 +21,7 @@ class MiniRoundedBox extends StatelessWidget {
         height: 70.0,
         width: MediaQuery.of(context).size.width * 0.9,
         decoration: BoxDecoration(
-          color: Pallete.backgroundColor,
+          color: Palette.backgroundColor,
           borderRadius: BorderRadius.circular(10.0), 
           border: Border.all(
             color: Colors.grey.shade300, 
@@ -33,7 +33,7 @@ class MiniRoundedBox extends StatelessWidget {
           children: [
             Icon(iconData, color: iconColor), // 아이콘 색상을 매개변수에서 받아 사용
             SizedBox(width: 15),
-            Text(text, style: TextStyle(color: Pallete.textColor, fontSize: 15)),
+            Text(text, style: TextStyle(color: Palette.textColor, fontSize: 15)),
           ],
         ),
       ),

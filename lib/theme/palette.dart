@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // 앱의 전체적인 색상을 관리하는 클래스
-class Pallete {
+class Palette {
 
   // 기본적인 배경 색상
   static const Color backgroundColor = Colors.white;

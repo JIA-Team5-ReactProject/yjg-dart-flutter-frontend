@@ -1,7 +1,7 @@
 // MultiSelect.dart
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:yjg/theme/pallete.dart';
+import 'package:yjg/theme/palette.dart';
 
 class MultiSelect extends StatefulWidget {
   final Function(List<String>) onSelectionChanged;
@@ -22,26 +22,26 @@ class _MultiSelectState extends State<MultiSelect> {
     return Container(
       padding: EdgeInsets.all(16.0),
       child: MultiSelectDialogField(
-        backgroundColor: Pallete.backgroundColor,
+        backgroundColor: Palette.backgroundColor,
         title: Text('태그 선택',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
         searchHint: '태그를 검색하세요',
         confirmText: Text(
           '확인',
-          style: TextStyle(color: Pallete.textColor),
+          style: TextStyle(color: Palette.textColor),
         ),
         cancelText: Text(
           '취소',
-          style: TextStyle(color: Pallete.stateColor3),
+          style: TextStyle(color: Palette.stateColor3),
         ),
         searchable: true,
         selectedItemsTextStyle:
-            TextStyle(color: Pallete.textColor, fontWeight: FontWeight.bold),
+            TextStyle(color: Palette.textColor, fontWeight: FontWeight.bold),
         items:
             items.map((item) => MultiSelectItem<String>(item, item)).toList(),
         listType: MultiSelectListType.CHIP,
-        selectedColor: Pallete.mainColor.withOpacity(0.3),
-        buttonText: Text('Pilih Item'),
+        selectedColor: Palette.mainColor.withOpacity(0.3),
+        buttonText: Text('서비스 필터링'),
         onConfirm: (values) {
           setState(() {
             selectedItems = values.cast<String>();

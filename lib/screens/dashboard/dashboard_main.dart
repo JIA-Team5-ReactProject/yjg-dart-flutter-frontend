@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/common/mini_rounded_box.dart';
 import 'package:yjg/screens/dashboard/rounded_box.dart';
-import 'package:yjg/theme/pallete.dart';
+import 'package:yjg/theme/palette.dart';
 import 'package:yjg/widgets/base_appbar.dart';
 import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
@@ -66,7 +66,7 @@ class DashboardMain extends StatelessWidget {
             children: <Widget>[
               MiniRoundedBox(
                 iconData: Icons.support_agent,
-                iconColor: Pallete.stateColor1,
+                iconColor: Palette.stateColor1,
                 text: '퇴관 원서 작성 시 참고',
               ),
             ],

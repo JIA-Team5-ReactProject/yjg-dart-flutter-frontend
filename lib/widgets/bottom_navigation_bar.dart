@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yjg/theme/pallete.dart';
+import 'package:yjg/theme/palette.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({super.key});
@@ -18,7 +18,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ),
       ],
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Pallete.mainColor
+      selectedItemColor: Palette.mainColor
     );
   }
 }
