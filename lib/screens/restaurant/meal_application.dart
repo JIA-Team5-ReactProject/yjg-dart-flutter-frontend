@@ -283,13 +283,13 @@ class _MealApplicationState extends State<MealApplication> {
                 //버튼 클릭시 실행 되는 함수
                 onSelected: (index, isSelected, isPressed) {
                   if (isSelected == 0){
-                    meal_category = 'A유형';
+                    meal_category = 'A유형 : 750,000';
                   }
                   else if (isSelected == 1){
-                    meal_category = 'B유형';
+                    meal_category = 'B유형 : 520,000';
                   }
                   else if (isSelected == 2){
-                    meal_category = 'C유형';
+                    meal_category = 'C유형 : 520,000';
                   }
                 },
 
@@ -855,13 +855,13 @@ class _MealApplicationState extends State<MealApplication> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
+                      child: Padding(
                         padding:
                             const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            'B유형',
+                            '$meal_category',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -944,7 +944,7 @@ class _MealApplicationState extends State<MealApplication> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              '$meal_category 신청 완료되었습니다!',
+              '신청 완료되었습니다!',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             SizedBox(

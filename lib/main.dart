@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/screens/restaurant/meal_application.dart';
+import 'package:yjg/screens/restaurant/meal_qr.dart';
 import 'package:yjg/screens/restaurant/menu_list.dart';
 import 'package:yjg/screens/restaurant/restaurant_main.dart';
 import 'package:yjg/screens/dashboard/dashboard_main.dart';
@@ -34,11 +35,12 @@ class MyApp extends StatelessWidget {
         '/dashboard_main': (context) => DashboardMain(),
 
         // 식수 관련
-        // 식수 관련
         '/restaurant_main': (context) => RestaurantMain(),
         '/menu_list': (context) => MenuList(),
         '/weekend_meal' :(context) => WeekendMeal(),
         '/meal_application' :(context) => MealApplication(),
+        '/meal_qr' :(context) => MealQr(),
+
 
         // 미용실 관련
         '/salon_main': (context) => SalonMain(),
