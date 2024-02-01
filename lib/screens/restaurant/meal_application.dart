@@ -282,13 +282,11 @@ class _MealApplicationState extends State<MealApplication> {
 
                 //버튼 클릭시 실행 되는 함수
                 onSelected: (index, isSelected, isPressed) {
-                  if (isSelected == 0){
+                  if (isSelected == 0) {
                     meal_category = 'A유형 : 750,000';
-                  }
-                  else if (isSelected == 1){
+                  } else if (isSelected == 1) {
                     meal_category = 'B유형 : 520,000';
-                  }
-                  else if (isSelected == 2){
+                  } else if (isSelected == 2) {
                     meal_category = 'C유형 : 520,000';
                   }
                 },
@@ -366,10 +364,14 @@ class _MealApplicationState extends State<MealApplication> {
 
                   //버튼 클릭 시 동작
                   onPressed: () {
-                    meal_application(context);
-                    setState(() {
-                      application = true;
-                    });
+                    if (meal_category == '') {
+                      non_select(context);
+                    } else {
+                      meal_application(context);
+                      setState(() {
+                        application = true;
+                      });
+                    }
                   },
                   child: Text(
                     '신청',
@@ -930,6 +932,7 @@ class _MealApplicationState extends State<MealApplication> {
     }
   }
 
+  //신청 완료 alert
   Future<dynamic> meal_application(BuildContext context) {
     return showDialog(
       context: context,
@@ -974,7 +977,6 @@ class _MealApplicationState extends State<MealApplication> {
     );
   }
 
-
   //취소 질문 버튼
   Future<dynamic> meal_application_cancel(BuildContext context) {
     return showDialog(
@@ -1001,9 +1003,10 @@ class _MealApplicationState extends State<MealApplication> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context,'/restaurant_main');
+              Navigator.popAndPushNamed(context, '/restaurant_main');
               setState(() {
                 application = false;
+                meal_category = '';
               });
             },
             child: Text('예'),
@@ -1014,6 +1017,40 @@ class _MealApplicationState extends State<MealApplication> {
             },
             child: Text('아니오'),
           ),
+        ],
+      ),
+    );
+  }
+
+  //다 골라라 alert
+  Future<dynamic> non_select(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Icon(
+          Icons.campaign,
+          size: 50,
+          color: const Color.fromARGB(255, 29, 127, 159),
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              '유형을 선택해주세요.',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.cancel_outlined))
         ],
       ),
     );

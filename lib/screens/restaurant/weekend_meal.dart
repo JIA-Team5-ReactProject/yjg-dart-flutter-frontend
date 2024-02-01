@@ -26,7 +26,6 @@ class _WeekendMealState extends State<WeekendMeal> {
 
   @override
   Widget build(BuildContext context) {
-    
     //주말 식수 신청 x인 경우
     if (meal_weekend == false) {
       return Scaffold(
@@ -375,10 +374,14 @@ class _WeekendMealState extends State<WeekendMeal> {
                     ),
                   ),
                   onPressed: () {
-                    weekend_application(context);
-                    setState(() {
-                      meal_weekend = true;
-                    });
+                    if (weekend == '' || category == '' || not_enough_person == '') {
+                      non_select(context);
+                    } else {
+                      weekend_application(context);
+                      setState(() {
+                        meal_weekend = true;
+                      });
+                    }
                   },
                   child: Text(
                     '신청',
@@ -393,7 +396,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     }
 
     //주말 식수 신청 O 결제 X인 경우
-    else if (meal_weekend = true && meal_weekend_deposit == false){
+    else if (meal_weekend = true && meal_weekend_deposit == false) {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
         drawer: const BaseDrawer(),
@@ -583,7 +586,11 @@ class _WeekendMealState extends State<WeekendMeal> {
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '$weekend'' | ''$category' ' | ' '$not_enough_person',
+                            '$weekend'
+                            ' | '
+                            '$category'
+                            ' | '
+                            '$not_enough_person',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -870,7 +877,11 @@ class _WeekendMealState extends State<WeekendMeal> {
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '$weekend'' | ''$category' ' | ' '$not_enough_person',
+                            '$weekend'
+                            ' | '
+                            '$category'
+                            ' | '
+                            '$not_enough_person',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -939,7 +950,6 @@ class _WeekendMealState extends State<WeekendMeal> {
     }
   }
 
-
   //신청 alert
   Future<dynamic> weekend_application(BuildContext context) {
     return showDialog(
@@ -954,7 +964,7 @@ class _WeekendMealState extends State<WeekendMeal> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-             SizedBox(
+            SizedBox(
               height: 25,
             ),
             Text(
@@ -1007,9 +1017,12 @@ class _WeekendMealState extends State<WeekendMeal> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context,'/restaurant_main');
+              Navigator.popAndPushNamed(context, '/restaurant_main');
               setState(() {
-                meal_weekend= false;
+                meal_weekend = false;
+                weekend = '';
+                category = '';
+                not_enough_person = '';
               });
             },
             child: Text('예'),
@@ -1020,6 +1033,38 @@ class _WeekendMealState extends State<WeekendMeal> {
             },
             child: Text('아니오'),
           ),
+        ],
+      ),
+    );
+  }
+
+  //다 골라라 alert
+  Future<dynamic> non_select(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Icon(
+          Icons.campaign,
+          size: 50,
+          color: const Color.fromARGB(255, 29, 127, 159),
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              '항목을 모두 선택해주세요.',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(onPressed: () {
+            Navigator.pop(context);
+          }, icon: Icon(Icons.cancel_outlined))
         ],
       ),
     );
