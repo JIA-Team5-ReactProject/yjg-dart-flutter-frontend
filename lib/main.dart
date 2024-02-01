@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:yjg/screens/admin/admin_main.dart';
 import 'package:yjg/screens/restaurant/meal_application.dart';
 import 'package:yjg/screens/restaurant/meal_qr.dart';
 import 'package:yjg/screens/restaurant/menu_list.dart';
@@ -41,10 +42,12 @@ class MyApp extends StatelessWidget {
         '/meal_application' :(context) => MealApplication(),
         '/meal_qr' :(context) => MealQr(),
 
-
         // 미용실 관련
         '/salon_main': (context) => SalonMain(),
         '/price_list': (context) => SalonPriceList(),
+
+        //행정 관련
+        '/admin_main':(context) => AdminMain(),
       },
     );
   }
