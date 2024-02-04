@@ -14,6 +14,7 @@ class SalonMain extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '미용실'),
+      drawer: Drawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
