@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/screens/admin/admin_main.dart';
+import 'package:yjg/screens/bus/bus_main.dart';
+import 'package:yjg/screens/bus/bus_qr.dart';
 import 'package:yjg/screens/restaurant/meal_application.dart';
 import 'package:yjg/screens/restaurant/meal_qr.dart';
 import 'package:yjg/screens/restaurant/menu_list.dart';
 import 'package:yjg/screens/restaurant/restaurant_main.dart';
 import 'package:yjg/screens/dashboard/dashboard_main.dart';
 import 'package:yjg/screens/restaurant/weekend_meal.dart';
+import 'package:yjg/screens/salon/salon_booking.dart';
 import 'package:yjg/screens/salon/salon_main.dart';
 import 'package:yjg/screens/salon/salon_price_list.dart';
 import 'package:yjg/theme/theme.dart';
@@ -44,7 +47,12 @@ class MyApp extends StatelessWidget {
 
         // 미용실 관련
         '/salon_main': (context) => SalonMain(),
-        '/price_list': (context) => SalonPriceList(),
+        '/salon_price_list': (context) => SalonPriceList(),
+        '/salon_booking': (context) => SalonBooking(),
+
+        // 버스 관련
+        '/bus_main': (context) => BusMain(),
+        '/bus_qr':(context) => BusQr(),
 
         //행정 관련
         '/admin_main':(context) => AdminMain(),

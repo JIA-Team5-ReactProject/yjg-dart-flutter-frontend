@@ -1,19 +1,20 @@
 import "package:flutter/material.dart";
-import 'package:yjg/common/blue_main_rounded_box.dart';
+import "package:yjg/common/blue_main_rounded_box.dart";
 import "package:yjg/common/notice_box.dart";
 import "package:yjg/common/white_main_rounded_box.dart";
 import "package:yjg/widgets/base_appbar.dart";
 import "package:yjg/widgets/bottom_navigation_bar.dart";
 import "package:yjg/widgets/move_button.dart";
 
-class SalonMain extends StatelessWidget {
-  const SalonMain({super.key});
+
+class BusMain extends StatelessWidget {
+  const BusMain({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: const BaseAppBar(title: '미용실'),
+      appBar: const BaseAppBar(title: '버스'),
       drawer: Drawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,10 +31,10 @@ class SalonMain extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.0),
                     child: WhiteMainRoundedBox(
-                      iconData: Icons.cut,
-                      mainText: '미용실 예약이 있습니다.',
-                      secondaryText: '고속도로컷',
-                      actionText: '예약 취소',
+                      iconData: Icons.directions_bus,
+                      mainText: '글로벌캠퍼스',
+                      secondaryText: '탑승인원: 12명(45인승)',
+                      actionText: '위치 변경',
                       timeText: '14:00',
                     ),
                   ),
@@ -45,7 +46,7 @@ class SalonMain extends StatelessWidget {
             margin: EdgeInsets.all(20),
             alignment: Alignment(-0.85, 0.2),
             child: const Text(
-              '미용실 이용하기',
+              '버스 이용하기',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
@@ -56,15 +57,15 @@ class SalonMain extends StatelessWidget {
             runSpacing: 30, // 아이템들 사이의 세로 간격
             children: <Widget>[
               MoveButton(
-                  icon: Icons.add_task,
-                  text1: '예약',
-                  text2: '미용실 예약',
-                  route: '/salon_booking'),
+                  icon: Icons.schedule,
+                  text1: '시간표',
+                  text2: '버스 시간표 확인',
+                  route: '/bus_schedule'),
               MoveButton(
-                  icon: Icons.content_paste_search,
-                  text1: '가격표',
-                  text2: '미용실 이용 가격 안내',
-                  route: '/salon_price_list'),
+                  icon: Icons.qr_code,
+                  text1: '버스QR',
+                  text2: '버스 탑승 시 QR 찍기',
+                  route: '/bus_qr'),
             ],
           ),
           SizedBox(height: 20),
@@ -72,7 +73,7 @@ class SalonMain extends StatelessWidget {
             margin: EdgeInsets.all(20),
             alignment: Alignment(-0.85, 0.2),
             child: const Text(
-              '미용실 공지사항',
+              '버스 공지사항',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
@@ -87,27 +88,27 @@ class SalonMain extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         right: 20.0), // 오른쪽에 20픽셀 간격을 줍니다.
                     child: NoticeBox(
-                      title: '미용실 휴무 안내',
+                      title: '2024년도 1학기 버스 시간표 변경',
                       content:
-                          '미용실 휴무합니다. 2025년 1월 1일부터 2025년 1월 3일까지 휴무이므로, 이용....',
+                          '2024년도 1학기 버스 시간표 변동사항을 공지합니다.....',
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
                         right: 20.0), // 오른쪽에 20픽셀 간격을 줍니다.
                     child: NoticeBox(
-                      title: '미용실 휴무 안내',
+                      title: '2024년도 1학기 버스 시간표 변경',
                       content:
-                          '미용실 휴무합니다. 2025년 1월 1일부터 2025년 1월 3일까지 휴무이므로, 이용....',
+                          '2024년도 1학기 버스 시간표 변동사항을 공지합니다.....',
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
                         right: 20.0), // 오른쪽에 20픽셀 간격을 줍니다.
                     child: NoticeBox(
-                      title: '미용실 휴무 안내',
+                      title: '2024년도 1학기 버스 시간표 변경',
                       content:
-                          '미용실 휴무합니다. 2025년 1월 1일부터 2025년 1월 3일까지 휴무이므로, 이용....',
+                          '2024년도 1학기 버스 시간표 변동사항을 공지합니다.....',
                     ),
                   ),
                 ],
