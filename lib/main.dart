@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/screens/admin/admin_main.dart';
 import 'package:yjg/screens/bus/bus_main.dart';
 import 'package:yjg/screens/bus/bus_qr.dart';
+import 'package:yjg/screens/bus/bus_schedule.dart';
 import 'package:yjg/screens/restaurant/meal_application.dart';
 import 'package:yjg/screens/restaurant/meal_qr.dart';
 import 'package:yjg/screens/restaurant/menu_list.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         // 버스 관련
         '/bus_main': (context) => BusMain(),
         '/bus_qr':(context) => BusQr(),
+        '/bus_schedule':(context) => BusSchedule(),
 
         //행정 관련
         '/admin_main':(context) => AdminMain(),
