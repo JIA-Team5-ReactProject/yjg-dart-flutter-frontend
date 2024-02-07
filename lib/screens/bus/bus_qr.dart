@@ -55,7 +55,7 @@ class _BusQrState extends State<BusQr> {
 
                       //식당 QR코드 글자
                       Text(
-                        '식당 QR 코드',
+                        '버스 QR 코드',
                         style: TextStyle(
                           color: const Color.fromARGB(255, 29, 127, 159),
                           fontSize: 20,
