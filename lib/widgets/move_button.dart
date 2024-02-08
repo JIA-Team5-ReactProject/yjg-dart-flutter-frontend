@@ -36,7 +36,7 @@ class MoveButton extends StatelessWidget {
           ), // 첫 번째 글자
           Text(
             text2,
-            style: TextStyle(color: Colors.black, fontSize: 10),
+            style: TextStyle(color: Colors.black, fontSize: 14),
           ), // 두 번째 글자
         ],
       ),

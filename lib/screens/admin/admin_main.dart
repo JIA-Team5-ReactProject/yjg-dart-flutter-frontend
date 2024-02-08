@@ -7,6 +7,9 @@ import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/widgets/move_button.dart';
 
+//임의 나중에 제거
+var person = 8;
+
 class AdminMain extends StatefulWidget {
   const AdminMain({super.key});
 
@@ -26,7 +29,7 @@ class _AdminMainState extends State<AdminMain> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             //겹쳐진 박스
-            const SizedBox(
+            SizedBox(
               height: 150.0,
               child: Stack(
                 children: [
@@ -40,7 +43,7 @@ class _AdminMainState extends State<AdminMain> {
                       child: WhiteMainRoundedBox(
                         iconData: Icons.headset_mic,
                         mainText: '생활관B동 - 208호',
-                        secondaryText: '회의실 예약 인권: 5명',
+                        secondaryText: '회의실 예약 인권: $person명',
                         actionText: '예약취소',
                         timeText: '',
                       ),
@@ -71,7 +74,7 @@ class _AdminMainState extends State<AdminMain> {
                       icon: Icons.volume_mute_outlined,
                       text1: '공지사항',
                       text2: '생활관 공지사항',
-                      route: ''),
+                      route: '/notice'),
                   MoveButton(
                       icon: Icons.construction_outlined,
                       text1: 'AS 요청',
@@ -150,7 +153,7 @@ class _AdminMainState extends State<AdminMain> {
                 ],
               ),
             ),
-            
+
           ],
         ),
       ),

@@ -4,6 +4,9 @@ import 'package:yjg/widgets/base_drawer.dart';
 import 'package:yjg/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/widgets/move_button.dart';
 
+//임의 나중에 제거
+var person = 7;
+
 class RestaurantMain extends StatefulWidget {
   const RestaurantMain({super.key});
 
@@ -71,7 +74,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                   width: 0.5,
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Padding(
@@ -84,7 +87,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                     children: <Widget>[
                       Text('현재 주말식수 신청 인원'), // 중간 텍스트
                       Text(
-                        '토요일: n명 | 일요일 n명', // 아래 텍스트
+                        '토요일: $person명 | 일요일 $person명', // 아래 텍스트
                         style: TextStyle(color: Color.fromARGB(255, 29, 127, 159),),
                       ),
                     ],
