@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:yjg/screens/admin/admin_main.dart';
-import 'package:yjg/screens/bus/bus_main.dart';
-import 'package:yjg/screens/bus/bus_qr.dart';
-import 'package:yjg/screens/bus/bus_schedule.dart';
-import 'package:yjg/screens/admin/notice.dart';
-import 'package:yjg/screens/restaurant/meal_application.dart';
-import 'package:yjg/screens/restaurant/meal_qr.dart';
-import 'package:yjg/screens/restaurant/menu_list.dart';
-import 'package:yjg/screens/restaurant/restaurant_main.dart';
-import 'package:yjg/screens/dashboard/dashboard_main.dart';
-import 'package:yjg/screens/restaurant/weekend_meal.dart';
-import 'package:yjg/screens/salon/salon_main.dart';
-import 'package:yjg/screens/salon/salon_price_list.dart';
-import 'package:yjg/theme/theme.dart';
+import 'package:yjg/administration/presentaion/pages/admin_main.dart';
+import 'package:yjg/bus/presentaion/pages/bus_main.dart';
+import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
+import 'package:yjg/bus/presentaion/pages/bus_schedule.dart';
+import 'package:yjg/administration/presentaion/pages/notice.dart';
+import 'package:yjg/restaurant/presentaion/pages/meal_application.dart';
+import 'package:yjg/restaurant/presentaion/pages/meal_qr.dart';
+import 'package:yjg/restaurant/presentaion/pages/menu_list.dart';
+import 'package:yjg/restaurant/presentaion/pages/restaurant_main.dart';
+import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
+import 'package:yjg/restaurant/presentaion/pages/weekend_meal.dart';
+import 'package:yjg/salon/presentaion/pages/salon_booking.dart';
+import 'package:yjg/salon/presentaion/pages/salon_main.dart';
+import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
+import 'package:yjg/shared/theme/theme.dart';
 
 void main() async { 
 
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         // 미용실 관련
         '/salon_main': (context) => SalonMain(),
         '/salon_price_list': (context) => SalonPriceList(),
+        '/salon_booking' : (context) => SalonBooking(),
 
         // 버스 관련
         '/bus_main': (context) => BusMain(),
