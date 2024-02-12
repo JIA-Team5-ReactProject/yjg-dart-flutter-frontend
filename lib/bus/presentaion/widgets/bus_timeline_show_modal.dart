@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:yjg/shared/theme/palette.dart';
+import "package:flutter/material.dart";
+import "package:yjg/shared/theme/palette.dart";
 
-class BusTimeline extends StatelessWidget {
+class BusTimelineShowModal extends StatelessWidget {
   // TODO: 하드 코딩
   final List<Map<String, String>> stops = [
     {'station': '영어마을', 'time': '10:00'},
@@ -30,19 +30,12 @@ class BusTimeline extends StatelessWidget {
                 children: [
                   Text(
                     stop['time'] ?? '',
-                    style: TextStyle(fontSize: 13, color: Palette.mainColor, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: Palette.mainColor,
+                        fontWeight: FontWeight.bold),
                   ),
                   if (!isLastStop) ...[
-                    // 조건문을 이용하여 마지막 정류장이 아닐 때만 점과 선을 표시
-                    // Container(
-                    //   height: 10,
-                    //   width: 10,
-                    //   margin: EdgeInsets.only(top: 4, bottom: 4),
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.black,
-                    //     shape: BoxShape.circle,
-                    //   ),
-                    // ),
                     Container(
                       height: 50,
                       width: 3,
