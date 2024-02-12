@@ -1,8 +1,9 @@
 // SalonPriceList.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:yjg/salon/data/models/Price.dart';
 import '../widgets/multi_select.dart';
-import '../../../screens/salon/price.dart';
+
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
