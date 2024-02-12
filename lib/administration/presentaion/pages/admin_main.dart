@@ -79,12 +79,12 @@ class _AdminMainState extends State<AdminMain> {
                       icon: Icons.construction_outlined,
                       text1: 'AS 요청',
                       text2: '글로벌캠퍼스 AD',
-                      route: ''),
+                      route: '/as_page'),
                   MoveButton(
                       icon: Icons.hotel_outlined,
                       text1: '외박/외출 신청',
                       text2: '외박,외출 신청',
-                      route: ''),
+                      route: '/sleepover'),
                   MoveButton(
                       icon: Icons.groups,
                       text1: '회의실 예약',
