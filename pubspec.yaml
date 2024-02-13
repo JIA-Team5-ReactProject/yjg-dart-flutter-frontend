@@ -31,9 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   cupertino_icons: ^1.0.2
   calendar_timeline: ^1.1.2
-  intl: ^0.17.0
+  intl: ^0.18.1
   table_calendar: ^3.0.8
   dotted_line: ^3.2.2
   group_button: ^5.3.4
