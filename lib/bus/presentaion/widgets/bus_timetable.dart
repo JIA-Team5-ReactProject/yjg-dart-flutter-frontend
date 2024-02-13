@@ -139,7 +139,7 @@ class _BusTimetableState extends State<BusTimetable> {
                     isScrollControlled: true, // BottomSheet의 최대 높이를 조절하기 위해 필요함
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: 0.7,
+                        heightFactor: 0.5,
                         child: Container(
                           padding: EdgeInsets.all(20), // 내부 여백 추가
                           child: Column(
@@ -153,7 +153,16 @@ class _BusTimetableState extends State<BusTimetable> {
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 20), // 텍스트와 타임라인 사이의 간격 추가
+                              Text(
+                                "도로 사정에 따라 ±10분의 차이가 있을 수 있습니다.",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
+                                  color: Palette.textColor,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 25), // 텍스트와 타임라인 사이의 간격 추가
                               Expanded(
                                 child:
                                     BusTimelineShowModal(), // BusTimeline 위젯을 사용하여 타임라인 표시
