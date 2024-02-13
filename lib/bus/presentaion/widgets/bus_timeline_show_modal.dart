@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:yjg/shared/theme/palette.dart";
 
 class BusTimelineShowModal extends StatelessWidget {
-  // TODO: 하드 코딩
   final List<Map<String, String>> stops = [
     {'station': '영어마을', 'time': '10:00'},
     {'station': '글로벌생활관', 'time': '10:03'},
@@ -13,48 +12,50 @@ class BusTimelineShowModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: stops.length,
-      itemBuilder: (context, index) {
-        final stop = stops[index];
-        final bool isLastStop = index == stops.length - 1;
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    stop['time'] ?? '',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: Palette.mainColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  if (!isLastStop) ...[
-                    Container(
-                      height: 50,
-                      width: 3,
-                      color: Palette.mainColor,
-                    ),
-                  ],
-                ],
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  stop['station'] ?? '',
-                  style: TextStyle(fontSize: 16),
+    return SingleChildScrollView(
+      child: Table(
+        columnWidths: const {
+          0: FixedColumnWidth(40.0),
+          1: FlexColumnWidth(),
+          2: FixedColumnWidth(80.0),
+        },
+        border: TableBorder.all(color: Colors.grey),
+        children: [
+          TableRow(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('순서'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('정류장'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('도착시간'),
+            ),
+          ]),
+          ...List<TableRow>.generate(
+            stops.length,
+            (index) => TableRow(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('${index + 1}'),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(stops[index]['station'] ?? ''),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(stops[index]['time'] ?? ''),
+                ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
