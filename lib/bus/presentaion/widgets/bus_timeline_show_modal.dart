@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:yjg/shared/theme/palette.dart";
 
 class BusTimelineShowModal extends StatelessWidget {
 
