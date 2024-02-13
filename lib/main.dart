@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
-// import 'package:yjg/administration/presentaion/pages/as_page.dart';
+import 'package:yjg/administration/presentaion/pages/as_page.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
 import 'package:yjg/auth/presentation/pages/international_registration_step1.dart';
 import 'package:yjg/auth/presentation/pages/international_registration_step2.dart';
 import 'package:yjg/auth/presentation/pages/login_google_domestic_students.dart';
-import 'package:yjg/auth/presentation/pages/login_standard_foreign_international_admin.dart';
+import 'package:yjg/auth/presentation/pages/login_standard_foreign_international.dart';
 import 'package:yjg/auth/presentation/pages/registration_details.dart';
 import 'package:yjg/bus/presentaion/pages/bus_main.dart';
 import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
 
         // Auth 관련
         '/login_domestic': (context) => LoginGoogleDomesticStudents(),
-        '/login_international_admin': (context) => LoginStandardInternationalAdmin(),
+        '/login_international_admin': (context) => LoginStandardInternational(),
         '/registration_detail': (context) => RegistrationDetails(),
         '/registration_international': (context) => InternationalRegisterationStep1(),
         '/registration_international_detail': (context) => InternationalRegisterationStep2(),
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
         //행정 관련
         '/admin_main': (context) => AdminMain(),
         '/notice': (context) => Notice(),
-        // '/as_page': (context) => AsPage(),
+        '/as_page': (context) => AsPage(),
         '/sleepover': (context) => Sleepover(),
         '/sleepover_application': (context) => SleepoverApplication(),
       },
