@@ -248,7 +248,7 @@ class _BusTimetableState extends State<BusTimetable> {
                                 style: TextStyle(),
                               ),
                               Text(
-                                '복현서문',
+                                '복현서문', 
                                 style: TextStyle(),
                               ),
                             ],

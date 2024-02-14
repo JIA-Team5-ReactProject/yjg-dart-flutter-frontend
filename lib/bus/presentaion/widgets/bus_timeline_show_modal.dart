@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
-import "package:yjg/shared/theme/palette.dart";
 
 class BusTimelineShowModal extends StatelessWidget {
+
+  // TODO: 하드코딩
   final List<Map<String, String>> stops = [
     {'station': '영어마을', 'time': '10:00'},
     {'station': '글로벌생활관', 'time': '10:03'},
