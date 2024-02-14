@@ -236,7 +236,7 @@ class _MeetingRoomState extends State<MeetingRoom> {
                           TextButton(
                             child: Text("확인"),
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.pushReplacementNamed(context, '/admin_main');
                             },
                           ),
                         ],
