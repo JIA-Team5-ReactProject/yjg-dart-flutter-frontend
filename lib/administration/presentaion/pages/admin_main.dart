@@ -89,7 +89,7 @@ class _AdminMainState extends State<AdminMain> {
                       icon: Icons.groups,
                       text1: '회의실 예약',
                       text2: '생활관,라운지 회의실 예약',
-                      route: ''),
+                      route: '/meeting_room'),
                 ],
               ),
             ),
