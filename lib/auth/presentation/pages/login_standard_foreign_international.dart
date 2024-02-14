@@ -8,37 +8,39 @@ class LoginStandardInternational extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 50.0, bottom: 20.0),
-              child: Image(
-                image: AssetImage('assets/img/yju_tiger_logo.png'),
-                width: 120,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 160.0, bottom: 20.0),
+                child: Image(
+                  image: AssetImage('assets/img/yju_tiger_logo.png'),
+                  width: 120,
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 20.0),
-              child: Image(
-                  image: AssetImage('assets/img/yju_text_logo.png'),
-                  width: 130),
-            ),
-            InternationalAdminLoginForm(),
-            AuthTextButton(
-              authText: "아이디가 아직 없을 경우",
-              onPressed: () => {
-                Navigator.pushNamed(context, '/registration_international'),
-              },
-            ),
-            AuthTextButton(
-              authText: "국내 학생 로그인으로 이동",
-              onPressed: () => {
-                Navigator.pushNamed(context, '/login_domestic'),
-              },
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.only(bottom: 20.0),
+                child: Image(
+                    image: AssetImage('assets/img/yju_text_logo.png'),
+                    width: 130),
+              ),
+              InternationalAdminLoginForm(),
+              AuthTextButton(
+                authText: "아이디가 아직 없을 경우",
+                onPressed: () => {
+                  Navigator.pushNamed(context, '/registration_international'),
+                },
+              ),
+              AuthTextButton(
+                authText: "국내 학생 로그인으로 이동",
+                onPressed: () => {
+                  Navigator.pushNamed(context, '/login_domestic'),
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
