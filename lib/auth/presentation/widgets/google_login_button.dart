@@ -38,7 +38,7 @@ class GoogleLoginButton extends StatelessWidget {
             Image.asset('assets/img/google_logo.png', width: 15.0),
             const SizedBox(width: 20.0),
             Padding(
-              padding: EdgeInsets.only(right: 30.0),
+              padding: EdgeInsets.only(right: 20.0),
               child: Text(
                 '구글 아이디로 로그인하기',
                 style: TextStyle(color: Palette.textColor, letterSpacing: -0.5),

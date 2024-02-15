@@ -34,7 +34,7 @@ class LoginStandardInternational extends StatelessWidget {
                 },
               ),
               AuthTextButton(
-                authText: "국내 학생 로그인으로 이동",
+                authText: "구글 로그인으로 이동",
                 onPressed: () => {
                   Navigator.pushNamed(context, '/login_domestic'),
                 },
