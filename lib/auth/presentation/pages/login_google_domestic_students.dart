@@ -42,7 +42,7 @@ class LoginGoogleDomesticStudents extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  "외국인 학생 로그인으로 이동",
+                  "일반 로그인으로 이동",
                   style: TextStyle(
                       color: Palette.mainColor,
                       fontSize: 13.0,
