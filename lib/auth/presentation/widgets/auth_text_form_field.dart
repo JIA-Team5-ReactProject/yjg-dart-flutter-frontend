@@ -19,6 +19,7 @@ class AuthTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      obscureText: labelText == "비밀번호" ? true : false,
       controller: controller,
       decoration: InputDecoration(
         focusedBorder: OutlineInputBorder(
