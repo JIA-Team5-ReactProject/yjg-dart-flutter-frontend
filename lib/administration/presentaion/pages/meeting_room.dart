@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/administration/presentaion/widget/meeting_room_card.dart';
 import 'package:yjg/administration/presentaion/widget/meeting_room_time.dart';
+import 'package:yjg/shared/widgets/CustomSingleChildScrollView.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -39,7 +40,7 @@ class _MeetingRoomState extends State<MeetingRoom> {
       appBar: BaseAppBar(title: "회의실 예약"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       drawer: const Drawer(),
-      body: SingleChildScrollView(
+      body: CustomSingleChildScrollView(
         child: Column(
           children: [
             //겹쳐진 박스

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/shared/widgets/CustomSingleChildScrollView.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
 import 'package:yjg/shared/theme/palette.dart';
@@ -24,7 +25,7 @@ class _AdminMainState extends State<AdminMain> {
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '행정'),
       drawer: const BaseDrawer(),
-      body: SingleChildScrollView(
+      body: CustomSingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

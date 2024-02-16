@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/shared/widgets/CustomSingleChildScrollView.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -22,7 +23,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '식수'),
       drawer: const BaseDrawer(),
-      body: SingleChildScrollView(
+      body: CustomSingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
