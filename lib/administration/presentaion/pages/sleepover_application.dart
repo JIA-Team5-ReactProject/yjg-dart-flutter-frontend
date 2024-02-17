@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/shared/widgets/CustomSingleChildScrollView.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 
@@ -20,7 +21,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     return Scaffold(
       appBar: const BaseAppBar(title: '외박/외출'),
       drawer: const BaseDrawer(),
-      body: SingleChildScrollView(
+      body: CustomSingleChildScrollView(
         child: Column(
           children: [
             Column(

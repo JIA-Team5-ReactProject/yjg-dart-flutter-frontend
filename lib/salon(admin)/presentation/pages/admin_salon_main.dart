@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:yjg/salon(admin)/presentation/widgets/main_rounded_box.dart";
 import "package:yjg/salon(admin)/presentation/widgets/main_rounded_box_s.dart";
 import "package:yjg/shared/theme/palette.dart";
+import "package:yjg/shared/widgets/CustomSingleChildScrollView.dart";
 import "package:yjg/shared/widgets/base_appbar.dart";
 import "package:yjg/shared/widgets/blue_main_rounded_box.dart";
 import "package:yjg/shared/widgets/bottom_navigation_bar.dart";
@@ -15,7 +16,7 @@ class AdminSalonMain extends StatelessWidget {
     return Scaffold(
       appBar: const BaseAppBar(title: "미용실"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      body: SingleChildScrollView(
+      body: CustomSingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
