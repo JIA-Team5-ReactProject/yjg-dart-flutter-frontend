@@ -71,13 +71,37 @@ class AdminSalonMain extends StatelessWidget {
             SizedBox(
               height: 20.0,
             ),
-            Container(
-              margin: EdgeInsets.all(20),
-              alignment: Alignment(-0.85, 0.2),
-              child: const Text(
-                '미승인 예약(최근 3건)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 40),
+                  child: const Text(
+                    '미승인 예약(최근 3건)',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: EdgeInsets.only(right: 20.0, top: 5.0),
+                  child: TextButton(
+                    onPressed: () => {},
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(
+                        Palette.stateColor4.withOpacity(0.1),
+                      ),
+                    ),
+                    child: const Text(
+                      "더보기",
+                      style: TextStyle(
+                          color: Palette.stateColor4,
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.2),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             // TODO: 하드 코딩(일단 3건만 볼 수 있도록 하기)
@@ -87,22 +111,9 @@ class AdminSalonMain extends StatelessWidget {
                   bookText: "고속도로컷",
                   time: "24/02/15 16시",
                   iconColor: Palette.stateColor1),
-
-            TextButton(
-                onPressed: () => {},
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(
-                    Palette.stateColor4.withOpacity(0.1),
-                  ),
-                ),
-                child: Text(
-                  "더보기",
-                  style: TextStyle(
-                      color: Palette.stateColor4,
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -0.2),
-                ))
+            SizedBox(
+              height: 20.0,
+            ),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:yjg/salon/presentaion/widgets/booking_calendar.dart';
+import 'package:yjg/salon(admin)/presentation/widgets/booking_calendar.dart';
 import 'package:yjg/salon/presentaion/widgets/booking_next_button.dart';
 import 'package:yjg/salon/presentaion/widgets/date_button.dart';
 import 'package:yjg/shared/theme/palette.dart';
