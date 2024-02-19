@@ -44,6 +44,7 @@ dependencies:
   timer_count_down: ^2.2.2
   dropdown_button2: ^2.3.9
   expandable: ^5.0.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
