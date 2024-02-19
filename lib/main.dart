@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
+import 'package:yjg/administration/presentaion/pages/as_application.dart';
 import 'package:yjg/administration/presentaion/pages/as_page.dart';
 import 'package:yjg/administration/presentaion/pages/meeting_room.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
         '/admin_main': (context) => AdminMain(),
         '/notice': (context) => Notice(),
         '/as_page': (context) => AsPage(),
+        '/as_application':(context) => AsApplication(),
         '/sleepover': (context) => Sleepover(),
         '/sleepover_application': (context) => SleepoverApplication(),
         '/meeting_room':(context) => MeetingRoom(),
