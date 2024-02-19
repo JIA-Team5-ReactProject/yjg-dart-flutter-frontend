@@ -85,7 +85,8 @@ class AdminSalonMain extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(right: 20.0, top: 5.0),
                   child: TextButton(
-                    onPressed: () => {},
+                    onPressed: () => {
+                      Navigator.pushNamed(context, '/admin_salon_booking'),},
                     style: ButtonStyle(
                       overlayColor: MaterialStateProperty.all(
                         Palette.stateColor4.withOpacity(0.1),

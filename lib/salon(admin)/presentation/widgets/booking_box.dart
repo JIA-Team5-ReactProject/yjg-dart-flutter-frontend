@@ -65,7 +65,9 @@ class BookingBox extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Palette.mainColor),
+                        backgroundColor: Palette.mainColor,
+                        elevation: 0,
+                      ),
                     ),
                   ),
                 ],
