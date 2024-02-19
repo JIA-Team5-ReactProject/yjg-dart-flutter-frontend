@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/salon(admin)/presentation/widgets/booking_box.dart';
+import 'package:yjg/salon(admin)/presentation/widgets/empty_bookings.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class BookingCalendar extends StatefulWidget {
@@ -224,14 +225,16 @@ class _BookingCalendarState extends State<BookingCalendar> {
         ),
         ListView(
           shrinkWrap: true,
-          children: _getEventForDay(_selectedDay!)
-              .map((event) => ListTile(
-                    title: BookingBox(
-                      bookText: event,
-                      time: "13:00",
-                    ),
-                  ))
-              .toList(),
+          children: _getEventForDay(_selectedDay!).isEmpty
+              ? [EmptyBookings()] // 선택한 날짜에 이벤트가 없으면 EmptyBookings 위젯을 리스트에 추가
+              : _getEventForDay(_selectedDay!)
+                  .map((event) => ListTile(
+                        title: BookingBox(
+                          bookText: event,
+                          time: "13:00",
+                        ),
+                      ))
+                  .toList(),
         ),
       ],
     );
