@@ -1,18 +1,21 @@
 import "package:flutter/material.dart";
-import "package:yjg/auth/domain/usecases/BirthDateInputFormatter.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:yjg/auth/data/data_resources/register_data_source.dart";
 import "package:yjg/auth/domain/usecases/PhoneNumberInpurtFormatter.dart";
-import "package:yjg/auth/presentation/widgets/auth_form_dropdown.dart";
+import "package:yjg/auth/domain/usecases/register_usecase.dart";
+import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
 import "package:yjg/shared/theme/palette.dart";
 
-class InternationalRegisterationStep2 extends StatelessWidget {
+class InternationalRegisteration extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController birthController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
@@ -30,7 +33,7 @@ class InternationalRegisterationStep2 extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                 child: const Text(
-                  '추가 정보를 입력해 주세요.',
+                  '정보를 입력해 주세요.',
                   style: TextStyle(fontSize: 18.0, color: Palette.textColor),
                 ),
               ),
@@ -46,28 +49,34 @@ class InternationalRegisterationStep2 extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
+                            horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: nameController,
                           labelText: "이름",
                           validatorText: "이름을 입력해 주세요.",
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
+                            horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
-                          controller: birthController,
-                          labelText: "생일",
-                          validatorText: "생일을 입력해 주세요.",
-                          inputFormatter: BirthDateInputFormatter(),
+                          controller: emailController,
+                          labelText: "이메일",
+                          validatorText: "이메일을 입력해 주세요.",
                         ),
                       ),
-                      
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 8),
+                            horizontal: 8, vertical: 14),
+                        child: AuthTextFormField(
+                          controller: passwordController,
+                          labelText: "비밀번호",
+                          validatorText: "비밀번호를 입력해 주세요.",
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: phoneNumberController,
                           labelText: "전화번호",
@@ -75,29 +84,36 @@ class InternationalRegisterationStep2 extends StatelessWidget {
                           inputFormatter: PhoneNumberInputFormatter(),
                         ),
                       ),
-                      Padding(padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 15),
-                        child: AuthFormDropDown(dropdownCategory: "성별"),
-                      ),
-                      Padding(padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 8),
-                        child: AuthFormDropDown(dropdownCategory: "학과"),
-                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 22.0),
                         child: SizedBox(
                           width: double.infinity, // 버튼을 부모의 가로 길이만큼 확장
+
+                          // 버튼
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pushNamed(context, '/login_domestic');
+                                // Form이 유효한 경우에만 회원가입 로직 실행
+                                final registerUseCase = RegisterUseCase(
+                                    ref: ref); // RegisterUseCase 인스턴스 생성
+
+                                // execute 메소드를 비동기적으로 호출하고, 사용자 입력을 전달
+                                await registerUseCase.execute(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  name: nameController.text,
+                                  phoneNumber: phoneNumberController.text,
+                                  context: context,
+                                );
                               } else {
+                                // Form이 유효하지 않은 경우, 사용자에게 알림
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content:
-                                          Text('입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
-                                      backgroundColor: Palette.mainColor),
+                                    content: Text(
+                                        '입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
+                                    backgroundColor: Palette.mainColor,
+                                  ),
                                 );
                               }
                             },
