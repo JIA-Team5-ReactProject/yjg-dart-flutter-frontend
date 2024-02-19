@@ -165,6 +165,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, left: 20),
                     child: TextField(
+                      maxLines: 10,
                       controller: reasonController,
                       decoration: InputDecoration(
                         border: InputBorder.none,

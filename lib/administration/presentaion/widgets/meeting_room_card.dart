@@ -47,7 +47,7 @@ class _MeetingRoomCardState extends State<MeetingRoomCard> {
               Text(
                 '예약가능',
                 style: TextStyle(color: Colors.black, fontSize: 13),
-              )
+              ),
             ],
           ),
         ),
