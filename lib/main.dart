@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
@@ -6,8 +8,7 @@ import 'package:yjg/administration/presentaion/pages/as_page.dart';
 import 'package:yjg/administration/presentaion/pages/meeting_room.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
-import 'package:yjg/auth/presentation/pages/international_registration_step1.dart';
-import 'package:yjg/auth/presentation/pages/international_registration_step2.dart';
+import 'package:yjg/auth/presentation/pages/international_registration.dart';
 import 'package:yjg/auth/presentation/pages/login_google_domestic_students.dart';
 import 'package:yjg/auth/presentation/pages/login_standard_foreign_international.dart';
 import 'package:yjg/auth/presentation/pages/registration_details.dart';
@@ -21,6 +22,9 @@ import 'package:yjg/restaurant/presentaion/pages/menu_list.dart';
 import 'package:yjg/restaurant/presentaion/pages/restaurant_main.dart';
 import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
 import 'package:yjg/restaurant/presentaion/pages/weekend_meal.dart';
+import 'package:yjg/salon(admin)/presentation/pages/admin_salon_booking.dart';
+import 'package:yjg/salon(admin)/presentation/pages/admin_salon_main.dart';
+import 'package:yjg/salon(admin)/presentation/pages/admin_salon_price_list.dart';
 import 'package:yjg/salon/presentaion/pages/salon_booking.dart';
 import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
@@ -28,8 +32,9 @@ import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
+  await dotenv.load(fileName: '.env'); // env 파일 로드
   await initializeDateFormatting();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp())); // riverpod 사용을 위한 ProviderScope
 }
 
 class MyApp extends StatelessWidget {
@@ -54,7 +59,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       //최초 실행 페이지 설정
-      // initialRoute: '/dashboard_main',
+      // initialRoute: '/dashboard_main',   // (테스트)메인 화면
+      // initialRoute: '/admin_salon_main', // (테스트)미용실 관리자 화면
       initialRoute: '/login_domestic',
 
       //라우트 설정
@@ -66,9 +72,7 @@ class MyApp extends StatelessWidget {
         '/login_domestic': (context) => LoginGoogleDomesticStudents(),
         '/login_international_admin': (context) => LoginStandardInternational(),
         '/registration_detail': (context) => RegistrationDetails(),
-        '/registration_international': (context) => InternationalRegisterationStep1(),
-        '/registration_international_detail': (context) => InternationalRegisterationStep2(),
-
+        '/registration_international': (context) => InternationalRegisteration(),
 
         // 식수 관련
         '/restaurant_main': (context) => RestaurantMain(),
@@ -81,6 +85,11 @@ class MyApp extends StatelessWidget {
         '/salon_main': (context) => SalonMain(),
         '/salon_price_list': (context) => SalonPriceList(),
         '/salon_booking': (context) => SalonBooking(),
+
+        // 미용실 관련(관리자)
+        '/admin_salon_main': (context) => AdminSalonMain(),
+        '/admin_salon_price_list': (context) => AdminSalonPriceList(),
+        '/admin_salon_booking': (context) => AdminSalonBooking(),
 
         // 버스 관련
         '/bus_main': (context) => BusMain(),
