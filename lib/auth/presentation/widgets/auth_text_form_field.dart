@@ -32,14 +32,28 @@ class AuthTextFormField extends StatelessWidget {
         labelText: labelText,
         labelStyle: TextStyle(color: Palette.textColor, fontSize: 14.0),
       ),
+      // 유효성 검사
+      // ! TextInputForm의 유효성 검사는 validator 속성을 통해 진행하는 것이 일반적이다!
       validator: (value) {
+        // 공통: 필수 입력값 검사
         if (value == null || value.isEmpty) {
-          return validatorText;
+          return '필수 입력 항목입니다.';
         }
-        return null;
+
+        // 이메일 유효성 검사
+        if (labelText == "이메일" &&
+            !RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b').hasMatch(value)) {
+          return '유효한 이메일 주소를 입력해주세요.';
+        }
+
+        // 비밀번호 유효성 검사
+        if (labelText == "비밀번호" && value.length < 8) {
+          return '비밀번호는 최소 8자 이상이어야 합니다.';
+        }
+
+        return null; // 유효성 검사를 통과했다면 null 반환
       },
-      inputFormatters:
-          inputFormatter != null ? [inputFormatter!] : [], 
+      inputFormatters: inputFormatter != null ? [inputFormatter!] : [],
     );
   }
 }

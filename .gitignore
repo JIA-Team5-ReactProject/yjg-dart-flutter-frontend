@@ -71,6 +71,9 @@ lib/generated_plugin_registrant.dart
 # OS related
 .DS_Store
 
+# env file
+*.env
+
 # Logs
 logs/
 
