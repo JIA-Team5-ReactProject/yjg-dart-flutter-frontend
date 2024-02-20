@@ -1,9 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:yjg/auth/data/data_resources/register_data_source.dart";
-import "package:yjg/auth/domain/usecases/PhoneNumberInpurtFormatter.dart";
 import "package:yjg/auth/domain/usecases/register_usecase.dart";
-import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
 import "package:yjg/shared/theme/palette.dart";
 
