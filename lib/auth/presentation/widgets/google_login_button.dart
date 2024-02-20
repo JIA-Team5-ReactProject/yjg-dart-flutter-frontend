@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/auth/data/data_resources/login_data_source.dart';
+import 'package:yjg/auth/presentation/pages/google_login_webview.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class GoogleLoginButton extends StatelessWidget {
@@ -10,7 +12,9 @@ class GoogleLoginButton extends StatelessWidget {
       width: 250.0,
       child: OutlinedButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/registration_detail'); 
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => GoogleLoginWebView()),
+          );
         },
         style: ButtonStyle(
           side: MaterialStateProperty.all(
@@ -27,7 +31,7 @@ class GoogleLoginButton extends StatelessWidget {
             (Set<MaterialState> states) {
               if (states.contains(MaterialState.pressed))
                 return Palette.stateColor4.withOpacity(0.1); // 스플래시 색상 설정
-              return null; 
+              return null;
             },
           ),
         ),
