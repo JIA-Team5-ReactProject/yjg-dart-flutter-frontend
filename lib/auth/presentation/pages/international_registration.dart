@@ -95,12 +95,16 @@ class InternationalRegisteration extends ConsumerWidget {
                                 final registerUseCase = RegisterUseCase(
                                     ref: ref); // RegisterUseCase 인스턴스 생성
 
+                                // 전화번호 입력값에서 숫자만 추출
+                                String phoneNumber = phoneNumberController.text
+                                    .replaceAll(RegExp(r'[^\d]'), '');
+
                                 // execute 메소드를 비동기적으로 호출하고, 사용자 입력을 전달
                                 await registerUseCase.execute(
                                   email: emailController.text,
                                   password: passwordController.text,
                                   name: nameController.text,
-                                  phoneNumber: phoneNumberController.text,
+                                  phoneNumber: phoneNumber,
                                   context: context,
                                 );
                               } else {
