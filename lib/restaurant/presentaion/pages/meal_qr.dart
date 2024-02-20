@@ -36,9 +36,8 @@ class _MealQrState extends State<MealQr> {
             ),
             child: Column(
               children: [
-
                 Container(
-                  margin: EdgeInsets.only(top: 20, bottom: 15,left: 10),
+                  margin: EdgeInsets.only(top: 20, bottom: 15, left: 10),
                   child: Row(
                     children: [
                       //뒤로가기 버튼
@@ -93,9 +92,11 @@ class _MealQrState extends State<MealQr> {
                 Container(
                   width: 220,
                   height: 220,
-                  color: Colors.black,
+                  child: Image.network(
+                    'http://wwcqek8uqz.laravel-sail.site:8080/api/admin/qr',
+                    fit: BoxFit.cover, // 이미지가 위젯의 전체 공간을 차지하도록 설정
+                  ),
                 ),
-
 
                 //구분 점선
                 Container(
@@ -107,23 +108,27 @@ class _MealQrState extends State<MealQr> {
                 ),
 
                 //학번 글자
-                Text('1901201',style: TextStyle(
-                  color: Color.fromARGB(255, 148, 148, 148),
-                  fontSize: 15
-                ),),
+                Text(
+                  '1901201',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 148, 148, 148), fontSize: 15),
+                ),
 
                 //이름 글자
-                Text('이민혁',style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold
-                ),),
+                Text(
+                  '김현',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold),
+                ),
 
                 //학과 글자
-                Text('컴퓨터정보계열',style: TextStyle(
-                  color: Color.fromARGB(255, 29, 127, 159),
-                  fontSize: 15
-                ),),
+                Text(
+                  '컴퓨터정보계열',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 29, 127, 159), fontSize: 15),
+                ),
               ],
             ),
           ),

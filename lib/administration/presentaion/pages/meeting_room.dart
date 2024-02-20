@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yjg/administration/presentaion/widget/meeting_room_time.dart';
+import 'package:yjg/administration/presentaion/widgets/meeting_room_time.dart';
 import 'package:yjg/administration/presentaion/widgets/meeting_room_card.dart';
 import 'package:yjg/shared/widgets/CustomSingleChildScrollView.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
