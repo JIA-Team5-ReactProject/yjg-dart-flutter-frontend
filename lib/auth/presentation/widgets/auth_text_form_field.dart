@@ -3,7 +3,7 @@ import "package:flutter/services.dart";
 import "package:yjg/shared/theme/palette.dart";
 
 class AuthTextFormField extends StatelessWidget {
-  const AuthTextFormField({
+  AuthTextFormField({
     super.key,
     required this.controller,
     required this.labelText,
@@ -53,7 +53,7 @@ class AuthTextFormField extends StatelessWidget {
 
         return null; // 유효성 검사를 통과했다면 null 반환
       },
-      inputFormatters: inputFormatter != null ? [inputFormatter!] : [],
+      inputFormatters: inputFormatter != null ? [inputFormatter!, LengthLimitingTextInputFormatter(13)] : [],
     );
   }
 }
