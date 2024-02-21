@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
-import 'package:yjg/auth/presentation/pages/google_login_webview.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class GoogleLoginButton extends StatelessWidget {
@@ -11,10 +10,9 @@ class GoogleLoginButton extends StatelessWidget {
     return SizedBox(
       width: 250.0,
       child: OutlinedButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => GoogleLoginWebView()),
-          );
+        onPressed: () async {
+         await LoginDataSource().signInWithGoogle();
+         
         },
         style: ButtonStyle(
           side: MaterialStateProperty.all(
