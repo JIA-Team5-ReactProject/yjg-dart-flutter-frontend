@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
-import 'package:yjg/shared/widgets/CustomSingleChildScrollView.dart';
+import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
