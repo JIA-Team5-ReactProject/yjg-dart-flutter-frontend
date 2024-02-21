@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
@@ -11,16 +12,31 @@ class LoginDataSource {
     return apiURL; // 상수 파일에서 가져온 apiURL 사용
   }
 
-  Future<http.Response> getGoogleLoginAPI() async {
-    final response = await http.get(
-      Uri.parse('$apiURL/api/user/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-    );
-    print(response.body);
-    return response;
+  static final _googleSignin = GoogleSignIn(
+    scopes: <String>[
+      'email',
+    ],
+  );
+
+  // 구글 로그인 통신
+  Future<void> signInWithGoogle() async {
+    try {
+      await _googleSignin.signIn();
+      final GoogleSignInAccount? account = _googleSignin.currentUser;
+
+      if (account != null) {
+        GoogleSignInAuthentication googleAuth = await account.authentication;
+
+        // 액세스 토큰 출력
+        print("Google User Token: ${googleAuth.accessToken}");
+        print(account);
+      }
+    } catch (error) {
+      print('Error signing in with Google: $error');
+    }
   }
+
+  static Future<void> logout() => _googleSignin.signOut();
 
   // 일반 로그인 통신
   Future<http.Response> postLoginAPI(WidgetRef ref) async {

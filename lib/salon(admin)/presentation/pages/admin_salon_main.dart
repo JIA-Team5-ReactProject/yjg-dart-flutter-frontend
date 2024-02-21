@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:yjg/salon(admin)/presentation/widgets/main_rounded_box.dart";
 import "package:yjg/salon(admin)/presentation/widgets/main_rounded_box_s.dart";
 import "package:yjg/shared/theme/palette.dart";
-import "package:yjg/shared/widgets/CustomSingleChildScrollView.dart";
+import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import "package:yjg/shared/widgets/base_appbar.dart";
 import "package:yjg/shared/widgets/blue_main_rounded_box.dart";
 import "package:yjg/shared/widgets/bottom_navigation_bar.dart";

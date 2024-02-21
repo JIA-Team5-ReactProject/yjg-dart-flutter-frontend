@@ -1,11 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/domain/usecases/register_usecase.dart";
+import 'package:yjg/auth/presentation/viewmodels/email_viewmodel.dart';
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
 import "package:yjg/shared/theme/palette.dart";
 
 class InternationalRegisteration extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -13,6 +15,8 @@ class InternationalRegisteration extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final emailCheckResult = ref.watch(emailStateProvider);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
@@ -60,7 +64,45 @@ class InternationalRegisteration extends ConsumerWidget {
                           controller: emailController,
                           labelText: "이메일",
                           validatorText: "이메일을 입력해 주세요.",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.check_circle_outline),
+                            onPressed: () async {
+                              final email =
+                                  emailController.text; // 이메일 입력값 가져오기
+                              if (email.isNotEmpty) {
+                                // 이메일 필드가 비어있지 않을 때만 중복 검사 실행
+                                ref
+                                    .read(emailStateProvider.notifier)
+                                    .checkEmail(email);
+
+                                if (emailCheckResult == false) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('사용 가능한 이메일입니다.'),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('이미 사용중인 이메일입니다.'),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // 필요한 경우 사용자에게 알림 표시
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('이메일 주소를 입력해주세요.'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                         ),
+                        // 중복 검사 결과 표시
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
