@@ -1,23 +1,26 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/shared/theme/palette.dart";
 
-class AuthTextFormField extends StatelessWidget {
+class AuthTextFormField extends ConsumerWidget {
   AuthTextFormField({
     super.key,
     required this.controller,
     required this.labelText,
     required this.validatorText,
     this.inputFormatter, // 포맷터 추가
+    this.suffixIcon, // suffixIcon 추가
   });
 
   final TextEditingController controller;
   final String labelText;
   final String validatorText;
   final TextInputFormatter? inputFormatter;
+  final Widget? suffixIcon; // suffixIcon 정의
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextFormField(
       obscureText: labelText == "비밀번호" ? true : false,
       controller: controller,
@@ -31,6 +34,7 @@ class AuthTextFormField extends StatelessWidget {
         border: OutlineInputBorder(),
         labelText: labelText,
         labelStyle: TextStyle(color: Palette.textColor, fontSize: 14.0),
+        suffixIcon: suffixIcon, // suffixIcon 사용
       ),
       // 유효성 검사
       // ! TextInputForm의 유효성 검사는 validator 속성을 통해 진행하는 것이 일반적이다!
@@ -53,7 +57,9 @@ class AuthTextFormField extends StatelessWidget {
 
         return null; // 유효성 검사를 통과했다면 null 반환
       },
-      inputFormatters: inputFormatter != null ? [inputFormatter!, LengthLimitingTextInputFormatter(13)] : [],
+      inputFormatters: inputFormatter != null
+          ? [inputFormatter!, LengthLimitingTextInputFormatter(13)]
+          : [],
     );
   }
 }
