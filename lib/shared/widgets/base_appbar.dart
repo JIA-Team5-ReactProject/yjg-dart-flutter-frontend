@@ -18,7 +18,8 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
         title!,
         style: const TextStyle(
           color: Colors.white,
-          fontWeight: FontWeight.w200,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -1.0,
           fontSize: 20,
         ),
       );
