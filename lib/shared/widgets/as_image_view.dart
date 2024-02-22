@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yjg/as(admin)/presentation/widgets/as_image_view_detail.dart';
+import 'package:yjg/shared/widgets/as_image_view_detail.dart';
 
 class AsImageView extends StatelessWidget {
   final List<String> imageUrls = [
