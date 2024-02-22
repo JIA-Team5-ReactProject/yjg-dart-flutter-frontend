@@ -50,6 +50,8 @@ dependencies:
   google_sign_in: ^6.2.1
   flutter_riverpod: ^2.4.10
   flutter_dotenv: ^5.1.0
+  photo_view: ^0.14.0
+  flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,13 +69,24 @@ flutter:
   #   - images/a_dot_ham.jpeg
       - .env
       
-  fonts:
-    - family: PretendardBold
+fonts:
+    - family: Pretendard
       fonts:
-        - asset: assets/fonts/Pretendard-Bold.ttf
-    - family: PretendardSemiBold
-      fonts:
-        - asset: assets/fonts/Pretendard-SemiBold.ttf
-    - family: PretendardRegular
-      fonts:
+        - asset: assets/fonts/Pretendard-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Pretendard-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Pretendard-Light.ttf
+          weight: 300
         - asset: assets/fonts/Pretendard-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Pretendard-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Pretendard-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Pretendard-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Pretendard-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Pretendard-Black.ttf
+          weight: 900

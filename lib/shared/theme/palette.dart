@@ -17,7 +17,7 @@ class Palette {
 
   // state 아이콘, 텍스트 색상 지정(ex: 방문 예정, 방문 완료 등)
   static const Color stateColor1 = Color.fromRGBO(0, 127, 160, 1);    // 접수 완료
-  static const Color stateColor2 = Color.fromRGBO(255, 61, 0, 1);     // 방문 예정
+  static const Color stateColor2 = Color.fromRGBO(255, 111, 68, 1);     // 방문 예정
   static const Color stateColor3 = Color.fromRGBO(161, 0, 0, 1);      // 방문 완료
   static const Color stateColor4 = Color.fromRGBO(149, 149, 149, 1);  // 요청 거절
 
