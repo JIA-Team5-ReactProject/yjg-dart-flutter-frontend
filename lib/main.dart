@@ -7,10 +7,13 @@ import 'package:yjg/administration/presentaion/pages/as_page.dart';
 import 'package:yjg/administration/presentaion/pages/meeting_room.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
-// import 'package:yjg/auth/presentation/pages/international_registration.dart';
+import 'package:yjg/auth/presentation/pages/international_registration.dart';
+import 'package:yjg/as(admin)/presentation/pages/as_detail.dart';
+import 'package:yjg/as(admin)/presentation/pages/as_main.dart';
+import 'package:yjg/auth/presentation/pages/international_registration.dart';
 import 'package:yjg/auth/presentation/pages/login_google_domestic_students.dart';
 import 'package:yjg/auth/presentation/pages/login_standard_foreign_international.dart';
-// import 'package:yjg/auth/presentation/pages/registration_details.dart';
+import 'package:yjg/auth/presentation/pages/registration_details.dart';
 import 'package:yjg/bus/presentaion/pages/bus_main.dart';
 import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
 import 'package:yjg/bus/presentaion/pages/bus_schedule.dart';
@@ -65,6 +68,7 @@ class MyApp extends StatelessWidget {
 
       //최초 실행 페이지 설정
       initialRoute: '/dashboard_main',   // (테스트)메인 화면
+      initialRoute: '/as_admin',   // (테스트)메인 화면
       // initialRoute: '/admin_salon_main', // (테스트)미용실 관리자 화면
       // initialRoute: '/login_domestic',
 
@@ -109,6 +113,10 @@ class MyApp extends StatelessWidget {
         '/sleepover': (context) => Sleepover(),
         '/sleepover_application': (context) => SleepoverApplication(),
         '/meeting_room':(context) => MeetingRoom(),
+
+        // AS 관련(관리자)
+        '/as_admin': (context) => AsMain(),
+        '/as_detail': (context) => AsDetail(),
       },
     );
   }

@@ -32,7 +32,7 @@ class MoveButton extends StatelessWidget {
           SizedBox(height: 10.0), // 아이콘과 글자 사이의 간격
           Text(
             text1,
-            style: TextStyle(color: Colors.black, fontSize: 20),
+            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
           ), // 첫 번째 글자
           Text(
             text2,
