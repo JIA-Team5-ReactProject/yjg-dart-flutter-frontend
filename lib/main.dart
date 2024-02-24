@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
@@ -8,10 +7,10 @@ import 'package:yjg/administration/presentaion/pages/as_page.dart';
 import 'package:yjg/administration/presentaion/pages/meeting_room.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
-import 'package:yjg/auth/presentation/pages/international_registration.dart';
+// import 'package:yjg/auth/presentation/pages/international_registration.dart';
 import 'package:yjg/auth/presentation/pages/login_google_domestic_students.dart';
 import 'package:yjg/auth/presentation/pages/login_standard_foreign_international.dart';
-import 'package:yjg/auth/presentation/pages/registration_details.dart';
+// import 'package:yjg/auth/presentation/pages/registration_details.dart';
 import 'package:yjg/bus/presentaion/pages/bus_main.dart';
 import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
 import 'package:yjg/bus/presentaion/pages/bus_schedule.dart';
@@ -30,11 +29,17 @@ import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+
+
 
 void main() async {
-  await dotenv.load(fileName: '.env'); // env 파일 로드
+  // await dotenv.load(fileName: '.env'); // env 파일 로드
   await initializeDateFormatting();
-  runApp(const ProviderScope(child: MyApp())); // riverpod 사용을 위한 ProviderScope
+  runApp(ProviderScope( // ProviderScope로 앱 초기화 (riverpod사용 과정)
+      child: MyApp(),
+    ),); 
 }
 
 class MyApp extends StatelessWidget {
@@ -59,9 +64,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       //최초 실행 페이지 설정
-      // initialRoute: '/dashboard_main',   // (테스트)메인 화면
+      initialRoute: '/dashboard_main',   // (테스트)메인 화면
       // initialRoute: '/admin_salon_main', // (테스트)미용실 관리자 화면
-      initialRoute: '/login_domestic',
+      // initialRoute: '/login_domestic',
 
       //라우트 설정
       routes: {
@@ -71,8 +76,8 @@ class MyApp extends StatelessWidget {
         // Auth 관련
         '/login_domestic': (context) => LoginGoogleDomesticStudents(),
         '/login_international_admin': (context) => LoginStandardInternational(),
-        '/registration_detail': (context) => RegistrationDetails(),
-        '/registration_international': (context) => InternationalRegisteration(),
+        // '/registration_detail': (context) => RegistrationDetails(),
+        // '/registration_international': (context) => InternationalRegisteration(),
 
         // 식수 관련
         '/restaurant_main': (context) => RestaurantMain(),
