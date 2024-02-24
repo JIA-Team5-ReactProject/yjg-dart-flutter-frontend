@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:group_button/group_button.dart';
-import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
+import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
+import 'package:http/http.dart' as http;
 
 //신청 유형 확인 변수
-var meal_category = '';
+final mealCategoryProvider = StateProvider<String>((ref) => '');
 
 //신청 여부 확인 변수
 var application = false;
@@ -16,16 +19,19 @@ var application = false;
 //입금 여부 확인 변수
 var deposit = false;
 
-class MealApplication extends StatefulWidget {
+class MealApplication extends ConsumerStatefulWidget {
   const MealApplication({super.key});
 
   @override
-  State<MealApplication> createState() => _MealApplicationState();
+  ConsumerState<MealApplication> createState() => _MealApplicationState();
 }
 
-class _MealApplicationState extends State<MealApplication> {
+class _MealApplicationState extends ConsumerState<MealApplication> {
   @override
   Widget build(BuildContext context) {
+    //신청 여부 변수 가져오기
+    final mealCategory = ref.watch(mealCategoryProvider);
+
     //첫 신청인 경우
     if (application == false) {
       return Scaffold(
@@ -283,12 +289,13 @@ class _MealApplicationState extends State<MealApplication> {
 
                 //버튼 클릭시 실행 되는 함수
                 onSelected: (index, isSelected, isPressed) {
+                  final mealCategory = ref.read(mealCategoryProvider.notifier);
                   if (isSelected == 0) {
-                    meal_category = 'A유형 : 750,000';
+                    mealCategory.state = 'A';
                   } else if (isSelected == 1) {
-                    meal_category = 'B유형 : 520,000';
+                    mealCategory.state = 'B';
                   } else if (isSelected == 2) {
-                    meal_category = 'C유형 : 520,000';
+                    mealCategory.state = 'C';
                   }
                 },
 
@@ -364,14 +371,15 @@ class _MealApplicationState extends State<MealApplication> {
                   ),
 
                   //버튼 클릭 시 동작
-                  onPressed: () {
-                    if (meal_category == '') {
-                      non_select(context);
-                    } else {
-                      meal_application(context);
+                  onPressed: () async {
+                    final mealCategory = ref.watch(mealCategoryProvider);
+                    if (mealCategory.isNotEmpty) {
+                      await submitMealApplication(mealCategory);
                       setState(() {
                         application = true;
                       });
+                    } else {
+                      non_select(context);
                     }
                   },
                   child: Text(
@@ -577,7 +585,7 @@ class _MealApplicationState extends State<MealApplication> {
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '$meal_category',
+                            mealCategory,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -864,7 +872,7 @@ class _MealApplicationState extends State<MealApplication> {
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '$meal_category',
+                            mealCategory,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -1007,7 +1015,7 @@ class _MealApplicationState extends State<MealApplication> {
               Navigator.popAndPushNamed(context, '/restaurant_main');
               setState(() {
                 application = false;
-                meal_category = '';
+                ref.read(mealCategoryProvider.notifier).state = '';
               });
             },
             child: Text('예'),
@@ -1055,5 +1063,35 @@ class _MealApplicationState extends State<MealApplication> {
         ],
       ),
     );
+  }
+
+  //API 통신 로직
+  Future<void> submitMealApplication(mealCategory) async {
+    var url = Uri.parse(
+        'http://ec2-3-36-58-202.ap-northeast-2.compute.amazonaws.com/api/restaurant/semester');
+    var response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'user_id': 1,
+          'menu_type': 'A',
+          'payment': false,
+          // 필요한 다른 데이터를 함께 전송할 수 있습니다.
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      // 성공적으로 데이터를 전송했을 때의 처리
+      print('성공');
+    } else {
+      // 오류 처리
+      print('실패');
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+    }
   }
 }
