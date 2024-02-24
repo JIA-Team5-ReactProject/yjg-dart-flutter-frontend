@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yjg/administration/presentaion/widgets/as_card.dart';
+import 'package:yjg/shared/widgets/as_card.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
