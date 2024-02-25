@@ -27,8 +27,10 @@ class MealApplication extends ConsumerStatefulWidget {
 }
 
 class _MealApplicationState extends ConsumerState<MealApplication> {
+  
   @override
   Widget build(BuildContext context) {
+
     //신청 여부 변수 가져오기
     final mealCategory = ref.watch(mealCategoryProvider);
 
@@ -1065,8 +1067,11 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     );
   }
 
+
   //API 통신 로직
   Future<void> submitMealApplication(mealCategory) async {
+
+
     var url = Uri.parse(
         'http://ec2-3-36-58-202.ap-northeast-2.compute.amazonaws.com/api/restaurant/semester');
     var response = await http.post(
@@ -1074,14 +1079,12 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: json.encode(
-        {
-          'user_id': 1,
-          'menu_type': 'A',
-          'payment': false,
-          // 필요한 다른 데이터를 함께 전송할 수 있습니다.
-        },
-      ),
+      body: json.encode({
+        'user_id': 1,
+        'menu_type': mealCategory,
+        'payment': false,
+        // 필요한 다른 데이터를 함께 전송할 수 있습니다.
+      }),
     );
 
     if (response.statusCode == 200) {
