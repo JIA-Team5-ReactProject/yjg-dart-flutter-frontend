@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
@@ -7,7 +9,6 @@ import 'package:yjg/administration/presentaion/pages/as_page.dart';
 import 'package:yjg/administration/presentaion/pages/meeting_room.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
-import 'package:yjg/auth/presentation/pages/international_registration.dart';
 import 'package:yjg/as(admin)/presentation/pages/as_detail.dart';
 import 'package:yjg/as(admin)/presentation/pages/as_main.dart';
 import 'package:yjg/auth/presentation/pages/international_registration.dart';
@@ -34,24 +35,46 @@ import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-
+// 네비게이터 키
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  // await dotenv.load(fileName: '.env'); // env 파일 로드
-  await initializeDateFormatting();
-  runApp(ProviderScope( // ProviderScope로 앱 초기화 (riverpod사용 과정)
-      child: MyApp(),
-    ),); 
+  WidgetsFlutterBinding.ensureInitialized();
+  final storage = FlutterSecureStorage();
+  await dotenv.load(fileName: ".env");
+
+  String initialRoute = '/login_domestic'; // 기본 라우트
+  final autoLoginStr = await storage.read(key: 'auto_login');
+  final isAutoLogin = autoLoginStr == 'true';
+  final token = await storage.read(key: 'auth_token');
+
+  if (isAutoLogin && token != null) {
+    initialRoute = '/dashboard_main'; // 자동 로그인이 활성화되어 있고, 토큰이 유효한 경우
+  }
+
+  // 스플래시 스크린 제거
+  FlutterNativeSplash.remove();
+
+  runApp(
+    ProviderScope(
+      child: MyApp(
+        navigatorKey: navigatorKey,
+        initialRoute: initialRoute,
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+  final String initialRoute;
+
+  const MyApp(
+      {super.key, required this.navigatorKey, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       //외박 신청 달력 언어 설정
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -67,10 +90,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       //최초 실행 페이지 설정
-      initialRoute: '/dashboard_main',   // (테스트)메인 화면
-      initialRoute: '/as_admin',   // (테스트)메인 화면
+      // initialRoute: '/dashboard_main',   // (테스트)메인 화면
+      // initialRoute: '/as_admin',   // (테스트)메인 화면
       // initialRoute: '/admin_salon_main', // (테스트)미용실 관리자 화면
-      // initialRoute: '/login_domestic',
+      // initialRoute: '/login_domestic', // 테스트
+      navigatorKey: navigatorKey,
+      initialRoute: initialRoute,
+
+      // 로그인 여부에 따라 최초 실행 페이지 설정
 
       //라우트 설정
       routes: {
@@ -80,8 +107,9 @@ class MyApp extends StatelessWidget {
         // Auth 관련
         '/login_domestic': (context) => LoginGoogleDomesticStudents(),
         '/login_international_admin': (context) => LoginStandardInternational(),
-        // '/registration_detail': (context) => RegistrationDetails(),
-        // '/registration_international': (context) => InternationalRegisteration(),
+        '/registration_detail': (context) => RegistrationDetails(),
+        '/registration_international': (context) =>
+            InternationalRegisteration(),
 
         // 식수 관련
         '/restaurant_main': (context) => RestaurantMain(),
@@ -109,10 +137,10 @@ class MyApp extends StatelessWidget {
         '/admin_main': (context) => AdminMain(),
         '/notice': (context) => Notice(),
         '/as_page': (context) => AsPage(),
-        '/as_application':(context) => AsApplication(),
+        '/as_application': (context) => AsApplication(),
         '/sleepover': (context) => Sleepover(),
         '/sleepover_application': (context) => SleepoverApplication(),
-        '/meeting_room':(context) => MeetingRoom(),
+        '/meeting_room': (context) => MeetingRoom(),
 
         // AS 관련(관리자)
         '/as_admin': (context) => AsMain(),
