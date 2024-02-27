@@ -17,6 +17,7 @@ class RegisterUseCase {
     required String password,
     required String name,
     required String phoneNumber,
+    required String studentId,
     required BuildContext context,
   }) async {
     // User 상태 업데이트를 위해 userProvider를 통해 User 인스턴스에 접근
@@ -25,6 +26,7 @@ class RegisterUseCase {
           password: password,
           name: name,
           phoneNumber: phoneNumber,
+          studentId: studentId,
         );
 
     // 회원가입 로직 구현

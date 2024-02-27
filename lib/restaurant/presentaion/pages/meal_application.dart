@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:group_button/group_button.dart';
+import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
@@ -1071,9 +1072,11 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
   //API 통신 로직
   Future<void> submitMealApplication(mealCategory) async {
 
-
+    String getApiUrl() {
+    return apiURL;
+  }
     var url = Uri.parse(
-        'http://ec2-3-36-58-202.ap-northeast-2.compute.amazonaws.com/api/restaurant/semester');
+        '$apiURL/api/restaurant/semester');
     var response = await http.post(
       url,
       headers: {

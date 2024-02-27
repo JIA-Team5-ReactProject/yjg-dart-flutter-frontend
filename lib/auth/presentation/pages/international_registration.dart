@@ -12,6 +12,7 @@ class InternationalRegisteration extends ConsumerWidget {
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController studentIdController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -117,6 +118,15 @@ class InternationalRegisteration extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
+                          controller: studentIdController,
+                          labelText: "학번",
+                          validatorText: "학번을 입력해 주세요.",
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 14),
+                        child: AuthTextFormField(
                           controller: phoneNumberController,
                           labelText: "전화번호",
                           validatorText: "전화번호를 입력해 주세요.",
@@ -147,6 +157,7 @@ class InternationalRegisteration extends ConsumerWidget {
                                   password: passwordController.text,
                                   name: nameController.text,
                                   phoneNumber: phoneNumber,
+                                  studentId: studentIdController.text,
                                   context: context,
                                 );
                               } else {

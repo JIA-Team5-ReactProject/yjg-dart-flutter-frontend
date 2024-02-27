@@ -9,6 +9,7 @@ class LoginGoogleDomesticStudents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -41,6 +42,8 @@ class LoginGoogleDomesticStudents extends StatelessWidget {
                     Palette.stateColor4.withOpacity(0.1),
                   ),
                 ),
+              
+      
                 child: Text(
                   "일반 로그인으로 이동",
                   style: TextStyle(
