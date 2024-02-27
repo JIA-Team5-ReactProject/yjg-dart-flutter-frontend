@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-class GoogleLoginButton extends StatelessWidget {
+class GoogleLoginButton extends ConsumerWidget {
   const GoogleLoginButton({super.key});
 
+  
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final storage = FlutterSecureStorage();
     return SizedBox(
       width: 250.0,
       child: OutlinedButton(
         onPressed: () async {
-         await LoginDataSource().signInWithGoogle();
-         
+         try { 
+          await LoginDataSource().signInWithGoogle(ref);
+         } catch (error) {
+           print('Error signing in with Google: $error');
+         }
         },
         style: ButtonStyle(
           side: MaterialStateProperty.all(

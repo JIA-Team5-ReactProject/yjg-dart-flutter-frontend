@@ -23,7 +23,7 @@ class LoginUseCase {
     try {
       await LoginDataSource().postLoginAPI(ref);
       // 성공 시 메인 페이지로 이동
-      Navigator.pushNamed(context, '/dashboard_main');
+      Navigator.pushNamed(context, '/admin_salon_main');
     } catch (e) {
       // 로그인 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
