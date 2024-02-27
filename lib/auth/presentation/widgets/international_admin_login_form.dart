@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
+import "package:yjg/auth/presentation/widgets/auto_login_check_box.dart";
 import "package:yjg/auth/presentation/widgets/login_button.dart";
-import "package:yjg/shared/theme/theme.dart";
 
 class InternationalAdminLoginForm extends StatefulWidget {
   const InternationalAdminLoginForm({super.key});
@@ -40,9 +40,10 @@ class _InternationalAdminLoginForm extends State<InternationalAdminLoginForm> {
                 validatorText: "비밀번호를 입력해 주세요.",
               ),
             ),
+            AutoLoginCheckBox(),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 22.0),
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10.0),
               child: SizedBox(
                 width: double.infinity, // 버튼을 부모의 가로 길이만큼 확장
                 child: LoginButton(
