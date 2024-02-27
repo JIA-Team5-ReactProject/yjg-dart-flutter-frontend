@@ -21,8 +21,8 @@ class RegisterDataSource {
       'student_id': registerState.studentId,
     });
 
-     debugPrint('내가 보낸 body: $body');
-     
+    debugPrint('내가 보낸 body: $body');
+
     // 통신
     final response = await http.post(
       Uri.parse('$apiURL/api/user'),
@@ -42,33 +42,30 @@ class RegisterDataSource {
   }
 
   // 추가 정보 입력
-  Future<http.Response> patchAdditionalInfoAPI(WidgetRef ref) async {
+  Future<http.Response> patchAdditionalInfoAPI(
+      WidgetRef ref, String token) async {
     // state 값 가져오기
     final detailRegisterState = ref.read(userProvider.notifier);
-    final int userId = ref.watch(userIdProvider);
-    debugPrint('userId값: $userId');
-    // 통신
+    debugPrint('토큰: $token');
+
+    // 토큰 값 가져오기
 
     final body = jsonEncode(<String, dynamic>{
-      "user_id": userId,
       "student_id": detailRegisterState.studentId,
       "name": detailRegisterState.name,
       "phone_number": detailRegisterState.phoneNumber,
     });
 
-   
-
     final response = await http.patch(Uri.parse('$apiURL/api/user'),
         headers: <String, String>{
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
         // state 값을 json 형태로 변환
         body: body);
 
     debugPrint(body);
 
-    final storage = FlutterSecureStorage();
-    final token = await storage.read(key: 'auth_token');
     // status code가 200이 아닐 경우
     if (response.statusCode != 200) {
       throw Exception('추가 정보 입력 실패: ${response.statusCode}');
