@@ -72,11 +72,12 @@ class InternationalRegisteration extends ConsumerWidget {
                                   emailController.text; // 이메일 입력값 가져오기
                               if (email.isNotEmpty) {
                                 // 이메일 필드가 비어있지 않을 때만 중복 검사 실행
-                                ref
+                                bool emailCheckResult = await ref
                                     .read(emailStateProvider.notifier)
                                     .checkEmail(email);
 
-                                if (emailCheckResult == false) {
+                                if (!emailCheckResult) {
+                                  // 사용 가능한 이메일
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('사용 가능한 이메일입니다.'),
@@ -84,6 +85,7 @@ class InternationalRegisteration extends ConsumerWidget {
                                     ),
                                   );
                                 } else {
+                                  // 이미 사용중인 이메일
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('이미 사용중인 이메일입니다.'),

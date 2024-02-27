@@ -54,8 +54,8 @@ class AuthTextFormField extends ConsumerWidget {
         if (labelText == "비밀번호" && value.length < 8) {
           return '비밀번호는 최소 8자 이상이어야 합니다.';
         }
-
-        return null; // 유효성 검사를 통과했다면 null 반환
+        return null;
+        // 유효성 검사를 통과했다면 null 반환
       },
       inputFormatters: inputFormatter != null
           ? [inputFormatter!, LengthLimitingTextInputFormatter(13)]
