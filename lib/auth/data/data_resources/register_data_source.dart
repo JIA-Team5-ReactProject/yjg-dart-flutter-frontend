@@ -43,7 +43,7 @@ class RegisterDataSource {
     // state 값 가져오기
     final detailRegisterState = ref.read(userProvider.notifier);
     final int userId = ref.watch(userIdProvider);
-    debugPrint('userId값: $userId'); 
+    debugPrint('userId값: $userId');
     // 통신
 
     final body = jsonEncode(<String, dynamic>{
@@ -64,7 +64,7 @@ class RegisterDataSource {
     debugPrint(body);
 
     final storage = FlutterSecureStorage();
-  final token = await storage.read(key: 'auth_token');
+    final token = await storage.read(key: 'auth_token');
     // status code가 200이 아닐 경우
     if (response.statusCode != 200) {
       throw Exception('추가 정보 입력 실패: ${response.statusCode}');
