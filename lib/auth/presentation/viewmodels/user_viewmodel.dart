@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import 'package:yjg/auth/data/data_resources/login_data_source.dart';
 import 'package:yjg/auth/domain/entities/user.dart';
-import 'package:yjg/shared/theme/palette.dart';
 
 // User 상태 업데이트를 위한 UserProvider
 final userProvider = ChangeNotifierProvider<User>((ref) {
@@ -11,5 +8,21 @@ final userProvider = ChangeNotifierProvider<User>((ref) {
     password: "password",
     name: "name",
     phoneNumber: "phoneNumber",
+    displayName: "displayName",
+    studentId: "studentId",
   );
+});
+
+
+// user id 상태 업데이트를 위한 UserIdProvider
+class UserIdNotifier extends StateNotifier<int> {
+  UserIdNotifier() : super(0); // 초기값은 0
+
+  void setUserId(int newUserId) {
+    state = newUserId;
+  }
+}
+
+final userIdProvider = StateNotifierProvider<UserIdNotifier, int>((ref) {
+  return UserIdNotifier();
 });
