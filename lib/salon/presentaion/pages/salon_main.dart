@@ -82,7 +82,7 @@ class SalonMain extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
 
-                  // TODO: 나중에 통신(최근 3개만 가져오게 처리)
+                  // ! 나중에 통신(최근 3개만 가져오게 처리)
                   Padding(
                     padding: const EdgeInsets.only(
                         right: 20.0), // 오른쪽에 20픽셀 간격을 줍니다.

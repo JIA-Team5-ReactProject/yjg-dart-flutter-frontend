@@ -10,11 +10,11 @@ import 'package:group_button/group_button.dart';
 //선택 유형 담는 변수
 var weekend = '';
 var category = '';
-var not_enough_person = '';
+var notEnoughPerson = '';
 
 //신청 여부 확인 변수
-var meal_weekend = false;
-var meal_weekend_deposit = false;
+var mealWeekend = false;
+var mealWeekendDeposit = false;
 
 class WeekendMeal extends StatefulWidget {
   const WeekendMeal({super.key});
@@ -28,7 +28,7 @@ class _WeekendMealState extends State<WeekendMeal> {
   @override
   Widget build(BuildContext context) {
     //주말 식수 신청 x인 경우
-    if (meal_weekend == false) {
+    if (mealWeekend == false) {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
         drawer: const BaseDrawer(),
@@ -294,14 +294,13 @@ class _WeekendMealState extends State<WeekendMeal> {
                 onSelected: (index, isSelected, isPressed) {
                   if (isSelected == 0) {
                     setState(() {
-                      not_enough_person = '환불';
+                      notEnoughPerson = '환불';
                     });
                   } else if (isSelected == 1) {
                     setState(() {
-                      not_enough_person = '편의점 도시락';
+                      notEnoughPerson = '편의점 도시락';
                     });
                   }
-                  ;
                 },
 
                 //버튼 내용
@@ -375,12 +374,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                     ),
                   ),
                   onPressed: () {
-                    if (weekend == '' || category == '' || not_enough_person == '') {
-                      non_select(context);
+                    if (weekend == '' || category == '' || notEnoughPerson == '') {
+                      nonSelect(context);
                     } else {
-                      weekend_application(context);
+                      weekendApplication(context);
                       setState(() {
-                        meal_weekend = true;
+                        mealWeekend = true;
                       });
                     }
                   },
@@ -397,7 +396,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     }
 
     //주말 식수 신청 O 결제 X인 경우
-    else if (meal_weekend = true && meal_weekend_deposit == false) {
+    else if (mealWeekend = true && mealWeekendDeposit == false) {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
         drawer: const BaseDrawer(),
@@ -463,7 +462,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       //박스 텍스트
                       child: const Padding(
                         padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
@@ -503,7 +502,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       //박스 텍스트
                       child: const Padding(
                         padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
@@ -543,7 +542,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       //박스 텍스트
                       child: const Padding(
                         padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
@@ -591,7 +590,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                             ' | '
                             '$category'
                             ' | '
-                            '$not_enough_person',
+                            '$notEnoughPerson',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -646,7 +645,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                     Text(
                       '계좌번호 : 농협 352 1299 5358 33',
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
+                        color: Color.fromARGB(255, 162, 162, 162),
                       ),
                     )
                   ],
@@ -673,7 +672,7 @@ class _WeekendMealState extends State<WeekendMeal> {
 
                   //버튼 클릭 시 동작
                   onPressed: () {
-                    meal_cancel(context);
+                    mealCancel(context);
                   },
                   child: Text(
                     '신청 취소',
@@ -754,7 +753,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       //박스 텍스트
                       child: const Padding(
                         padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
@@ -794,7 +793,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       //박스 텍스트
                       child: const Padding(
                         padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
@@ -834,7 +833,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       //박스 텍스트
                       child: const Padding(
                         padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
@@ -882,7 +881,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                             ' | '
                             '$category'
                             ' | '
-                            '$not_enough_person',
+                            '$notEnoughPerson',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -938,7 +937,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                     Text(
                       '감사합니다.',
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
+                        color: Color.fromARGB(255, 162, 162, 162),
                       ),
                     )
                   ],
@@ -952,7 +951,7 @@ class _WeekendMealState extends State<WeekendMeal> {
   }
 
   //신청 alert
-  Future<dynamic> weekend_application(BuildContext context) {
+  Future<dynamic> weekendApplication(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -960,7 +959,7 @@ class _WeekendMealState extends State<WeekendMeal> {
         title: const Icon(
           Icons.campaign,
           size: 50,
-          color: const Color.fromARGB(255, 29, 127, 159),
+          color: Color.fromARGB(255, 29, 127, 159),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -993,7 +992,7 @@ class _WeekendMealState extends State<WeekendMeal> {
   }
 
   //취소 alert
-  Future<dynamic> meal_cancel(BuildContext context) {
+  Future<dynamic> mealCancel(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -1001,7 +1000,7 @@ class _WeekendMealState extends State<WeekendMeal> {
         title: const Icon(
           Icons.campaign,
           size: 50,
-          color: const Color.fromARGB(255, 29, 127, 159),
+          color: Color.fromARGB(255, 29, 127, 159),
         ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,
@@ -1020,10 +1019,10 @@ class _WeekendMealState extends State<WeekendMeal> {
             onPressed: () {
               Navigator.popAndPushNamed(context, '/restaurant_main');
               setState(() {
-                meal_weekend = false;
+                mealWeekend = false;
                 weekend = '';
                 category = '';
-                not_enough_person = '';
+                notEnoughPerson = '';
               });
             },
             child: Text('예'),
@@ -1040,7 +1039,7 @@ class _WeekendMealState extends State<WeekendMeal> {
   }
 
   //다 골라라 alert
-  Future<dynamic> non_select(BuildContext context) {
+  Future<dynamic> nonSelect(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -1048,7 +1047,7 @@ class _WeekendMealState extends State<WeekendMeal> {
         title: const Icon(
           Icons.campaign,
           size: 50,
-          color: const Color.fromARGB(255, 29, 127, 159),
+          color: Color.fromARGB(255, 29, 127, 159),
         ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,

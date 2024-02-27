@@ -14,11 +14,11 @@ class Price {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['service_type'] = this.serviceType;
-    data['gender'] = this.gender;
-    data['service_name'] = this.serviceName;
-    data['price'] = this.price;
+    final Map<String, dynamic> data = {};
+    data['service_type'] = serviceType;
+    data['gender'] = gender;
+    data['service_name'] = serviceName;
+    data['price'] = price;
     return data;
   }
 }

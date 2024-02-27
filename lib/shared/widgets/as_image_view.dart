@@ -10,6 +10,8 @@ class AsImageView extends StatelessWidget {
     'https://picsum.photos/250?image=13',
   ];
 
+  AsImageView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -22,7 +24,9 @@ class AsImageView extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AsImageViewDetail(imageUrl: imageUrls[index])),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AsImageViewDetail(imageUrl: imageUrls[index])),
               );
             },
             child: Padding(

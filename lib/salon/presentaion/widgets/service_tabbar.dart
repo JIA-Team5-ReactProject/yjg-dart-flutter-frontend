@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ServiceTabBar extends StatefulWidget {
+  const ServiceTabBar({super.key});
+
   @override
   _ServiceTabBarState createState() => _ServiceTabBarState();
 }

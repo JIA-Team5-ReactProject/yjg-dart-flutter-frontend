@@ -15,10 +15,6 @@ class CustomRoundedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
-      child: Text(
-        buttonText,
-        style: TextStyle(color: Palette.backgroundColor), // 글자 색상-흰
-      ),
       style: OutlinedButton.styleFrom(
         // 버튼 사이즈 설정
         
@@ -27,6 +23,10 @@ class CustomRoundedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30.0), // 버튼 둥글게
         ),
         backgroundColor: Colors.transparent, // 배경색 투명하게
+      ),
+      child: Text(
+        buttonText,
+        style: TextStyle(color: Palette.backgroundColor), // 글자 색상-흰
       ),
     );
   }
