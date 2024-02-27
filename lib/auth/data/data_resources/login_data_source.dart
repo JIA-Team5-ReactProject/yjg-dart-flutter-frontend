@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:yjg/auth/data/models/token_response.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 
@@ -39,9 +38,8 @@ class LoginDataSource {
     if (response.statusCode == 200) {
       String token = response.body;
 
-      // 토큰 저장
-
       if (token != null) {
+        // 토큰 저장        
         await storage.write(key: 'auth_token', value: token);
       } else {
         // throw Exception('토큰이 없습니다.');

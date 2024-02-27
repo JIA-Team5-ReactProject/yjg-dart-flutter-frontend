@@ -13,21 +13,24 @@ class RegisterDataSource {
     // state 값 가져오기
     final registerState = ref.read(userProvider.notifier);
 
+    final body = jsonEncode(<String, String>{
+      'email': registerState.email,
+      'password': registerState.password,
+      'name': registerState.name,
+      'phone_number': registerState.phoneNumber,
+      'student_id': registerState.studentId,
+    });
+
+     debugPrint('내가 보낸 body: $body');
+     
     // 통신
     final response = await http.post(
       Uri.parse('$apiURL/api/user'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-
+      body: body,
       // state 값을 json 형태로 변환
-      body: jsonEncode(<String, String>{
-        'email': registerState.email,
-        'password': registerState.password,
-        'name': registerState.name,
-        'phone_number': registerState.phoneNumber,
-        'student_id': registerState.studentId,
-      }),
     );
 
     debugPrint('결과: ${response.body}');
@@ -53,11 +56,12 @@ class RegisterDataSource {
       "phone_number": detailRegisterState.phoneNumber,
     });
 
+   
+
     final response = await http.patch(Uri.parse('$apiURL/api/user'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
-
         // state 값을 json 형태로 변환
         body: body);
 
