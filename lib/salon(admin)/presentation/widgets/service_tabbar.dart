@@ -3,6 +3,8 @@ import 'package:yjg/salon(admin)/presentation/widgets/edit_service_modal.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class ServiceTabbar extends StatefulWidget {
+  const ServiceTabbar({super.key});
+
   @override
   _ServiceTabbar createState() => _ServiceTabbar();
 }

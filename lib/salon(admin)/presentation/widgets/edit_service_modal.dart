@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 void editServiceModal(BuildContext context, Map<String, dynamic> service) {
-  TextEditingController _nameController =
+  TextEditingController nameController =
       TextEditingController(text: service['name']);
-  TextEditingController _priceController =
+  TextEditingController priceController =
       TextEditingController(text: service['price'].toString());
 
   showModalBottomSheet(
@@ -21,14 +21,14 @@ void editServiceModal(BuildContext context, Map<String, dynamic> service) {
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _nameController,
+              controller: nameController,
               decoration: InputDecoration(
                 labelText: '서비스명',
               ),
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _priceController,
+              controller: priceController,
               decoration: InputDecoration(labelText: '가격'),
               keyboardType: TextInputType.number,
             ),
@@ -55,13 +55,13 @@ void editServiceModal(BuildContext context, Map<String, dynamic> service) {
                     // 완료 버튼 로직
                     Navigator.pop(context);
                   },
-                  child: Text(
-                    '완료',
-                    style: TextStyle(color: Colors.white),
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Palette.mainColor,
                     elevation: 0, // 쉐도우 제거
+                  ),
+                  child: Text(
+                    '완료',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ],

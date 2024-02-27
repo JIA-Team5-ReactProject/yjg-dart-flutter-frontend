@@ -23,7 +23,7 @@ class MoveButton extends StatelessWidget {
     child: Container(
       width: 150,
       height: 170,
-      decoration: BoxStyle,
+      decoration: boxStyle,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -46,7 +46,7 @@ class MoveButton extends StatelessWidget {
 }
 
 //이동 버튼 위젯 디자인
-var BoxStyle = BoxDecoration(
+var boxStyle = BoxDecoration(
   boxShadow: [
     // 그림자
     BoxShadow(

@@ -17,7 +17,7 @@ class BookingBox extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        BookingAction? _selectedAction = BookingAction.confirm; // 기본값 설정
+        BookingAction? selectedAction = BookingAction.confirm; // 기본값 설정
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Container(
@@ -37,9 +37,9 @@ class BookingBox extends StatelessWidget {
                     leading: Radio<BookingAction>(
                       value: BookingAction.confirm,
                       activeColor: Palette.mainColor,
-                      groupValue: _selectedAction,
+                      groupValue: selectedAction,
                       onChanged: (BookingAction? value) {
-                        setState(() => _selectedAction = value);
+                        setState(() => selectedAction = value);
                       },
                     ),
                   ),
@@ -47,9 +47,9 @@ class BookingBox extends StatelessWidget {
                     title: const Text('거절하기'),
                     leading: Radio<BookingAction>(
                       value: BookingAction.reject,
-                      groupValue: _selectedAction,
+                      groupValue: selectedAction,
                       onChanged: (BookingAction? value) {
-                        setState(() => _selectedAction = value);
+                        setState(() => selectedAction = value);
                       },
                     ),
                   ),
@@ -60,13 +60,13 @@ class BookingBox extends StatelessWidget {
                         // 완료 버튼 로직
                         Navigator.pop(context);
                       },
-                      child: Text(
-                        '완료',
-                        style: TextStyle(color: Colors.white),
-                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Palette.mainColor,
                         elevation: 0,
+                      ),
+                      child: Text(
+                        '완료',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

@@ -21,7 +21,7 @@ class _AsCardState extends State<AsCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.90,
         height: 85.0,
         child: OutlinedButton(

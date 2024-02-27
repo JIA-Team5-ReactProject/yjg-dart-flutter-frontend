@@ -19,14 +19,20 @@ class _BaseDrawerState extends State<BaseDrawer> {
   logout() async {
     await storage.delete(key: 'auth_token');
     debugPrint('로그아웃 완료');
-    Navigator.pushNamed(context, '/login_domestic');
+    if (mounted) {
+      // 현재 위젯이 아직 마운트되어 있는지 확인
+      Navigator.pushNamed(context, '/login_domestic');
+    }
   }
 
   checkUserState() async {
     userInfo = await storage.read(key: 'auth_token');
     if (userInfo == null) {
       debugPrint('토큰 미존재. 로그인 페이지로 이동');
-      Navigator.pushNamed(context, '/login_domestic'); // 로그인 페이지로 이동
+      if (mounted) {
+        // 현재 위젯이 아직 마운트되어 있는지 확인
+        Navigator.pushNamed(context, '/login_domestic');
+      } // 로그인 페이지로 이동
     } else {
       debugPrint('로그인 중');
     }
@@ -52,7 +58,7 @@ class _BaseDrawerState extends State<BaseDrawer> {
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/img/yju_tiger_logo.png'),
             ),
-            accountName: const Text('김영진'), // TODO: 추후 통신
+            accountName: const Text('김영진'), // ! 추후 통신
             accountEmail: const Text('2201333'),
             decoration: const BoxDecoration(
               color: Palette.mainColor,
