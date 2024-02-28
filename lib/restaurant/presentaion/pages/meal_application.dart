@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:group_button/group_button.dart';
+import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
@@ -1072,9 +1073,22 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
   //API 통신 로직
   Future<void> submitMealApplication(mealCategory) async {
 
+    int userId = ref.watch(userIdProvider);
+
+    // API URL 가져오기
     String getApiUrl() {
     return apiURL;
   }
+
+  final body = json.encode(<String, dynamic>{
+        'user_id': userId,
+        'meal_type': mealCategory,
+        'payment': false,
+        // 필요한 다른 데이터를 함께 전송할 수 있습니다.
+      });
+
+    debugPrint('보낸 값 : $body');
+
     var url = Uri.parse(
         '$apiURL/api/restaurant/semester');
     var response = await http.post(
@@ -1082,22 +1096,17 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: json.encode({
-        'user_id': 1,
-        'menu_type': mealCategory,
-        'payment': false,
-        // 필요한 다른 데이터를 함께 전송할 수 있습니다.
-      }),
+      body: body,
     );
 
     if (response.statusCode == 200) {
       // 성공적으로 데이터를 전송했을 때의 처리
-      print('성공');
+      debugPrint('성공');
     } else {
       // 오류 처리
-      print('실패');
-      print('Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      debugPrint('실패');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Response Body: ${response.body}');
     }
   }
 }
