@@ -37,8 +37,8 @@ class RegisterUseCase {
             content: Text('회원가입에 성공하였습니다.'),
             backgroundColor: Palette.mainColor),
       );
-      // 성공 시 로그인 페이지로 이동
-      Navigator.pushNamed(context, '/login_domestic');
+      // 성공 시 로그인 페이지로 이동(이전 페이지로 못 가게 막아버림)
+      Navigator.pushNamedAndRemoveUntil(context, '/login_domestic', (Route<dynamic> route) => false);
     } catch (e) {
       // 회원가입 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(

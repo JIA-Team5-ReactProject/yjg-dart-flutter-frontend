@@ -91,7 +91,7 @@ class GoogleLoginDataSource {
         if (approved == 1) {
           // 토큰이 null이 아니고, 승인된 계정인 경우
           debugPrint('승인된 계정, 토큰: $token');
-          navigatorKey.currentState!.pushNamed('/dashboard_main'); // 메인으로 이동
+          navigatorKey.currentState!.pushNamedAndRemoveUntil('/dashboard_main', (Route<dynamic> route) => false);
         } else {
           navigatorKey.currentState!
               .pushNamed('/registration_detail'); // 추가 정보 입력 페이지로 이동
