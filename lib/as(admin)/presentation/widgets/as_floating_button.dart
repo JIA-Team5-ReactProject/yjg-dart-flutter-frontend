@@ -29,21 +29,7 @@ class AsFloatingButton extends StatelessWidget {
             onTap: () {
               showAsWritingCommentModal(context);
             }),
-        SpeedDialChild(
-          child: const Icon(
-            Icons.published_with_changes,
-            color: Colors.white,
-          ),
-          label: "상태 변경",
-          backgroundColor: Palette.mainColor,
-          labelBackgroundColor: Palette.mainColor,
-          labelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-              fontSize: 15.0,
-              letterSpacing: -1),
-          onTap: () {},
-        )
+        
       ],
     );
   }
