@@ -25,8 +25,8 @@ class AsImageView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        AsImageViewDetail(imageUrl: imageUrls[index])),
+                  builder: (context) => AsImageViewDetail(imageUrls: imageUrls),
+                ),
               );
             },
             child: Padding(
