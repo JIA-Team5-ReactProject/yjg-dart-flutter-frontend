@@ -22,8 +22,8 @@ class LoginUseCase {
     // 로그인 로직 구현
     try {
       await LoginDataSource().postLoginAPI(ref);
-      // 성공 시 메인 페이지로 이동
-      Navigator.pushNamed(context, '/admin_salon_main');
+      // 성공 시 메인 페이지로 이동(로그인 페이지로 못 가게 막아버림)
+      Navigator.pushNamedAndRemoveUntil(context, '/as_admin', (Route<dynamic> route) => false);
     } catch (e) {
       // 로그인 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(

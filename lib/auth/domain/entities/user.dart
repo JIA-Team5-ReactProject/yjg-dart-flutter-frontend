@@ -27,7 +27,7 @@ class User extends ChangeNotifier {
     notifyListeners(); // User 객체가 변경되었음을 알림
   }
 
-  // 회원가입 폼 업데이트
+  // 회원가입, 로그인 폼 업데이트
   void registerFormUpdate({
     String? email,
     String? password,

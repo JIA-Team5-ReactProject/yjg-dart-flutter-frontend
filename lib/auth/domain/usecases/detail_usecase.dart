@@ -47,8 +47,8 @@ class DetailUseCase {
               content: Text('회원가입에 성공하였습니다.'),
               backgroundColor: Palette.mainColor),
         );
-        // 성공 시 메인 페이지로 이동
-        Navigator.pushNamed(context, '/dashboard_main');
+        // 성공 시 메인 페이지로 이동(이전 페이지로 못 가게 막아버림)
+        Navigator.pushNamedAndRemoveUntil(context, '/dashboard_main', (Route<dynamic> route) => false);
       } else {
         throw Exception('서버 에러: ${response.statusCode}');
       }
