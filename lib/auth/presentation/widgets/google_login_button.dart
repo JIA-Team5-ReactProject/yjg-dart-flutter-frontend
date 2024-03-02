@@ -8,8 +8,13 @@ class GoogleLoginButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var screenSize = MediaQuery.of(context).size;
+    var width = screenSize.width;
+    var height = screenSize.height;
+    var fontSize = screenSize.width;
     return SizedBox(
-      width: 250.0,
+      width: width * 0.7,
+      height: height * 0.05,
       child: OutlinedButton(
         onPressed: () async {
           try {
@@ -47,7 +52,7 @@ class GoogleLoginButton extends ConsumerWidget {
               padding: EdgeInsets.only(right: 20.0),
               child: Text(
                 '구글 아이디로 로그인하기',
-                style: TextStyle(color: Palette.textColor, letterSpacing: -0.5),
+                style: TextStyle(color: Palette.textColor, fontSize: fontSize * 0.035, letterSpacing: -0.5),
               ),
             ),
           ],

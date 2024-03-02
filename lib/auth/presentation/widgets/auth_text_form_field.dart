@@ -21,45 +21,52 @@ class AuthTextFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TextFormField(
-      obscureText: labelText == "비밀번호" ? true : false,
-      controller: controller,
-      decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Palette.mainColor, width: 2.0),
+    var screenSize = MediaQuery.of(context).size;
+    var width = screenSize.width;
+    var height = screenSize.height;
+    return SizedBox(
+      width: width * 0.8,
+      height: height * 0.08,
+      child: TextFormField(
+        obscureText: labelText == "비밀번호" ? true : false,
+        controller: controller,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Palette.mainColor, width: 2.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Palette.stateColor4.withOpacity(0.5),),
+          ),
+          border: OutlineInputBorder(),
+          labelText: labelText,
+          labelStyle: TextStyle(color: Palette.textColor.withOpacity(0.7), fontSize: 14.0),
+          suffixIcon: suffixIcon, // suffixIcon 사용
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Palette.stateColor4),
-        ),
-        border: OutlineInputBorder(),
-        labelText: labelText,
-        labelStyle: TextStyle(color: Palette.textColor, fontSize: 14.0),
-        suffixIcon: suffixIcon, // suffixIcon 사용
+        // 유효성 검사
+        // ! TextInputForm의 유효성 검사는 validator 속성을 통해 진행하는 것이 일반적이다!
+        validator: (value) {
+          // 공통: 필수 입력값 검사
+          if (value == null || value.isEmpty) {
+            return '필수 입력 항목입니다.';
+          }
+
+          // 이메일 유효성 검사
+          if (labelText == "이메일" &&
+              !RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b').hasMatch(value)) {
+            return '유효한 이메일 주소를 입력해주세요.';
+          }
+
+          // 비밀번호 유효성 검사
+          if (labelText == "비밀번호" && value.length < 8) {
+            return '비밀번호는 최소 8자 이상이어야 합니다.';
+          }
+          return null;
+          // 유효성 검사를 통과했다면 null 반환
+        },
+        inputFormatters: inputFormatter != null
+            ? [inputFormatter!, LengthLimitingTextInputFormatter(13)]
+            : [],
       ),
-      // 유효성 검사
-      // ! TextInputForm의 유효성 검사는 validator 속성을 통해 진행하는 것이 일반적이다!
-      validator: (value) {
-        // 공통: 필수 입력값 검사
-        if (value == null || value.isEmpty) {
-          return '필수 입력 항목입니다.';
-        }
-
-        // 이메일 유효성 검사
-        if (labelText == "이메일" &&
-            !RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b').hasMatch(value)) {
-          return '유효한 이메일 주소를 입력해주세요.';
-        }
-
-        // 비밀번호 유효성 검사
-        if (labelText == "비밀번호" && value.length < 8) {
-          return '비밀번호는 최소 8자 이상이어야 합니다.';
-        }
-        return null;
-        // 유효성 검사를 통과했다면 null 반환
-      },
-      inputFormatters: inputFormatter != null
-          ? [inputFormatter!, LengthLimitingTextInputFormatter(13)]
-          : [],
     );
   }
 }
