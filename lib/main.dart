@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
 import 'package:yjg/administration/presentaion/pages/as_page.dart';
@@ -12,8 +11,8 @@ import 'package:yjg/administration/presentaion/pages/sleepover_application.dart'
 import 'package:yjg/as(admin)/presentation/pages/as_detail.dart';
 import 'package:yjg/as(admin)/presentation/pages/as_main.dart';
 import 'package:yjg/auth/presentation/pages/international_registration.dart';
-import 'package:yjg/auth/presentation/pages/login_google_domestic_students.dart';
-import 'package:yjg/auth/presentation/pages/login_standard_foreign_international.dart';
+import 'package:yjg/auth/presentation/pages/student_login.dart';
+import 'package:yjg/auth/presentation/pages/admin_login.dart';
 import 'package:yjg/auth/presentation/pages/registration_details.dart';
 import 'package:yjg/bus/presentaion/pages/bus_main.dart';
 import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
@@ -43,13 +42,16 @@ void main() async {
   final storage = FlutterSecureStorage();
   await dotenv.load(fileName: ".env");
 
-  String initialRoute = '/login_domestic'; // 기본 라우트
+  // String initialRoute = '/salon_main'; // ! 로그인 안 할 경우 원하는 라우터를 입력해주세요.
+
+  // ! 로그인 할 경우 FlutterNativePlash.remove() 전에 작성된 모든 코드의 주석을 해제해주세요.
+  String initialRoute = '/login_student'; 
   final autoLoginStr = await storage.read(key: 'auto_login');
   final isAutoLogin = autoLoginStr == 'true';
   final token = await storage.read(key: 'auth_token');
 
   if (isAutoLogin && token != null) {
-    initialRoute = '/dashboard_main'; // 자동 로그인이 활성화되어 있고, 토큰이 유효한 경우
+    initialRoute = '/as_admin'; // 자동 로그인이 활성화되어 있고, 토큰이 유효한 경우
   }
 
   // 스플래시 스크린 제거
@@ -89,15 +91,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
 
-      //최초 실행 페이지 설정
-      // initialRoute: '/dashboard_main',   // (테스트)메인 화면
-      // initialRoute: '/as_admin',   // (테스트)메인 화면
-      // initialRoute: '/admin_salon_main', // (테스트)미용실 관리자 화면
-      // initialRoute: '/login_domestic', // 테스트
       navigatorKey: navigatorKey,
       initialRoute: initialRoute,
-
-      // 로그인 여부에 따라 최초 실행 페이지 설정
 
       //라우트 설정
       routes: {
@@ -105,8 +100,8 @@ class MyApp extends StatelessWidget {
         '/dashboard_main': (context) => DashboardMain(),
 
         // Auth 관련
-        '/login_domestic': (context) => LoginGoogleDomesticStudents(),
-        '/login_international_admin': (context) => LoginStandardInternational(),
+        '/login_student': (context) => StudentLogin(),
+        '/login_admin': (context) => AdminLogin(),
         '/registration_detail': (context) => RegistrationDetails(),
         '/registration_international': (context) =>
             InternationalRegisteration(),
