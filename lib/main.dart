@@ -45,13 +45,28 @@ void main() async {
   // String initialRoute = '/salon_main'; // ! 로그인 안 할 경우 원하는 라우터를 입력해주세요.
 
   // ! 로그인 할 경우 FlutterNativePlash.remove() 전에 작성된 모든 코드의 주석을 해제해주세요.
-  String initialRoute = '/login_student'; 
+  String initialRoute = '/login_student';
   final autoLoginStr = await storage.read(key: 'auto_login');
   final isAutoLogin = autoLoginStr == 'true';
   final token = await storage.read(key: 'auth_token');
+  String? userType = await storage.read(key: 'userType');
 
   if (isAutoLogin && token != null) {
-    initialRoute = '/as_admin'; // 자동 로그인이 활성화되어 있고, 토큰이 유효한 경우
+    switch (userType) {
+      case 'student':
+        initialRoute = '/dashboard_main'; // 학생 대시보드로 이동
+        break;
+      case 'admin':
+        initialRoute = '/as_admin'; // AS 관리자 페이지로 이동
+        break;
+      case 'salon':
+        initialRoute = '/admin_salon_main'; // 미용실 관리자 페이지로 이동
+        break;
+      default:
+        // 사용자 유형이 지정되지 않았거나 잘못된 경우, 로그인 페이지로 이동
+        initialRoute = '/login_student';
+        break;
+    }
   }
 
   // 스플래시 스크린 제거

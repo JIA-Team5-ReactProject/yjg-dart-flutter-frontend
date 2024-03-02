@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
 import 'package:yjg/auth/presentation/viewmodels/login_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
@@ -7,6 +8,7 @@ import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 
 class LoginUseCase {
   final WidgetRef ref;
+  final storage = FlutterSecureStorage();
 
   LoginUseCase({required this.ref});
 
@@ -41,29 +43,32 @@ class LoginUseCase {
   /// 학생 권한에 따라 로그인 처리
   Future<void> _loginAsStudent(BuildContext context) async {
     await LoginDataSource().postStudentLoginAPI(ref);
+    await storage.write(key: 'userType', value: 'student'); // 사용자 유형 저장
     _navigateAndRemoveUntil(context, '/dashboard_main');
   }
 
   /// 관리자 권한에 따라 로그인 처리
-Future<void> _loginAsAdmin(BuildContext context, String adminPrivilege) async {
-  await LoginDataSource().postAdminLoginAPI(ref);
+  Future<void> _loginAsAdmin(
+      BuildContext context, String adminPrivilege) async {
+    await LoginDataSource().postAdminLoginAPI(ref);
 
-  // AdminPrivilegesNotifier에서 업데이트된 권한 상태를 가져옴
-  String adminPrivilege = ref.watch(adminPrivilegesProvider);
-
-  switch (adminPrivilege) {
-    case 'salon':
-      _navigateAndRemoveUntil(context, '/admin_salon_main'); // 미용실 관리자 페이지로 이동
-      break;
-    case 'admin':
-      _navigateAndRemoveUntil(context, '/as_admin'); // AS 관리자 페이지로 이동
-      break;
-    default:
-      _showLoginError(context); // 권한이 없거나 레스토랑 권한인 경우 로그인 에러 처리
-      break;
+    String adminPrivilege = ref.read(adminPrivilegesProvider);
+    String route;
+    switch (adminPrivilege) {
+      case 'salon':
+        route = '/admin_salon_main';
+        await storage.write(key: 'userType', value: 'salon'); // 사용자 유형 저장
+        break;
+      case 'admin':
+        route = '/as_admin';
+        await storage.write(key: 'userType', value: 'admin'); // 사용자 유형 저장
+        break;
+      default:
+        _showNoPrivilegeError(context);
+        return;
+    }
+    _navigateAndRemoveUntil(context, route);
   }
-}
-
 
   /// 네비게이터를 사용하여 라우트를 이동하고, 이전 라우트를 제거
   void _navigateAndRemoveUntil(BuildContext context, String routeName) {
