@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/domain/usecases/login_usecase.dart';
+import 'package:yjg/auth/presentation/viewmodels/login_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class LoginButton extends ConsumerWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
 
-  const LoginButton({
+  LoginButton({
     Key? key,
     required this.emailController,
     required this.passwordController,
@@ -15,12 +16,20 @@ class LoginButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String? currentRouteName = ModalRoute.of(context)?.settings.name;
     return ElevatedButton(
       onPressed: () async {
-        if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-          // Form이 유효한 경우에만 회원가입 로직 실행
+        if (emailController.text.isNotEmpty &&
+            passwordController.text.isNotEmpty) {
+
+          // 현재 라우트가 '/login_student'인 경우 isAdminProvider의 상태를 false로 설정(라우터에 따른 API 통신 변경)
+          currentRouteName == '/login_student'
+              ? ref.read(isAdminProvider.notifier).setIsAdminState(false)
+              : ref.read(isAdminProvider.notifier).setIsAdminState(true);
+
+          // LoginUseCase 인스턴스 생성
           final loginUseCase =
-              LoginUseCase(ref: ref); // RegisterUseCase 인스턴스 생성
+              LoginUseCase(ref: ref);
 
           // execute 메소드를 비동기적으로 호출하고, 사용자 입력을 전달
           await loginUseCase.execute(
