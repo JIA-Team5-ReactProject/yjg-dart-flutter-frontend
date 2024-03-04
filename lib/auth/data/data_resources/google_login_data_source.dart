@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/auth/data/models/token_response.dart';
+import 'package:yjg/auth/domain/usecases/domain_validation_usecase.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/main.dart';
 import 'package:yjg/shared/constants/api_url.dart';
@@ -23,12 +24,25 @@ class GoogleLoginDataSource {
   );
 
   // 구글 로그인 통신
-  Future<void> signInWithGoogle(WidgetRef ref) async {
+  Future<void> signInWithGoogle(WidgetRef ref, BuildContext context) async {
     try {
       await _googleSignin.signIn();
       final GoogleSignInAccount? account = _googleSignin.currentUser;
+      final domainValidationUseCase = DomainValidationUseCase();
 
       if (account != null) {
+        // 이메일 도메인 검증
+        if (!domainValidationUseCase(account.email)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('학교 이메일(@g.yju.ac.kr)이 아닐 경우 로그인을 할 수 없습니다.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          await _googleSignin.disconnect(); // 로그인 실패 시 연결 해제
+          return;
+        }
+
         GoogleSignInAuthentication googleAuth = await account.authentication;
 
         // Riverpod를 통해 User 상태를 업데이트
@@ -39,8 +53,6 @@ class GoogleLoginDataSource {
 
         debugPrint("Google User Token: ${googleAuth.accessToken}");
         debugPrint('구글 계정 정보: $account');
-
-        // 성공 시 postGoogleLoginAPI 호출
         await postGoogleLoginAPI(ref);
       }
     } catch (error) {
@@ -91,7 +103,8 @@ class GoogleLoginDataSource {
         if (approved == 1) {
           // 토큰이 null이 아니고, 승인된 계정인 경우
           debugPrint('승인된 계정, 토큰: $token');
-          navigatorKey.currentState!.pushNamedAndRemoveUntil('/dashboard_main', (Route<dynamic> route) => false);
+          navigatorKey.currentState!.pushNamedAndRemoveUntil(
+              '/dashboard_main', (Route<dynamic> route) => false);
         } else {
           navigatorKey.currentState!
               .pushNamed('/registration_detail'); // 추가 정보 입력 페이지로 이동
