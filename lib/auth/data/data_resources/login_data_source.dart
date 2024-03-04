@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/auth/data/models/admin_service.dart';
+import 'package:yjg/auth/data/models/token_response.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
@@ -35,9 +36,10 @@ class LoginDataSource {
 
     debugPrint("현재 라우트: $url");
     debugPrint("로그인 통신 결과: ${response.body}, ${response.statusCode}");
+    Tokengenerated tokenGenerated = Tokengenerated.fromJson(json.decode(response.body));
 
     if (response.statusCode == 200) {
-      String token = response.body;
+      String? token = tokenGenerated.token;
 
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
