@@ -18,7 +18,7 @@ class GoogleLoginButton extends ConsumerWidget {
       child: OutlinedButton(
         onPressed: () async {
           try {
-            await GoogleLoginDataSource().signInWithGoogle(ref);
+            await GoogleLoginDataSource().signInWithGoogle(ref, context);
           } catch (error) {
             debugPrint('Error signing in with Google: $error');
           }
