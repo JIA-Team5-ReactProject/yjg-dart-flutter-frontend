@@ -17,3 +17,16 @@ class EmailStateNotifier extends StateNotifier<bool?> {
 final emailStateProvider = StateNotifierProvider<EmailStateNotifier, bool?>((ref) {
   return EmailStateNotifier();
 });
+
+
+class EmailCheckSuccessStateNotifier extends StateNotifier<bool> {
+  EmailCheckSuccessStateNotifier() : super(false); 
+
+  void setEmailCheckSuccessStateNotifier(bool isSuccess) {
+    state = isSuccess;
+  }
+}
+
+final emailCheckSuccessStateProvider = StateNotifierProvider<EmailCheckSuccessStateNotifier, bool>((ref) {
+  return EmailCheckSuccessStateNotifier();
+});

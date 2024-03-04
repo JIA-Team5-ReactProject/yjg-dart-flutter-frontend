@@ -77,6 +77,10 @@ class InternationalRegisteration extends ConsumerWidget {
                                     .checkEmail(email);
 
                                 if (!emailCheckResult) {
+                                  ref
+                                      .read(emailCheckSuccessStateProvider
+                                          .notifier)
+                                      .setEmailCheckSuccessStateNotifier(true);
                                   // 사용 가능한 이메일
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -112,7 +116,7 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: passwordController,
-                          labelText: "비밀번호",
+                          labelText: "비밀번호(8자 이상)",
                           validatorText: "비밀번호를 입력해 주세요.",
                         ),
                       ),
@@ -144,7 +148,19 @@ class InternationalRegisteration extends ConsumerWidget {
                           // 버튼
                           child: ElevatedButton(
                             onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
+                              bool emailCheckSuccess =
+                                  ref.watch(emailCheckSuccessStateProvider);
+
+                              debugPrint('체크:  $emailCheckSuccess');
+                              if (!emailCheckSuccess) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('이메일 중복 검사를 해주세요.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else if (emailCheckSuccess &&
+                                  _formKey.currentState!.validate()) {
                                 // Form이 유효한 경우에만 회원가입 로직 실행
                                 final registerUseCase = RegisterUseCase(
                                     ref: ref); // RegisterUseCase 인스턴스 생성
