@@ -116,7 +116,7 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: passwordController,
-                          labelText: "비밀번호(8자 이상)",
+                          labelText: "비밀번호",
                           validatorText: "비밀번호를 입력해 주세요.",
                         ),
                       ),

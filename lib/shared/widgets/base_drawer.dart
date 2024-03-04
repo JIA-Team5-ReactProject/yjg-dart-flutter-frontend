@@ -1,55 +1,31 @@
-import "package:dotted_line/dotted_line.dart";
 import "package:flutter/material.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import "package:dotted_line/dotted_line.dart";
+import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/theme/palette.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart'; // flutter_secure_storage 패키지
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class BaseDrawer extends StatefulWidget {
+// BaseDrawer를 ConsumerWidget으로 변환
+class BaseDrawer extends ConsumerWidget {
   const BaseDrawer({Key? key}) : super(key: key);
 
   @override
-  State<BaseDrawer> createState() => _BaseDrawerState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // AuthService 인스턴스 생성
+    final authService = AuthService();
 
-class _BaseDrawerState extends State<BaseDrawer> {
-  static final storage = FlutterSecureStorage();
-  dynamic userInfo = '';
-
-  // 로그아웃
-
-  logout() async {
-    await storage.delete(key: 'auth_token');
-    debugPrint('로그아웃 완료');
-    if (mounted) {
-      // 현재 위젯이 아직 마운트되어 있는지 확인
-      Navigator.pushNamed(context, '/login_domestic');
+    Future<void> checkUserState() async {
+      if (!(await authService.isLoggedIn())) {
+        debugPrint('토큰 미존재. 로그인 페이지로 이동');
+        Navigator.pushNamed(context, '/login_student');
+      } else {
+        debugPrint('로그인 중');
+      }
     }
-  }
 
-  checkUserState() async {
-    userInfo = await storage.read(key: 'auth_token');
-    if (userInfo == null) {
-      debugPrint('토큰 미존재. 로그인 페이지로 이동');
-      if (mounted) {
-        // 현재 위젯이 아직 마운트되어 있는지 확인
-        Navigator.pushNamed(context, '/login_domestic');
-      } // 로그인 페이지로 이동
-    } else {
-      debugPrint('로그인 중');
-    }
-  }
+    // initState 대신, ConsumerWidget에서는 addPostFrameCallback 내에서 직접 호출
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkUserState());
 
-  @override
-  void initState() {
-    super.initState();
-
-    // 비동기로 flutter secure storage 정보를 불러오는 작업
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkUserState();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: const EdgeInsets.only(top: 0.0), // 상단 패딩 제거
@@ -225,9 +201,8 @@ class _BaseDrawerState extends State<BaseDrawer> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () {
-              logout();
-            },
+            onTap: () =>
+                authService.logout(context), // onTap 이벤트를 직접 logout 함수 호출로 변경
           ),
           SizedBox(
             height: 40,
