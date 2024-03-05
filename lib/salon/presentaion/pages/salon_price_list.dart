@@ -1,79 +1,88 @@
-// SalonPriceList.dart
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:yjg/salon/data/models/price.dart';
-import '../widgets/multi_select.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/salon/data/data_sources/price_data_source.dart';
+import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
+import 'package:yjg/salon/presentaion/widgets/filter_service_list.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 
-
-class SalonPriceList extends StatefulWidget {
+class SalonPriceList extends ConsumerWidget {
   const SalonPriceList({super.key});
 
   @override
-  _SalonPriceListState createState() => _SalonPriceListState();
-}
-
-class _SalonPriceListState extends State<SalonPriceList> {
-  List<Price> prices = [];
-  List<String> selectedServiceTypes = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadPrices();
-  }
-
-  Future<void> loadPrices() async {
-    String jsonData = await rootBundle.loadString('assets/test.json');
-    var list = json.decode(jsonData) as List;
-    setState(() {
-      prices = list.map((data) => Price.fromJson(data)).toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    // 필터링(필터링 안 했을 때는 전체 목록 보여주고, 필터링 했을 경우에는 해당 항목만 보여줌)
-    List<Price> filteredPrices;
-    if (selectedServiceTypes.isEmpty) {
-      filteredPrices = prices;
-    } else {
-      filteredPrices = prices
-          .where((price) => selectedServiceTypes.contains(price.serviceType))
-          .toList();
-    }
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      appBar: BaseAppBar(
+        title: '가격표',
+      ),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: const BaseAppBar(title: '가격표'),
       drawer: const BaseDrawer(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          MultiSelect(
-            onSelectionChanged: (selectedTypes) {
-              setState(() {
-                selectedServiceTypes = selectedTypes;
-              });
-            },
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredPrices.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(filteredPrices[index].serviceName ?? ''),
-                  subtitle: Text('${filteredPrices[index].price ?? ''}원'),
-                );
-              },
+      body: CustomSingleChildScrollView(
+        child: SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 12.0,
+                ),
+                Text(
+                  '필터 설정',
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '성별',
+                      style:
+                          TextStyle(color: Palette.textColor.withOpacity(0.7)),
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    FilterGroupButton(dataType: '성별')
+                  ],
+                ),
+                SizedBox(
+                  height: 13.0,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '유형',
+                      style:
+                          TextStyle(color: Palette.textColor.withOpacity(0.7)),
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    FilterGroupButton(dataType: '유형')
+                  ],
+                ),
+                SizedBox(
+                  height: 40.0,
+                ),
+                Text(
+                  '서비스 목록',
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                ),
+                Text('서비스와 가격은 변경될 수 있습니다.', style: TextStyle(fontSize: 12.0, color: Palette.textColor.withOpacity(0.7))),
+                SizedBox(
+                  height: 10.0,
+                ),
+                FilterServiceList(),
+              ],
+
             ),
           ),
-        ],
+        ),
       ),
     );
   }

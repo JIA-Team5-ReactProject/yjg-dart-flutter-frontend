@@ -4,7 +4,7 @@ class UserSelectionState {
   final int selectedCategoryId;
   final String selectedGender;
 
-  UserSelectionState({this.selectedCategoryId = 0, this.selectedGender = ''});
+  UserSelectionState({this.selectedCategoryId = 1, this.selectedGender = 'male'});
 
   UserSelectionState copyWith({int? selectedCategoryId, String? selectedGender}) {
     return UserSelectionState(

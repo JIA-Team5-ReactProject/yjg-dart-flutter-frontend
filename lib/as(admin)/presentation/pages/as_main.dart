@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:yjg/shared/widgets/as_card.dart';
 import 'package:yjg/as(admin)/presentation/widgets/as_tabbar.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
-import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 
@@ -15,7 +14,6 @@ class AsMain extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: const BaseAppBar(title: 'AS관리'),
-        drawer: const BaseDrawer(),
         bottomNavigationBar: const CustomBottomNavigationBar(),
         body: Column(
           children: [

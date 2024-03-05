@@ -25,6 +25,18 @@ class FilterGroupButton extends ConsumerWidget {
         final categoryNames = categoryData.values.toList();
         final buttons = dataType == '성별' ? genderData : categoryNames;
 
+        // 기본 선택 인덱스 계산
+        int defaultSelectedIndex = dataType == '성별'
+            ? genderData.indexOf(userSelection.selectedGender)
+            : categoryData.keys
+                .toList()
+                .indexOf(userSelection.selectedCategoryId);
+
+        // GroupButtonController 초기화
+        final controller = GroupButtonController(
+          selectedIndex: defaultSelectedIndex,
+        );
+
         return GroupButton(
           isRadio: true,
           buttons: buttons,
@@ -45,22 +57,16 @@ class FilterGroupButton extends ConsumerWidget {
               debugPrint(ref.read(userSelectionProvider).toString());
             }
           },
-          controller: GroupButtonController(
-            selectedIndex: dataType == '성별'
-                ? buttons.indexOf(userSelection.selectedGender)
-                : categoryData.keys
-                    .toList()
-                    .indexOf(userSelection.selectedCategoryId),
-          ),
+          controller: controller,
           options: GroupButtonOptions(
-            buttonWidth: 90.0,
-            buttonHeight: 40.0,
+            buttonWidth: 65.0,
+            buttonHeight: 25.0,
             unselectedColor: Colors.grey[300],
             unselectedTextStyle: TextStyle(
               color: Colors.grey[600],
             ),
-            selectedColor: Palette.mainColor.withOpacity(0.8),
-            selectedBorderColor: Palette.mainColor,
+            selectedColor: Palette.mainColor,
+            elevation: 0,
             selectedTextStyle: TextStyle(
               color: Colors.white,
             ),
