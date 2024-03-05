@@ -105,7 +105,7 @@ class AdminSalonMain extends StatelessWidget {
               ],
             ),
 
-            // TODO: 하드 코딩(일단 3건만 볼 수 있도록 하기)
+            // ! 하드 코딩(일단 3건만 볼 수 있도록 하기)
             for (int i = 0; i < 3; i++)
               MainRoundedBoxSmall(
                   iconData: Icons.cut,
