@@ -49,6 +49,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true //dex파일 최대 수 부족으로 멀티덱스 활성화
         multiDexEnabled true
     }
 
@@ -66,5 +67,7 @@ flutter {
 }
 
 dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1'
+
     implementation 'androidx.multidex:multidex:2.0.1'
 }

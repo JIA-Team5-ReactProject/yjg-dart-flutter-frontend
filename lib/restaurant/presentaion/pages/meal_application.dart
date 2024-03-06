@@ -29,10 +29,8 @@ class MealApplication extends ConsumerStatefulWidget {
 }
 
 class _MealApplicationState extends ConsumerState<MealApplication> {
-  
   @override
   Widget build(BuildContext context) {
-
     //신청 여부 변수 가져오기
     final mealCategory = ref.watch(mealCategoryProvider);
 
@@ -1069,28 +1067,26 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     );
   }
 
-
   //API 통신 로직
   Future<void> submitMealApplication(mealCategory) async {
-
     int userId = ref.watch(userIdProvider);
 
     // API URL 가져오기
     String getApiUrl() {
-    return apiURL;
-  }
+      return apiURL;
+    }
 
-  final body = json.encode(<String, dynamic>{
-        'user_id': userId,
-        'meal_type': mealCategory,
-        'payment': false,
-        // 필요한 다른 데이터를 함께 전송할 수 있습니다.
-      });
+    final body = json.encode(<String, dynamic>{
+      'id': '1',
+      'user_id': "1", // userId 변수를 사용하여 동적으로 할당
+      'payment': false,
+      'meal_type': 'B',
+      // 필요한 다른 데이터를 함께 전송할 수 있습니다.
+    });
 
     debugPrint('보낸 값 : $body');
 
-    var url = Uri.parse(
-        '$apiURL/api/restaurant/semester');
+    var url = Uri.parse('$apiURL/api/restaurant/semester');
     var response = await http.post(
       url,
       headers: {
