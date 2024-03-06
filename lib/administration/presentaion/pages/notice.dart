@@ -33,7 +33,7 @@ class _NoticeState extends State<Notice> {
       headers: {
         "Content-Type": "application/json",
         "Authorization":
-            "Bearer 13|y5vvDb8bDwmlaatERjwsz1kprQxT8QcqEuXuwBnz90506e72"
+            "Bearer 13|y5vvDb8bDwmlaatERjwsz1kprQxT8QcqEuXuwBnz90506e72" //쓸때마다 변경
       },
     );
 
