@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/auth/data/data_resources/user_data_source.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
@@ -47,8 +46,6 @@ class RegisterDataSource {
     // state 값 가져오기
     final detailRegisterState = ref.read(userProvider.notifier);
     debugPrint('토큰: $token');
-
-    // 토큰 값 가져오기
 
     final body = jsonEncode(<String, dynamic>{
       "student_id": detailRegisterState.studentId,
