@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/shared/constants/api_url.dart';
@@ -15,7 +14,7 @@ class PriceDataSource {
   // * 카테고리 목록 불러오기
   Future<http.Response> getCategoryListAPI() async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon-category';
+    String url = '$apiURL/api/salon/category';
 
     final response = await http.get(
       Uri.parse(url),
@@ -36,9 +35,8 @@ class PriceDataSource {
   Future<String> getServiceListAPI(
       String selectedGender, int selectedCategoryId) async {
     final token = await storage.read(key: 'auth_token');
-    String baseUrl = '$apiURL/api/salon-service';
+    String baseUrl = '$apiURL/api/salon/service';
 
-    debugPrint('선택한 값: $selectedCategoryId, $selectedGender');
     Map<String, String> queryParams = {
       'category_id': selectedCategoryId.toString(),
       'gender': selectedGender
@@ -52,9 +50,6 @@ class PriceDataSource {
         'Authorization': 'Bearer $token',
       },
     );
-
-    debugPrint(
-        "통신 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
 
     if (response.statusCode == 200) {
       return utf8.decode(response.bodyBytes);

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:expandable/expandable.dart';
 import 'package:yjg/shared/constants/api_url.dart';
@@ -18,7 +19,7 @@ class Notice extends StatefulWidget {
 
 class _NoticeState extends State<Notice> {
   Future<List<dynamic>>? notices;
-
+  static final storage = FlutterSecureStorage();
   @override
   void initState() {
     super.initState();
@@ -28,12 +29,13 @@ class _NoticeState extends State<Notice> {
 
   // API에서 공지사항 데이터를 불러오는 함수
   Future<List<dynamic>> fetchNotices(int page, String tag) async {
+    final token = await storage.read(key: 'auth_token');
+
     final response = await http.get(
       Uri.parse('$apiURL/api/notice?page=$page&tag=$tag'),
       headers: {
         "Content-Type": "application/json",
-        "Authorization":
-            "Bearer 13|y5vvDb8bDwmlaatERjwsz1kprQxT8QcqEuXuwBnz90506e72" //쓸때마다 변경
+        "Authorization": 'Bearer $token',
       },
     );
 

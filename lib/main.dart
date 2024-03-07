@@ -27,9 +27,12 @@ import 'package:yjg/restaurant/presentaion/pages/weekend_meal.dart';
 import 'package:yjg/salon(admin)/presentation/pages/admin_salon_booking.dart';
 import 'package:yjg/salon(admin)/presentation/pages/admin_salon_main.dart';
 import 'package:yjg/salon(admin)/presentation/pages/admin_salon_price_list.dart';
-import 'package:yjg/salon/presentaion/pages/salon_booking.dart';
+import 'package:yjg/salon/presentaion/pages/salon_booking_step_one.dart';
+import 'package:yjg/salon/presentaion/pages/salon_booking_step_two.dart';
 import 'package:yjg/salon/presentaion/pages/salon_main.dart';
+import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
+// import 'package:yjg/shared/service/load_set_student_name.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,7 +85,7 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final String initialRoute;
 
@@ -90,7 +93,9 @@ class MyApp extends StatelessWidget {
       {super.key, required this.navigatorKey, required this.initialRoute});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // loadAndSetStudentName(ref); // 로그인 이름 설정
+
     return MaterialApp(
       //외박 신청 달력 언어 설정
       localizationsDelegates: [
@@ -131,7 +136,9 @@ class MyApp extends StatelessWidget {
         // 미용실 관련
         '/salon_main': (context) => SalonMain(),
         '/salon_price_list': (context) => SalonPriceList(),
-        '/salon_booking': (context) => SalonBooking(),
+        '/salon_booking_step_one': (context) => SalonBookingStepOne(),
+        '/salon_booking_step_two': (context) => SalonBookingStepTwo(),
+        '/salon_my_book': (context) => SalonMyBook(),
 
         // 미용실 관련(관리자)
         '/admin_salon_main': (context) => AdminSalonMain(),

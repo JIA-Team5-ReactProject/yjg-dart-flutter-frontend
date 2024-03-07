@@ -6,15 +6,17 @@ class WhiteMainRoundedBox extends StatelessWidget {
   final String mainText; // 주요 텍스트
   final String secondaryText; // 보조 텍스트
   final String actionText; // 액션 텍스트
-  final String timeText; // 시간 텍스트
+  final String? timeText; // 시간 텍스트
+  final String? page;
 
-  const WhiteMainRoundedBox({
+  WhiteMainRoundedBox({
     super.key,
     required this.iconData,
     required this.mainText,
     required this.secondaryText,
     required this.actionText,
-    required this.timeText,
+    this.timeText,
+    this.page,
   });
 
   @override
@@ -43,7 +45,7 @@ class WhiteMainRoundedBox extends StatelessWidget {
         children: [
           CircleAvatar(
             backgroundColor: Palette.mainColor.withOpacity(0.1),
-            radius: 30.0, 
+            radius: 30.0,
             child: Icon(
               iconData,
               color: Palette.mainColor.withOpacity(0.7),
@@ -71,19 +73,26 @@ class WhiteMainRoundedBox extends StatelessWidget {
                     color: Palette.stateColor4,
                   ),
                 ),
-                SizedBox(height: 5.0), // 텍스트 간격 조절
-                Text(
-                  actionText,
-                  style: TextStyle(
-                    color: Palette.stateColor3,
-                    fontSize: 12.0
+                SizedBox(height: 5.0),
+                InkWell(
+                  splashColor: Palette.backgroundColor.withOpacity(0.0),
+                  highlightColor: Palette.backgroundColor.withOpacity(0.0),
+                  onTap: () => {
+                    page == 'salon'
+                        ? Navigator.pushNamed(context, '/salon_my_book')
+                        : null
+                  }, // 텍스트 간격 조절
+                  child: Text(
+                    actionText,
+                    style:
+                        TextStyle(color: Palette.stateColor3, fontSize: 12.0),
                   ),
                 ),
               ],
             ),
           ),
           Text(
-            timeText,
+            timeText?.toString() ?? '',
             style: TextStyle(
               color: Palette.mainColor,
               fontWeight: FontWeight.bold,
