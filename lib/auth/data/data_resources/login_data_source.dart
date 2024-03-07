@@ -18,74 +18,73 @@ class LoginDataSource {
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
   // * 외국인 유학생 로그인
-  Future<http.Response> postStudentLoginAPI(WidgetRef ref) async {
+  Future<String> postStudentLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
-    // 주소
-    String url = '$apiURL/api/user/login';
+    final url = '$apiURL/api/user/login';
+    final body = jsonEncode(<String, String>{
+      'email': loginState.email,
+      'password': loginState.password,
+    });
 
     final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(<String, String>{
-        'email': loginState.email,
-        'password': loginState.password,
-      }),
+      body: body,
     );
 
-    debugPrint("현재 라우트: $url");
-    debugPrint("로그인 통신 결과: ${response.body}, ${response.statusCode}");
-    Tokengenerated tokenGenerated = Tokengenerated.fromJson(json.decode(response.body));
+    Tokengenerated tokenGenerated =
+        Tokengenerated.fromJson(json.decode(response.body));
 
     if (response.statusCode == 200) {
-      String? token = tokenGenerated.token;
+      String? token = tokenGenerated.token; // 토큰값 추출
+      int userId = tokenGenerated.user!.id!; // 사용자 ID 추출
+      String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
+      
 
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
-        debugPrint(
-            '현재 토큰: ${await storage.read(key: 'auth_token')}'); // storage.~는 비동기 함수라서 await 사용해야 값이 정상적으로 출력됨
+        debugPrint('토큰 저장: $token');
+        ref.read(userIdProvider.notifier).setUserId(userId); // 사용자 ID 저장
+        ref.read(studentNameProvider.notifier).setStudentName(studentName); // 사용자 이름 저장
       } else {
         throw Exception('토큰이 없습니다.');
-        // debugPrint('토큰이 없습니다.');
       }
     } else {
       throw Exception('로그인 실패: ${response.statusCode}');
     }
-    return response;
+    return utf8.decode(response.bodyBytes);
   }
 
 // * 관리자 로그인
   Future<http.Response> postAdminLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
+    final url = '$apiURL/api/admin/login';
+    final body = jsonEncode(<String, String>{
+      'email': loginState.email,
+      'password': loginState.password,
+    });
 
-    // 주소
-    String url = '$apiURL/api/admin/login';
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: body);
 
-    final response = await http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(<String, String>{
-        'email': loginState.email,
-        'password': loginState.password,
-      }),
-    );
 
-    debugPrint("현재 라우트: $url");
-    debugPrint("로그인 통신 결과: ${response.body}, ${response.statusCode}");
+    debugPrint("postAdminLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
 
     if (response.statusCode == 200) {
-      final result =
-          Admingenerated.fromJson(jsonDecode(response.body)); // 토큰값 추출
-      String? token = result.token;
+      final result = Admingenerated.fromJson(jsonDecode(response.body));
+      String? token = result.token; // 토큰값 추출
+      int adminId = result.admin!.id!; // 관리자 ID 추출
 
       if (token != null) {
-        await storage.write(key: 'auth_token', value: token);
-        debugPrint('현재 토큰: ${await storage.read(key: 'auth_token')}');
+        await storage.write(key: 'auth_token', value: token); // 토큰 저장
+        ref.read(adminIdProvider.notifier).setAdminId(adminId); // 관리자 ID 저장
 
-        // 관리자 권한 업데이트 로직
+        // 관리자 권한 유형 관리
         if (result.admin != null) {
           ref
               .read(adminPrivilegesProvider.notifier)
