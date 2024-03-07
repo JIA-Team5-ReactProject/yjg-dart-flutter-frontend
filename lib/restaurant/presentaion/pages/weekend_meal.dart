@@ -37,7 +37,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           child: Column(
             children: [
               //상단 겹쳐져 있는 바
-              const SizedBox(
+              SizedBox(
                 height: 150.0,
                 child: Stack(
                   children: [
@@ -405,7 +405,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           child: Column(
             children: [
               //상단 겹쳐져 있는 바
-              const SizedBox(
+              SizedBox(
                 height: 150.0,
                 child: Stack(
                   children: [
@@ -696,7 +696,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           child: Column(
             children: [
               //상단 겹쳐져 있는 바
-              const SizedBox(
+              SizedBox(
                 height: 150.0,
                 child: Stack(
                   children: [
