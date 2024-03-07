@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/widgets/custom_rounded_button.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-class RoundedBox extends StatelessWidget {
+class RoundedBox extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 학생 이름
+    final studentName = ref.watch(studentNameProvider);
+
     return Container(
       width: double.infinity, // 상자의 너비
       height: 170, // 상자의 높이
@@ -34,9 +39,8 @@ class RoundedBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start, // 위젯들을 위쪽으로 정렬
                 children: <Widget>[
                   SizedBox(height: 10),
-                  Text(
-                    '김영진님', // TODO: 추후 API 연동 후 사용자 이름으로 변경
-                    style:
+                  Text(studentName,
+                    style: 
                         TextStyle(color: Palette.backgroundColor, fontSize: 18),
                   ),
                   SizedBox(height: 10), // 텍스트 - 버튼 간격
