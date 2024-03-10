@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/shared/constants/api_url.dart';
-import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SleepoverApplication extends StatefulWidget {
   const SleepoverApplication({Key? key}) : super(key: key);
@@ -20,9 +20,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   final TextEditingController _reasonController = TextEditingController();
   final Color _primaryColor = Color.fromRGBO(0, 127, 160, 1);
   final Color _cancelColor = Colors.red; // 취소 버튼 색상
-
-  //토큰 수정 필요함 (목록 조회는 이 토큰 값으로만 가능)
-  final String _token = "34|cDBOA63alAk3QBqSnCEpPYG5Unvp7hcNUUFFRr7a77a553e8";
+  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
 
   void _showDialog(String title, String content) {
     showDialog(
@@ -103,7 +101,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
         final DateTime? pickedDate = await showDatePicker(
           context: context,
           initialDate: selectedDate ?? DateTime.now(),
-          firstDate: DateTime(DateTime.now().year - 5),
+          firstDate: DateTime.now(), // 오늘 날짜로 변경
           lastDate: DateTime(DateTime.now().year + 5),
           locale: const Locale('ko', 'KR'),
         );
@@ -188,6 +186,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   }
 
   Future<void> _submitApplication() async {
+    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
     if (_startDate == null ||
         _endDate == null ||
         _reasonController.text.isEmpty) {
@@ -196,8 +195,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     }
 
     String type = _startDate == _endDate ? 'go' : 'sleep';
-    Uri apiUrl = Uri.parse(
-        '$apiURL/api/absence');
+    Uri apiUrl = Uri.parse('$apiURL/api/absence');
 
     try {
       var response = await http.post(
@@ -209,19 +207,19 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
           'content': _reasonController.text,
           'type': type,
         }),
-        headers: {
-          'Authorization': 'Bearer $_token',
+        headers: {          //아래 토큰 $token으로 바꿔줘야함
+          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZWMyLTEzLTEyNC0xMDItMjUzLmFwLW5vcnRoZWFzdC0yLmNvbXB1dGUuYW1hem9uYXdzLmNvbS9hcGkvdXNlci9nb29nbGUtbG9naW4iLCJpYXQiOjE3MDk4MTExMDEsImV4cCI6MTcwOTgyMTkwMSwibmJmIjoxNzA5ODExMTAxLCJqdGkiOiJER2w3S3JwRk5FVHR0MmZUIiwic3ViIjoiNDEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.9NSJHaQy7DiJNboi3SNsrw7V3EDVDRVy7yYXWAiOOys',
           'Content-Type': 'application/json', // JSON 컨텐트 타입
         },
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        String successMessage = '외박 신청이 완료되었습니다.\n\n'
+        String successMessage = '외출/외박 신청이 완료되었습니다.\n\n'
             '시작일: ${DateFormat('yyyy-MM-dd').format(_startDate!)}\n'
             '종료일: ${DateFormat('yyyy-MM-dd').format(_endDate!)}';
         _showDialog('성공', successMessage);
       } else {
-        _showDialog('실패', '외박 신청에 실패했습니다. 다시 시도해주세요.');
+        _showDialog('실패', '외출/외박 신청에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (e) {
       // 예외 처리
