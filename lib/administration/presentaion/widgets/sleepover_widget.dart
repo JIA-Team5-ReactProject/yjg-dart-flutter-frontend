@@ -138,7 +138,7 @@ class _SleepoverWidgetState extends State<SleepoverWidget> {
 
   //삭제 API 함수
   Future<void> deleteApplication(int id) async {
-    final String token = "34|cDBOA63alAk3QBqSnCEpPYG5Unvp7hcNUUFFRr7a77a553e8";
+    final String token = "39|vmpK7lzeQudObH1uAOwcuvCx8HrsXWJkSfKgtLEz88fdc748";
     final Uri apiUri = Uri.parse(
         'http://ec2-13-124-102-253.ap-northeast-2.compute.amazonaws.com/api/absence/$id');
 

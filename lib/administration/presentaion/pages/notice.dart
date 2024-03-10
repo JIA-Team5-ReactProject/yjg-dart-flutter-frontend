@@ -9,6 +9,7 @@ import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Notice extends StatefulWidget {
   const Notice({Key? key}) : super(key: key);
@@ -19,37 +20,35 @@ class Notice extends StatefulWidget {
 
 class _NoticeState extends State<Notice> {
   Future<List<dynamic>>? notices;
-  static final storage = FlutterSecureStorage();
+  int currentPage = 1;
+  int? lastPage;
+  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+
   @override
   void initState() {
     super.initState();
-    // API 호출로 공지사항 데이터를 불러옴.
-    notices = fetchNotices(1, "admin");
+    fetchNotices(currentPage, "admin");
   }
 
-  // API에서 공지사항 데이터를 불러오는 함수
-  Future<List<dynamic>> fetchNotices(int page, String tag) async {
-    final token = await storage.read(key: 'auth_token');
-
+  Future<void> fetchNotices(int page, String tag) async {
+    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
     final response = await http.get(
       Uri.parse('$apiURL/api/notice?page=$page&tag=$tag'),
       headers: {
         "Content-Type": "application/json",
-        "Authorization": 'Bearer $token',
+        "Authorization"://아래에 토큰을 $token으로 바꿔줘야함
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZWMyLTEzLTEyNC0xMDItMjUzLmFwLW5vcnRoZWFzdC0yLmNvbXB1dGUuYW1hem9uYXdzLmNvbS9hcGkvdXNlci9nb29nbGUtbG9naW4iLCJpYXQiOjE3MDk4MTExMDEsImV4cCI6MTcwOTgyMTkwMSwibmJmIjoxNzA5ODExMTAxLCJqdGkiOiJER2w3S3JwRk5FVHR0MmZUIiwic3ViIjoiNDEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.9NSJHaQy7DiJNboi3SNsrw7V3EDVDRVy7yYXWAiOOys"
       },
     );
 
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      // API 응답에서 'data' 키 안의 'notices' 배열에 접근하여 리스트 반환
-      return List<dynamic>.from(data['notices']['data']);
+      setState(() {
+        notices = Future.value(List<dynamic>.from(data['notices']['data']));
+        lastPage = data['notices']['last_page'];
+      });
     } else {
-      print(
-          'Failed to load notices. Status Code: ${response.statusCode}. Response Body: ${response.body}');
-      throw Exception('Failed to load notices');
+      print('Failed to load notices. Status Code: ${response.statusCode}');
     }
   }
 
@@ -59,92 +58,94 @@ class _NoticeState extends State<Notice> {
       appBar: const BaseAppBar(title: '공지사항'),
       drawer: const BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      body: FutureBuilder<List<dynamic>>(
-        future: notices,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            // 공지사항 데이터를 화면에 표시합니다.
-            return _buildNoticesList(snapshot.data!);
-          }
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<List<dynamic>>(
+              future: notices,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No notices available'));
+                } else {
+                  return _buildNoticesList(snapshot.data!);
+                }
+              },
+            ),
+          ),
+          if (lastPage != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(lastPage!, (index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        currentPage = index + 1;
+                        fetchNotices(currentPage, "admin");
+                      });
+                    },
+                    style: TextButton.styleFrom(
+                      // 여기서 텍스트 버튼의 배경색, 테두리 등을 설정할 수 있음.
+                      backgroundColor: Colors.transparent,
+                      // 테두리 제거
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero),
+                    ),
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        // 숫자의 색상 설정
+                        color: Color.fromARGB(255, 29, 127, 159),
+                        // 필요하다면 글꼴 크기, 두께 등을 추가로 설정할 수 있음.
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+        ],
       ),
     );
   }
 
   Widget _buildNoticesList(List<dynamic> notices) {
+    // 긴급 공지사항과 일반 공지사항을 분류
     final urgentNotices = notices.where((n) => n['urgent'] == 1).toList();
     final regularNotices = notices.where((n) => n['urgent'] == 0).toList();
 
     return ListView(
       children: [
-        //긴급 공지사항 칸 나눔 컨테이너
-        Container(
-          margin: EdgeInsets.only(left: 20, top: 20),
-          child: Column(
-            children: [
-              //긴급 공지사항 글자
-              Row(
-                children: [
-                  Text(
-                    '긴급공지',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    '!',
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+        _buildSection('긴급공지', urgentNotices, true),
+        _buildSection('공지사항', regularNotices, false),
+      ],
+    );
+  }
 
-              //선
-              _buildSectionDivider()
-            ],
+  Widget _buildSection(String title, List<dynamic> notices, bool isUrgent) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 20, top: 20),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isUrgent ? Colors.red : Colors.black,
+            ),
           ),
         ),
-
-        //긴급 공지사항 목록
-        ...urgentNotices
-            .map((notice) => _buildNoticeCard(notice, true))
-            .toList(),
-
-        //일반 공지사항 칸 나눔 컨테이너
-        Container(
-          margin: EdgeInsets.only(left: 20, top: 20),
-          child: Column(
-            children: [
-              //일반 공지사항 글자
-              Row(
-                children: [
-                  Text(
-                    '공지사항',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-
-              //선
-              _buildSectionDivider()
-            ],
-          ),
-        ),
-
-        //일반 공지사항 목록
-        ...regularNotices
-            .map((notice) => _buildNoticeCard(notice, false))
-            .toList(),
+        _buildSectionDivider(),
+        if (notices.isNotEmpty)
+          ...notices
+              .map((notice) => _buildNoticeCard(notice, isUrgent))
+              .toList(),
       ],
     );
   }
@@ -154,10 +155,8 @@ class _NoticeState extends State<Notice> {
       color: isUrgent ? Colors.red : Colors.black,
       fontWeight: FontWeight.bold,
     );
-    final dateStyle = TextStyle(
-      color: Colors.grey,
-    );
-    final dateFormat = DateFormat('yyyy-MM-dd'); // 날짜 포맷 설정
+    final dateStyle = TextStyle(color: Colors.grey);
+    final dateFormat = DateFormat('yyyy-MM-dd');
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -169,7 +168,7 @@ class _NoticeState extends State<Notice> {
             color: Colors.grey.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 4,
-            offset: Offset(0, 2), // changes position of shadow
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -186,48 +185,17 @@ class _NoticeState extends State<Notice> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(notice['title'], style: titleStyle),
-              SizedBox(height: 5), // 타이틀과 날짜 사이 간격 추가
-              Text(
-                dateFormat.format(DateTime.parse(notice['updated_at'])),
-                style: dateStyle,
-              ),
+              SizedBox(height: 5),
+              Text(dateFormat.format(DateTime.parse(notice['updated_at'])),
+                  style: dateStyle),
             ],
           ),
         ),
-        collapsed:
-            Icon(Icons.arrow_drop_down, color: Colors.grey), // 화살표 아이콘 추가
-
+        collapsed: Icon(Icons.arrow_drop_down, color: Colors.grey),
         expanded: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Html(data: notice['content']),
-            if (notice['notice_images'] != null &&
-                notice['notice_images'].isNotEmpty)
-              Container(
-                height: 200, // 이미지 높이 설정
-                margin: const EdgeInsets.only(top: 10),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: notice['notice_images'].length,
-                  itemBuilder: (context, index) {
-                    // 이 부분에 GestureDetector를 적용합니다.
-                    return GestureDetector(
-                      onTap: () => showImageDialog(
-                          context, notice['notice_images'][index]['image']),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            notice['notice_images'][index]['image'],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
           ],
         ),
       ),
@@ -235,32 +203,10 @@ class _NoticeState extends State<Notice> {
   }
 
   Widget _buildSectionDivider() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start, // 중앙 정렬로 변경
-      children: [
-        Container(
-          width: 380, // 너비는 조정해야 할 수 있음
-          height: 1,
-          color: Colors.black,
-        ),
-      ],
-    );
-  }
-
-  void showImageDialog(BuildContext context, String imageUrl) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context), // 다이얼로그 닫기
-            child: Center(
-              child: Image.network(imageUrl),
-            ),
-          ),
-        );
-      },
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      height: 1,
+      color: Colors.black,
     );
   }
 }
