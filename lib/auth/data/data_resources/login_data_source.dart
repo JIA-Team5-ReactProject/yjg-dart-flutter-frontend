@@ -78,18 +78,18 @@ class LoginDataSource {
 
     if (response.statusCode == 200) {
       final result = Admingenerated.fromJson(jsonDecode(response.body));
-      String? token = result.token; // 토큰값 추출
-      int adminId = result.admin!.id!; // 관리자 ID 추출
+      String? token = result.accessToken; // 토큰값 추출
+      int adminId = result.user!.id!; // 관리자 ID 추출
 
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
         ref.read(adminIdProvider.notifier).setAdminId(adminId); // 관리자 ID 저장
 
         // 관리자 권한 유형 관리
-        if (result.admin != null) {
+        if (result.user != null) {
           ref
               .read(adminPrivilegesProvider.notifier)
-              .updatePrivileges(result.admin!);
+              .updatePrivileges(result.user!);
         }
       } else {
         throw Exception('토큰이 없습니다.');
