@@ -79,7 +79,7 @@ class GoogleLoginDataSource {
         body: body);
 
     debugPrint(
-        "postGoogleLoginAPI 토큰 교환 결과: ${response.body}, ${response.statusCode}");
+        "postGoogleLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -95,11 +95,13 @@ class GoogleLoginDataSource {
         debugPrint('사용자 ID가 null입니다.');
       }
 
-      String? token = result.token; // 응답으로부터 토큰 추출
+      String? token = result.accessToken; // 응답으로부터 토큰 추출
 
       if (token != null) {
         // 토큰을 저장하기 위해 사용
         await storage.write(key: 'auth_token', value: token);
+        await storage.write(key: 'studentName', value: loginState.displayName);
+        
         if (approved == 1) {
           // 토큰이 null이 아니고, 승인된 계정인 경우
           debugPrint('승인된 계정, 토큰: $token');

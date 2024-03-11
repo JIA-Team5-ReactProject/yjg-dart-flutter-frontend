@@ -34,11 +34,12 @@ class LoginDataSource {
       body: body,
     );
 
+    debugPrint('postStudentLoginAPI 토큰 교환 결과: ${response.body}, ${response.statusCode}');
     Tokengenerated tokenGenerated =
         Tokengenerated.fromJson(json.decode(response.body));
 
     if (response.statusCode == 200) {
-      String? token = tokenGenerated.token; // 토큰값 추출
+      String? token = tokenGenerated.accessToken; // 토큰값 추출
       int userId = tokenGenerated.user!.id!; // 사용자 ID 추출
       String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
       
@@ -77,18 +78,18 @@ class LoginDataSource {
 
     if (response.statusCode == 200) {
       final result = Admingenerated.fromJson(jsonDecode(response.body));
-      String? token = result.token; // 토큰값 추출
-      int adminId = result.admin!.id!; // 관리자 ID 추출
+      String? token = result.accessToken; // 토큰값 추출
+      int adminId = result.user!.id!; // 관리자 ID 추출
 
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
         ref.read(adminIdProvider.notifier).setAdminId(adminId); // 관리자 ID 저장
 
         // 관리자 권한 유형 관리
-        if (result.admin != null) {
+        if (result.user != null) {
           ref
               .read(adminPrivilegesProvider.notifier)
-              .updatePrivileges(result.admin!);
+              .updatePrivileges(result.user!);
         }
       } else {
         throw Exception('토큰이 없습니다.');

@@ -1,12 +1,14 @@
 class Tokengenerated {
   User? user;
-  String? token;
+  String? accessToken;
+  String? refreshToken;
 
-  Tokengenerated({this.user, this.token});
+  Tokengenerated({this.user, this.accessToken, this.refreshToken});
 
   Tokengenerated.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? User.fromJson(json['user']) : null;
-    token = json['token'];
+    accessToken = json['access_token'];
+    refreshToken = json['refresh_token'];
   }
 
   Map<String, dynamic> toJson() {
@@ -14,7 +16,8 @@ class Tokengenerated {
     if (user != null) {
       data['user'] = user!.toJson();
     }
-    data['token'] = token;
+    data['access_token'] = accessToken;
+    data['refresh_token'] = refreshToken;
     return data;
   }
 }

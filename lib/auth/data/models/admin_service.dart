@@ -1,25 +1,25 @@
 class Admingenerated {
-  Admin? admin;
-  String? token;
+  User? user;
+  String? accessToken;
 
-  Admingenerated({this.admin, this.token});
+  Admingenerated({this.user, this.accessToken});
 
   Admingenerated.fromJson(Map<String, dynamic> json) {
-    admin = json['admin'] != null ? Admin.fromJson(json['admin']) : null;
-    token = json['token'];
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    accessToken = json['access_token'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (admin != null) {
-      data['admin'] = admin!.toJson();
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
-    data['token'] = token;
+    data['access_token'] = accessToken;
     return data;
   }
 }
 
-class Admin {
+class User {
   int? id;
   String? name;
   String? phoneNumber;
@@ -32,7 +32,7 @@ class Admin {
   String? createdAt;
   String? updatedAt;
 
-  Admin(
+  User(
       {this.id,
       this.name,
       this.phoneNumber,
@@ -45,7 +45,7 @@ class Admin {
       this.createdAt,
       this.updatedAt});
 
-  Admin.fromJson(Map<String, dynamic> json) {
+  User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     phoneNumber = json['phone_number'];
