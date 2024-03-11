@@ -34,11 +34,12 @@ class LoginDataSource {
       body: body,
     );
 
+    debugPrint('postStudentLoginAPI 토큰 교환 결과: ${response.body}, ${response.statusCode}');
     Tokengenerated tokenGenerated =
         Tokengenerated.fromJson(json.decode(response.body));
 
     if (response.statusCode == 200) {
-      String? token = tokenGenerated.token; // 토큰값 추출
+      String? token = tokenGenerated.accessToken; // 토큰값 추출
       int userId = tokenGenerated.user!.id!; // 사용자 ID 추출
       String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
       
