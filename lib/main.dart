@@ -32,6 +32,7 @@ import 'package:yjg/salon/presentaion/pages/salon_booking_step_two.dart';
 import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
+import 'package:yjg/shared/service/device_info.dart';
 // import 'package:yjg/shared/service/load_set_student_name.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -44,6 +45,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final storage = FlutterSecureStorage();
   await dotenv.load(fileName: ".env");
+
+  final deviceInfo = await getDeviceInfo();
 
   // String initialRoute = '/salon_main'; // ! 로그인 안 할 경우 원하는 라우터를 입력해주세요.
 
@@ -161,7 +164,7 @@ class MyApp extends ConsumerWidget {
 
         // AS 관련(관리자)
         '/as_admin': (context) => AsMain(),
-        '/as_detail': (context) => AsDetail(),
+        // '/as_detail': (context) => AsDetail(),
       },
     );
   }
