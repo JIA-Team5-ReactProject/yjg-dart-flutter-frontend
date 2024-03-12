@@ -9,7 +9,6 @@ import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Notice extends StatefulWidget {
   const Notice({Key? key}) : super(key: key);
@@ -37,7 +36,7 @@ class _NoticeState extends State<Notice> {
       headers: {
         "Content-Type": "application/json",
         "Authorization"://아래에 토큰을 $token으로 바꿔줘야함
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZWMyLTEzLTEyNC0xMDItMjUzLmFwLW5vcnRoZWFzdC0yLmNvbXB1dGUuYW1hem9uYXdzLmNvbS9hcGkvdXNlci9nb29nbGUtbG9naW4iLCJpYXQiOjE3MDk4MTExMDEsImV4cCI6MTcwOTgyMTkwMSwibmJmIjoxNzA5ODExMTAxLCJqdGkiOiJER2w3S3JwRk5FVHR0MmZUIiwic3ViIjoiNDEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.9NSJHaQy7DiJNboi3SNsrw7V3EDVDRVy7yYXWAiOOys"
+            "Bearer $token"
       },
     );
 
