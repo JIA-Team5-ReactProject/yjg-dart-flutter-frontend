@@ -53,4 +53,30 @@ class BookingDataSource {
 
     return response;
   }
+
+  // 예약 취소
+  Future<bool> deleteReservationAPI(int reservationId) async {
+    final token = await storage.read(key: 'auth_token');
+    String url = '$apiURL/api/salon/reservation';
+
+    debugPrint(url);
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id': reservationId,
+      }),
+    );
+
+    debugPrint('예약 취소 결과: ${response.body} ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('예약 취소에 실패하였습니다.');
+    }
+  }
 }
