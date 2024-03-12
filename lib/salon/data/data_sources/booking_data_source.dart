@@ -57,8 +57,9 @@ class BookingDataSource {
   // 예약 취소
   Future<bool> deleteReservationAPI(int reservationId) async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon/reservation';
+    String url = '$apiURL/api/salon/reservation/$reservationId';
 
+    debugPrint('예약 취소 URL: $url');
     debugPrint(url);
     final response = await http.delete(
       Uri.parse(url),
@@ -66,9 +67,6 @@ class BookingDataSource {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(<String, dynamic>{
-        'id': reservationId,
-      }),
     );
 
     debugPrint('예약 취소 결과: ${response.body} ${response.statusCode}');
