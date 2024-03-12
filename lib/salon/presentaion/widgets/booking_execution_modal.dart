@@ -76,7 +76,7 @@ void bookingExecutionModal(BuildContext context, WidgetRef ref) {
                           await reservationUseCase.createReservation(
                               selectedServiceId,
                               formattedDate!,
-                              selectedTimeSlot!, context);
+                              selectedTimeSlot!, context, ref);
                    
                           ref.refresh(reservationsProvider);
                         } catch (error) {
