@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
+import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
@@ -7,9 +12,10 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
+import 'package:http/http.dart' as http;
 
 //임의 나중에 제거
-var person =  8;
+var person = 8;
 
 class AdminMain extends StatefulWidget {
   const AdminMain({super.key});
@@ -19,6 +25,27 @@ class AdminMain extends StatefulWidget {
 }
 
 class _AdminMainState extends State<AdminMain> {
+  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+
+  Future<Map<String, dynamic>?> fetchLatestASRequest() async {
+    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+
+    final response = await http.get(
+      Uri.parse('$apiURL/api/after-service/user'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body)['after_services'];
+      if (data.isNotEmpty) {
+        // 'visit_date'를 기준으로 AS 요청을 정렬하고 가장 빠른 요청을 반환.
+        data.sort((a, b) => a['visit_date'].compareTo(b['visit_date']));
+        return data.first;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,65 +123,82 @@ class _AdminMainState extends State<AdminMain> {
             ),
 
             //AS현재 진행도
-            Container(
-              height: 80,
-              width: 330,
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: Palette.stateColor4.withOpacity(0.5),
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Palette.mainColor.withOpacity(0.1),
-                    radius: 30.0,
-                    child: Icon(
-                      Icons.construction,
-                      color: Palette.mainColor.withOpacity(0.7),
-                      size: 30.0,
-                    ),
-                  ),
-                  SizedBox(width: 10.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'AS 방문 예정',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Palette.textColor,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        SizedBox(height: 3.0), // 텍스트 간격 조절
-                        Text(
-                          '거실등 불량',
-                          style: TextStyle(
-                            color: Palette.stateColor4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    '13:00 예상',
-                    style: TextStyle(
-                      color: Palette.mainColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            FutureBuilder<Map<String, dynamic>?>(
+              future: fetchLatestASRequest(),
+              builder: (context, snapshot) {
+                // 로딩 중 표시
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
+                // 데이터가 있든 없든 카드는 표시합니다.
+                return Container(
+                  height: 80,
+                  width: 330,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Palette.stateColor4.withOpacity(0.5),
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Palette.mainColor.withOpacity(0.1),
+                        radius: 30.0,
+                        child: Icon(
+                          Icons.construction,
+                          color: Palette.mainColor.withOpacity(0.7),
+                          size: 30.0,
+                        ),
+                      ),
+                      SizedBox(width: 10.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // AS 방문 예정 또는 AS 예약 없음 표시
+                            Text(
+                              snapshot.hasData && snapshot.data != null
+                                  ? 'AS 방문 예정'
+                                  : 'AS 예약 없음',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Palette.textColor,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            SizedBox(height: 3.0), // 텍스트 간격 조절
+                            if (snapshot.hasData && snapshot.data != null)
+                              Text(
+                                snapshot.data!['title'], // API에서 가져온 'title'
+                                style: TextStyle(
+                                  color: Palette.stateColor4,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      if (snapshot.hasData && snapshot.data != null)
+                        Text(
+                          DateFormat('yyyy-MM-dd').format(DateTime.parse(
+                              snapshot.data!['visit_date'])), // 'visit_date' 포맷
+                          style: TextStyle(
+                            color: Palette.mainColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

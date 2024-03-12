@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:yjg/shared/widgets/as_image_view_detail.dart';
 
 class AsImageView extends StatelessWidget {
-  final List<String> imageUrls = [
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=10',
-    'https://picsum.photos/250?image=11',
-    'https://picsum.photos/250?image=12',
-    'https://picsum.photos/250?image=13',
-  ];
 
-  AsImageView({super.key});
+  final List<String> imageUrls; // 이미지 URL 목록 받아오기
+
+  AsImageView({super.key, required this.imageUrls});
 
   @override
   Widget build(BuildContext context) {
