@@ -40,6 +40,30 @@ class ReservationUseCase {
       throw Exception('API 호출 중 오류 발생: $e');
     }
   }
+
+  // * 예약 취소 기능 추가
+  Future<void> cancelReservation(int reservationId, BuildContext context) async {
+    try {
+      final isSuccess = await _bookingDataSource.deleteReservationAPI(reservationId);
+
+      if (isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('예약이 취소되었습니다.'), backgroundColor: Palette.mainColor),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('예약 취소에 실패하였습니다.'), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      // API 호출 중 에러 처리
+      debugPrint('예약 취소 중 오류 발생: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('예약 취소 중 오류가 발생했습니다.'), backgroundColor: Colors.red),
+      );
+    }
+  }
 }
 
 // * 예약 상태 텍스트 변환

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:yjg/salon/data/data_sources/booking_data_source.dart';
 import 'package:yjg/salon/domain/usecases/reservation_usecase.dart';
 import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
+import 'package:yjg/salon/presentaion/viewmodels/reservations_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 void bookingExecutionModal(BuildContext context, WidgetRef ref) {
@@ -77,6 +78,7 @@ void bookingExecutionModal(BuildContext context, WidgetRef ref) {
                               formattedDate!,
                               selectedTimeSlot!, context);
                    
+                          ref.refresh(reservationsProvider);
                         } catch (error) {
                           debugPrint('Error: $error');
                         }

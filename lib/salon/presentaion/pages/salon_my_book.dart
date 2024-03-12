@@ -10,7 +10,6 @@ class SalonMyBook extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       appBar: BaseAppBar(title: "예약 내역"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
