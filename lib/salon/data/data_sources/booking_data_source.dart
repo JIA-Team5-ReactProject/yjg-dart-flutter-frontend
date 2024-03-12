@@ -13,10 +13,11 @@ class BookingDataSource {
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
   // * 영업시간 목록 불러오기
-  Future<http.Response> getSalonHourAPI() async {
+  Future<http.Response> getSalonHourAPI(String day) async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon/hour';
+    String url = '$apiURL/api/salon/hour/$day';
 
+    debugPrint('영업시간 URL: $url ');
     final response = await http.get(
       Uri.parse(url),
       headers: <String, String>{
