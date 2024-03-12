@@ -7,6 +7,7 @@ class User extends ChangeNotifier {
   String phoneNumber;
   String displayName;
   String studentId;
+  String idToken;
 
   User(
       {required this.email,
@@ -14,7 +15,8 @@ class User extends ChangeNotifier {
       required this.name,
       required this.phoneNumber,
       required this.displayName,
-      required this.studentId,});
+      required this.studentId,
+      required this.idToken});
 
   // 로그인 폼 업데이트
   void loginFormUpdate({
@@ -61,9 +63,11 @@ class User extends ChangeNotifier {
   void updateWithGoogleSignIn({
     String? email,
     String? displayName,
+    String? idToken,
   }) {
     if (email != null) this.email = email;
     if (displayName != null) this.displayName = displayName;
+    if (idToken != null) this.idToken = idToken;
 
     notifyListeners(); // User 객체가 변경되었음을 알림
   }

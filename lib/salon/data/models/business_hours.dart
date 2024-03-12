@@ -1,37 +1,42 @@
-import 'package:intl/intl.dart';
+class BusinessHoursgenerated {
+  List<BusinessHours>? businessHours;
 
-class BusinessHours {
-  String? sTime;
-  String? eTime;
-  String? date;
+  BusinessHoursgenerated({this.businessHours});
 
-  BusinessHours({this.sTime, this.eTime, this.date});
-
-  BusinessHours.fromJson(Map<String, dynamic> json) {
-    sTime = json['s_time'];
-    eTime = json['e_time'];
-    date = json['date'];
+  BusinessHoursgenerated.fromJson(Map<String, dynamic> json) {
+    if (json['business_hours'] != null) {
+      businessHours = <BusinessHours>[];
+      json['business_hours'].forEach((v) {
+        businessHours!.add(new BusinessHours.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['s_time'] = sTime;
-    data['e_time'] = eTime;
-    data['date'] = date;
+    if (businessHours != null) {
+      data['business_hours'] =
+          businessHours!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
+}
 
-  // 30분 단위로 시간 리스트 생성
-  List<String> getTimeSlots() {
-    List<String> slots = [];
-    DateTime start = DateFormat("HH:mm").parse(sTime!);
-    DateTime end = DateFormat("HH:mm").parse(eTime!).add(Duration(minutes: 30));
+class BusinessHours {
+  String? time;
+  bool? available;
 
-    while(start.isBefore(end)) {
-      slots.add(DateFormat("HH:mm").format(start));
-      start = start.add(Duration(minutes: 30));
-    }
+  BusinessHours({this.time, this.available});
 
-    return slots;
+  BusinessHours.fromJson(Map<String, dynamic> json) {
+    time = json['time'];
+    available = json['available'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['time'] = time;
+    data['available'] = available;
+    return data;
   }
 }

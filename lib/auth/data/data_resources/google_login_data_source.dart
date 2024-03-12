@@ -49,6 +49,7 @@ class GoogleLoginDataSource {
         ref.read(userProvider.notifier).updateWithGoogleSignIn(
               email: account.email,
               displayName: account.displayName,
+              idToken: googleAuth.accessToken,
             );
 
         debugPrint("Google User Token: ${googleAuth.accessToken}");
@@ -66,12 +67,15 @@ class GoogleLoginDataSource {
   // 구글 로그인 후 토큰 교환 통신
   Future<http.Response> postGoogleLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
+    final deviceInfo = await storage.read(key: 'deviceType');
     final body = jsonEncode(<String, String>{
       'email': loginState.email,
       'displayName': loginState.displayName,
+      'id_token': loginState.idToken,
+      'os_type': deviceInfo ?? 'unknown',
     });
 
-    debugPrint(body);
+    debugPrint('내가 보내려는 값: $body');
     final response = await http.post(Uri.parse('$apiURL/api/user/google-login'),
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -81,6 +85,10 @@ class GoogleLoginDataSource {
     debugPrint(
         "postGoogleLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
 
+    if (response.statusCode == 403) {
+      navigatorKey.currentState!
+          .pushNamed('/registration_detail'); // 추가 정보 입력 페이지로 이동
+    }
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       Tokengenerated result = Tokengenerated.fromJson(jsonData);
@@ -101,16 +109,6 @@ class GoogleLoginDataSource {
         // 토큰을 저장하기 위해 사용
         await storage.write(key: 'auth_token', value: token);
         await storage.write(key: 'studentName', value: loginState.displayName);
-        
-        if (approved == 1) {
-          // 토큰이 null이 아니고, 승인된 계정인 경우
-          debugPrint('승인된 계정, 토큰: $token');
-          navigatorKey.currentState!.pushNamedAndRemoveUntil(
-              '/dashboard_main', (Route<dynamic> route) => false);
-        } else {
-          navigatorKey.currentState!
-              .pushNamed('/registration_detail'); // 추가 정보 입력 페이지로 이동
-        }
       } else {
         // 토큰이 null인 경우 처리
         debugPrint('토큰이 없습니다.');

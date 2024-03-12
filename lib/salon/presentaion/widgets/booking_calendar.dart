@@ -1,9 +1,12 @@
 import 'dart:collection';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:yjg/salon/data/data_sources/booking_data_source.dart';
+import 'package:yjg/salon/data/models/business_hours.dart';
+import 'package:yjg/salon/presentaion/viewmodels/booking_business_hours_viewmodel.dart';
 import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
 import 'package:yjg/salon/presentaion/widgets/time_slots_grid.dart';
 import 'package:yjg/shared/theme/palette.dart';
@@ -45,16 +48,15 @@ class _BookingCalendarState extends ConsumerState<BookingCalendar> {
       children: [
         TableCalendar(
           locale: 'ko_KR',
-          // 오늘 날짜부터 선택 가능
           firstDay: DateTime.now(),
           lastDay: DateTime.now().add(Duration(days: 31)),
           headerStyle: HeaderStyle(
             titleCentered: false,
             titleTextFormatter: (date, locale) =>
                 DateFormat.yMMMMd(locale).format(date),
-            formatButtonVisible: false, // 월간/주간 버튼 비활성화
-            leftChevronVisible: false, // 왼쪽 화살표 버튼 비활성화
-            rightChevronVisible: false, // 오른쪽 화살표 버튼 비활성화
+            formatButtonVisible: false,
+            leftChevronVisible: false,
+            rightChevronVisible: false,
             headerMargin: EdgeInsets.only(bottom: 20.0, top: 20.0, left: 20.0),
             titleTextStyle: const TextStyle(
               fontSize: 15.0,
@@ -82,7 +84,6 @@ class _BookingCalendarState extends ConsumerState<BookingCalendar> {
               }
             },
             dowBuilder: (context, day) {
-              // 요일 표시(주말 색상 변경)
               switch (day.weekday) {
                 case 1:
                   return Center(
@@ -135,13 +136,15 @@ class _BookingCalendarState extends ConsumerState<BookingCalendar> {
           onDaySelected: (selectedDay, focusedDay) {
             if (!isSameDay(
                 ref.read(selectedDateProvider.notifier).state, selectedDay)) {
+              final String formattedDate =
+                  DateFormat('yyyy-MM-dd').format(selectedDay);
               ref.read(selectedDateProvider.notifier).state = selectedDay;
-              debugPrint('선택: ${ref.watch(selectedDateProvider)}');
               setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
-              _getEventForDay(selectedDay);
+              // 선택된 날짜를 기반으로 영업 시간을 불러오는 함수 호출
+              ref.refresh(salonHoursProvider(formattedDate));
             }
           },
           onPageChanged: (focusedDay) {

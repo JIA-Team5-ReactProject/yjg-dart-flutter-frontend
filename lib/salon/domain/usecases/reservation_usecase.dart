@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/salon/data/data_sources/booking_data_source.dart';
+import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class ReservationUseCase {
@@ -10,14 +12,16 @@ class ReservationUseCase {
 
   // * API 통신
   Future<void> createReservation(int serviceId, String reservationDate,
-      String reservationTime, BuildContext context) async {
+      String reservationTime, BuildContext context, WidgetRef ref) async {
     try {
       final response = await _bookingDataSource.postReservationAPI(
           serviceId, reservationDate, reservationTime);
 
       // 예약 생성 API 호출 결과 처리
       if (response.statusCode == 201) {
-        // 예약 성공 시 처리 로직
+
+        // 예약 시간 초기화
+        ref.read(selectedTimeSlotProvider.notifier).state = null;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
