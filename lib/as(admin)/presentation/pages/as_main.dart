@@ -32,12 +32,6 @@ class AsMain extends StatelessWidget {
                   CustomSingleChildScrollView(
                     child: Column(
                       children: [
-                        AsCard(state: 2, title: '변기가 막혔어요..', day: '2024-02-15'),
-                        AsCard(state: 3, title: '전등이 안 켜져요', day: '2024-02-14'),
-                        AsCard(state: 2, title: '변기가 막혔어요..', day: '2024-02-15'),
-                        AsCard(state: 3, title: '전등이 안 켜져요', day: '2024-02-14'),
-                        AsCard(state: 2, title: '변기가 막혔어요..', day: '2024-02-15'),
-                        AsCard(state: 3, title: '전등이 안 켜져요', day: '2024-02-14'),
                       ],
                     ),
                   ),
@@ -45,7 +39,6 @@ class AsMain extends StatelessWidget {
                   CustomSingleChildScrollView(
                     child: Column(
                       children: [
-                        AsCard(state: 1, title: '변기 막힘', day: '2024-02-13'),
                       ],
                     ),
                   ),
