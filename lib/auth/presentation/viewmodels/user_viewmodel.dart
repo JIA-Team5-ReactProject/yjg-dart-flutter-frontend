@@ -10,6 +10,7 @@ final userProvider = ChangeNotifierProvider<User>((ref) {
     phoneNumber: "phoneNumber",
     displayName: "displayName",
     studentId: "studentId",
+    idToken: "idToken",
   );
 });
 
