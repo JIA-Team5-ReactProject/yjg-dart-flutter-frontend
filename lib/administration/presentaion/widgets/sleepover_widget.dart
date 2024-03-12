@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:yjg/shared/constants/api_url.dart';
 
 class SleepoverWidget extends StatefulWidget {
   final int id;
@@ -22,6 +24,9 @@ class SleepoverWidget extends StatefulWidget {
 }
 
 class _SleepoverWidgetState extends State<SleepoverWidget> {
+  
+  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+
   @override
   Widget build(BuildContext context) {
     String statusText;
@@ -138,9 +143,9 @@ class _SleepoverWidgetState extends State<SleepoverWidget> {
 
   //삭제 API 함수
   Future<void> deleteApplication(int id) async {
-    final String token = "39|vmpK7lzeQudObH1uAOwcuvCx8HrsXWJkSfKgtLEz88fdc748";
+    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
     final Uri apiUri = Uri.parse(
-        'http://ec2-13-124-102-253.ap-northeast-2.compute.amazonaws.com/api/absence/$id');
+        '$apiURL/api/absence/$id');
 
     final response = await http.delete(apiUri, headers: {
       'Authorization': 'Bearer $token',

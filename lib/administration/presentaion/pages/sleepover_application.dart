@@ -208,7 +208,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
           'type': type,
         }),
         headers: {          //아래 토큰 $token으로 바꿔줘야함
-          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZWMyLTEzLTEyNC0xMDItMjUzLmFwLW5vcnRoZWFzdC0yLmNvbXB1dGUuYW1hem9uYXdzLmNvbS9hcGkvdXNlci9nb29nbGUtbG9naW4iLCJpYXQiOjE3MDk4MTExMDEsImV4cCI6MTcwOTgyMTkwMSwibmJmIjoxNzA5ODExMTAxLCJqdGkiOiJER2w3S3JwRk5FVHR0MmZUIiwic3ViIjoiNDEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.9NSJHaQy7DiJNboi3SNsrw7V3EDVDRVy7yYXWAiOOys',
+          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json', // JSON 컨텐트 타입
         },
       );
