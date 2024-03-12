@@ -22,17 +22,16 @@ class AsDetail extends StatefulWidget {
 }
 
 class _AsDetailState extends State<AsDetail> {
-  bool _isEditing = false; //수정 선택여부
-  TextEditingController _contentController =
-      TextEditingController(); // 컨텐츠 컨트롤러
+  bool _isEditing = false; // 수정 선택 여부
+  TextEditingController _contentController = TextEditingController(); // 컨텐츠 컨트롤러
   String? _editedVisitDate; // 수정된 희망 처리일자를 저장하는 변수
+  bool _isCommentsEmpty = true; // 댓글이 비어있는지 확인하는 변수, 초기값은 true
 
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  static final storage = FlutterSecureStorage(); // 정원이가 말해준 코드(토큰)
 
   // API 함수(get으로 데이터 불러오기)
   Future<Map<String, dynamic>> fetchAsDetail(int id) async {
-    final token =
-        await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
+    final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
     final response = await http.get(
       Uri.parse('$apiURL/api/after-service/$id'),
       headers: {
@@ -42,7 +41,10 @@ class _AsDetailState extends State<AsDetail> {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final data = json.decode(response.body);
+      // "after_service_comments" 배열이 비어 있는지 확인하여 _isCommentsEmpty 변수 업데이트
+      _isCommentsEmpty = (data['afterService']['after_service_comments'] as List).isEmpty;
+      return data;
     } else {
       throw Exception('에러(as_detail.dart GET 함수)');
     }
@@ -50,8 +52,7 @@ class _AsDetailState extends State<AsDetail> {
 
   // API 함수 (PATCH로 데이터 통신)
   Future<void> updateAsDetail(int id, String content, String visitDate) async {
-    final token =
-        await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
+    final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
     final response = await http.patch(
       Uri.parse('$apiURL/api/after-service/$id'),
       headers: {
@@ -74,7 +75,7 @@ class _AsDetailState extends State<AsDetail> {
     }
   }
 
-// API 함수 (DELETE 데이터 통신) 및 삭제 확인 대화상자 추가
+  // API 함수 (DELETE 데이터 통신) 및 삭제 확인 대화상자 추가
   Future<void> deleteAsDetail(int id) async {
     // 삭제 확인 대화상자 표시
     final bool confirmDelete = await showDialog(
@@ -85,14 +86,11 @@ class _AsDetailState extends State<AsDetail> {
           content: Text('정말 삭제하시겠습니까?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false), // '아니오' 선택 시 false 반환
+              onPressed: () => Navigator.of(context).pop(false), // '아니오' 선택 시 false 반환
               child: Text('아니오'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true); // '예' 선택 시 true 반환, 대화상자 닫기
-              },
+              onPressed: () => Navigator.of(context).pop(true), // '예' 선택 시 true 반환
               child: Text('예'),
             ),
           ],
@@ -102,8 +100,7 @@ class _AsDetailState extends State<AsDetail> {
 
     // 사용자가 '예'를 선택한 경우에만 삭제 진행
     if (confirmDelete) {
-      final token =
-          await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
+      final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
       final response = await http.delete(
         Uri.parse('$apiURL/api/after-service/$id'),
         headers: {
@@ -113,22 +110,19 @@ class _AsDetailState extends State<AsDetail> {
       );
 
       if (response.statusCode == 200) {
-        // 삭제 성공 시 현재 페이지 닫기 (AsDetail 페이지 닫기)
-        Navigator.pop(context); // 첫 번째 Navigator.pop(context)는 대화상자 닫기.
-        Navigator.pop(context); // 두 번째 Navigator.pop(context)는 AsDetail 페이지 닫기.
+        Navigator.pop(context); // 삭제 성공 시 현재 페이지 닫기
       } else {
-        print('에러(as_detail.dart DELETE 함수): ${response.statusCode}');
-        print('응답 본문: ${response.body}');
+        print('에러(as_detail.dart DELETE 함수)'); // 오류 처리
       }
     }
   }
 
-  //임시 댓글 카운트
+  // 임시 댓글 카운트
   final int? commentCount = 1;
 
   @override
   Widget build(BuildContext context) {
-    //asCard에서 argument로 받아온 각 as목록의 ID
+    // asCard에서 argument로 받아온 각 as목록의 ID
     final int asId = ModalRoute.of(context)!.settings.arguments as int;
 
     return Scaffold(
@@ -136,7 +130,7 @@ class _AsDetailState extends State<AsDetail> {
       drawer: const BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
 
-      //수정,삭제 버튼
+      // 수정, 삭제 버튼
       floatingActionButton: FutureBuilder<Map<String, dynamic>>(
         future: fetchAsDetail(asId),
         builder: (context, snapshot) {
@@ -152,10 +146,8 @@ class _AsDetailState extends State<AsDetail> {
                       setState(() {
                         _isEditing = true;
                         // FutureBuilder의 snapshot.data를 사용하여 초기화
-                        _contentController.text =
-                            asDetailData['afterService']['content'];
-                        _editedVisitDate =
-                            asDetailData['afterService']['visit_date'];
+                        _contentController.text = asDetailData['afterService']['content'];
+                        _editedVisitDate = asDetailData['afterService']['visit_date'];
                       });
                     },
                     child: Icon(Icons.edit, size: 20),
@@ -179,9 +171,7 @@ class _AsDetailState extends State<AsDetail> {
       ),
 
       body: FutureBuilder<Map<String, dynamic>>(
-        //API 통신함수↑
         future: fetchAsDetail(asId),
-
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -189,88 +179,55 @@ class _AsDetailState extends State<AsDetail> {
             return const Center(child: Text("에러(as_detail.dart)"));
           } else {
             final asDetail = snapshot.data!;
-
-            // created_at 값을 DateTime 객체로
-            DateTime createdAt =
-                DateTime.parse(asDetail['afterService']['created_at']);
-
-            // DateFormat으로 원하는 날짜 형식으로 변경
-            String formattedDate =
-                DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
-
-            //as_image.view.dart에 이미지URl목록 넘겨주려고 API에서 이미지 URL 목록 뽑기
-            final List<String> imageUrls = asDetail['afterService']
-                    ['after_service_images']
+            DateTime createdAt = DateTime.parse(asDetail['afterService']['created_at']); // created_at 값을 DateTime 객체로
+            String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt); // DateFormat으로 원하는 날짜 형식으로 변경
+            final List<String> imageUrls = asDetail['afterService']['after_service_images']
                 .map<String>((img) => img['image'] as String)
-                .toList();
+                .toList(); // as_image.view.dart에 이미지URL목록 넘겨주려고 API에서 이미지 URL 목록 뽑기
 
             return CustomSingleChildScrollView(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //제목에 받아온 title 연결
                     Text(
                       asDetail['afterService']['title'],
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-
-                    //DateFormat으로 변경한 created_at보여주기
                     Text(
                       formattedDate,
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
                     ),
-
                     const SizedBox(height: 15.0),
-
-                    //아래 개인 정보는 ~~
                     const AsNoticeBox(),
-
-                    //신청자,위치,상태 위젯 수정
                     ServiceRequester(
-                      requester: asDetail['afterService']['user']
-                          ['name'], //신청자 이름
-                      serviceLocation: asDetail['afterService']
-                          ['visit_place'], //처리장소
-                      stateNum: asDetail['afterService']['status'], //상태
-                      phoneNumber: asDetail['afterService']['user']
-                          ['phone_number'], // 전화번호
-                      visitDate: asDetail['afterService']
-                          ['visit_date'], // 희망처리일자
+                      requester: asDetail['afterService']['user']['name'], // 신청자 이름
+                      serviceLocation: asDetail['afterService']['visit_place'], // 처리장소
+                      stateNum: asDetail['afterService']['status'], // 상태
+                      phoneNumber: asDetail['afterService']['user']['phone_number'], // 전화번호
+                      visitDate: asDetail['afterService']['visit_date'], // 희망처리일자
                       isEditing: _isEditing,
                       onVisitDateChanged: (newValue) {
                         _editedVisitDate = newValue;
                       },
+                      isEditable: _isCommentsEmpty, // 댓글 배열이 비어있는 경우에만 수정 가능
                     ),
-
-                    //본문 내용
                     Padding(
                       padding: const EdgeInsets.only(bottom: 100.0, top: 50.0),
                       child: _isEditing
                           ? Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.end, // 수정 완료 버튼을 오른쪽에 배치
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 TextFormField(
                                   controller: _contentController,
                                   maxLines: null,
                                   keyboardType: TextInputType.multiline,
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: '내용 수정'),
+                                  decoration: InputDecoration(border: OutlineInputBorder(), labelText: '내용 수정'),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    updateAsDetail(
-                                        asId,
-                                        _contentController.text,
-                                        _editedVisitDate ?? "");
+                                    updateAsDetail(asId, _contentController.text, _editedVisitDate ?? "");
                                   },
                                   child: Text('수정 완료'),
                                 ),
@@ -278,29 +235,18 @@ class _AsDetailState extends State<AsDetail> {
                             )
                           : Text(asDetail['afterService']['content']),
                     ),
-
-                    //['after_service_images'].length로 들어있는 이미지 갯수 표시
                     Text(
                       "첨부파일(${asDetail['afterService']['after_service_images'].length})",
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-
                     const SizedBox(height: 20.0),
-
-                    //사진 띄워주는 위젯(이미지 URL 넘겨주게 바꿈)
                     AsImageView(imageUrls: imageUrls),
-
                     const SizedBox(height: 50.0),
-
                     Text(
                       "댓글($commentCount)",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-
                     const AsCommentBox(),
-
                     SizedBox(height: 60.0),
                   ],
                 ),
