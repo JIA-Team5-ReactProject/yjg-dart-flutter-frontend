@@ -10,8 +10,9 @@ final reservationsProvider = FutureProvider<List<Reservations>>((ref) async {
   final dataSource = ref.watch(myBookingDataSourceProvider);
   final response = await dataSource.getReservationAPI();
   if (response.statusCode == 200) {
-    final List<dynamic> jsonResponse = jsonDecode(utf8.decode(response.bodyBytes))['reservations'];
-  
+    final List<dynamic> jsonResponse =
+        jsonDecode(utf8.decode(response.bodyBytes))['reservations'];
+
     debugPrint('예약 목록: $jsonResponse');
     return jsonResponse.map((json) => Reservations.fromJson(json)).toList();
   } else {
