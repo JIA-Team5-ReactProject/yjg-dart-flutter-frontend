@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:yjg/salon/data/data_sources/booking_data_source.dart';
 import 'package:yjg/salon/data/models/reservation.dart';
 import 'package:yjg/salon/domain/usecases/reservation_usecase.dart';
+import 'package:yjg/salon/presentaion/viewmodels/reservations_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-void myBookingModal(BuildContext context, Reservations reservation) {
+void myBookingModal(
+    BuildContext context, WidgetRef ref, Reservations reservation, String? status) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -41,6 +45,30 @@ void myBookingModal(BuildContext context, Reservations reservation) {
             SizedBox(height: 10.0),
             // 상태
             _buildModalRow('상태', getStatusText(reservation.status ?? '')),
+            SizedBox(height: 10.0),
+             if (status == 'submit')
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                  onTap: () async {
+                    final bookingDataSource = BookingDataSource();
+                    final reservationUseCase =
+                        ReservationUseCase(bookingDataSource);
+
+                    // 예약 취소 메서드 호출
+                    await reservationUseCase.cancelReservation(
+                        reservation.id ?? 0, context);
+                    
+                    // 예약 취소 후 목록 리프레시
+                    ref.refresh(reservationsProvider);
+
+                  },
+                  child: Text(
+                    '예약 취소하기',
+                    style: TextStyle(color: Palette.stateColor3),
+                  ),
+                ),
+              ),
             SizedBox(height: 50.0),
           ],
         ),
@@ -50,7 +78,10 @@ void myBookingModal(BuildContext context, Reservations reservation) {
 }
 
 // 모달 내에서 반복되는 Row 위젯을 구성하는 함수
-Widget _buildModalRow(String title, String? value) {
+Widget _buildModalRow(
+  String title,
+  String? value,
+) {
   // 가격 정보를 천 단위 구분자로 포맷
   if (title == '가격' && value != null && value != 'N/A') {
     final number =
