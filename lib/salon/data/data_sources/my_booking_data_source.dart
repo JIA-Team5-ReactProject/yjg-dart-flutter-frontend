@@ -23,8 +23,8 @@ class MyBookingDataSource {
     );
 
     if (response.statusCode == 200) {
-       // 예약이 있는 경우
-       
+      // 예약이 있는 경우
+
       return response;
     } else {
       throw Exception('예약 목록을 불러오지 못했습니다.');
