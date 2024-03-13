@@ -20,8 +20,6 @@ class RegisterDataSource {
       'student_id': registerState.studentId,
     });
 
-    debugPrint('내가 보낸 body: $body');
-
     // 통신
     final response = await http.post(
       Uri.parse('$apiURL/api/user'),
@@ -61,7 +59,7 @@ class RegisterDataSource {
         // state 값을 json 형태로 변환
         body: body);
 
-    debugPrint(body);
+    debugPrint('추가 정보 입력 결과: ${response.body}, ${response.statusCode}');
 
     // status code가 200이 아닐 경우
     if (response.statusCode != 200) {

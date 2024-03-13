@@ -34,7 +34,6 @@ class LoginDataSource {
       body: body,
     );
 
-    debugPrint('postStudentLoginAPI 토큰 교환 결과: ${response.body}, ${response.statusCode}');
     Tokengenerated tokenGenerated =
         Tokengenerated.fromJson(json.decode(response.body));
 
@@ -42,13 +41,16 @@ class LoginDataSource {
       String? token = tokenGenerated.accessToken; // 토큰값 추출
       int userId = tokenGenerated.user!.id!; // 사용자 ID 추출
       String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
-      
-
+      String refreshToken = tokenGenerated.refreshToken!;
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
         debugPrint('토큰 저장: $token');
+        await storage.write(key: 'refresh_token', value: refreshToken);
+        debugPrint('리프레시 토큰 저장: $refreshToken');
         ref.read(userIdProvider.notifier).setUserId(userId); // 사용자 ID 저장
-        ref.read(studentNameProvider.notifier).setStudentName(studentName); // 사용자 이름 저장
+        ref
+            .read(studentNameProvider.notifier)
+            .setStudentName(studentName); // 사용자 이름 저장
       } else {
         throw Exception('토큰이 없습니다.');
       }
@@ -73,8 +75,8 @@ class LoginDataSource {
         },
         body: body);
 
-
-    debugPrint("postAdminLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
+    debugPrint(
+        "postAdminLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
 
     if (response.statusCode == 200) {
       final result = Admingenerated.fromJson(jsonDecode(response.body));
@@ -98,5 +100,29 @@ class LoginDataSource {
       throw Exception('로그인 실패: ${response.statusCode}');
     }
     return response;
+  }
+
+//  리프레시 토큰 교환
+  Future<void> getRefreshTokenAPI() async {
+    final storage = FlutterSecureStorage();
+    debugPrint('토큰 만료: 리프레시 토큰 교환 시작');
+    final refreshToken = await storage.read(key: 'refresh_token');
+    final url = '$apiURL/api/refresh';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $refreshToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final accessToken = responseData['response_token'];
+      debugPrint('리프레시 토큰 교환 완료, 액세스 토큰 교체: $accessToken');
+
+      // 토큰 교체
+      storage.write(key: 'auth_token', value: accessToken);
+    }
   }
 }
