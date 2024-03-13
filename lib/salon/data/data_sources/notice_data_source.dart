@@ -24,8 +24,6 @@ class NoticeDataSource {
 
     Uri uri = Uri.parse(url).replace(queryParameters: queryParams);
 
-    debugPrint(uri.toString());
-
     final response = await http.get(
       uri,
       headers: <String, String>{
