@@ -6,6 +6,8 @@ class AuthService {
 
   Future<void> logout(BuildContext context) async {
     await storage.delete(key: 'auth_token');
+    await storage.delete(key: 'refresh_token');
+    await storage.delete(key: 'studentName');
     debugPrint('로그아웃 완료');
     Navigator.pushNamedAndRemoveUntil(context, '/login_student', (route) => false);
   }

@@ -17,7 +17,6 @@ class BookingDataSource {
     final token = await storage.read(key: 'auth_token');
     String url = '$apiURL/api/salon/hour/$day';
 
-    debugPrint('영업시간 URL: $url ');
     final response = await http.get(
       Uri.parse(url),
       headers: <String, String>{
@@ -27,7 +26,6 @@ class BookingDataSource {
     );
 
     if (response.statusCode == 200) {
-      debugPrint('영업시간 목록: ${response.body}');
       return response;
     } else {
       throw Exception('영업시간 목록을 불러오지 못했습니다.');
@@ -60,8 +58,6 @@ class BookingDataSource {
     final token = await storage.read(key: 'auth_token');
     String url = '$apiURL/api/salon/reservation/$reservationId';
 
-    debugPrint('예약 취소 URL: $url');
-    debugPrint(url);
     final response = await http.delete(
       Uri.parse(url),
       headers: <String, String>{
@@ -69,8 +65,6 @@ class BookingDataSource {
         'Authorization': 'Bearer $token',
       },
     );
-
-    debugPrint('예약 취소 결과: ${response.body} ${response.statusCode}');
 
     if (response.statusCode == 200) {
       return true;

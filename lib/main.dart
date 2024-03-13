@@ -33,7 +33,8 @@ import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
 import 'package:yjg/shared/service/device_info.dart';
-// import 'package:yjg/shared/service/load_set_student_name.dart';
+import 'package:yjg/shared/service/load_set_student_name.dart';
+import 'package:yjg/shared/service/token_decoder.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +56,7 @@ void main() async {
   final autoLoginStr = await storage.read(key: 'auto_login');
   final isAutoLogin = autoLoginStr == 'true';
   final token = await storage.read(key: 'auth_token');
+  tokenDecoder(token);
   String? userType = await storage.read(key: 'userType');
 
   if (isAutoLogin && token != null) {
@@ -97,7 +99,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // loadAndSetStudentName(ref); // 로그인 이름 설정
+    loadAndSetStudentName(ref); // 로그인 이름 설정
 
     return MaterialApp(
       //외박 신청 달력 언어 설정
