@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
+import "package:yjg/salon/presentaion/widgets/booking_calendar.dart";
 import "package:yjg/shared/widgets/base_appbar.dart";
-import 'package:yjg/salon(admin)/presentation/widgets/booking_calendar.dart';
 import "package:yjg/shared/widgets/bottom_navigation_bar.dart";
 
 class AdminSalonBooking extends StatelessWidget {

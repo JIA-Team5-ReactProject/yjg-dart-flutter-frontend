@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:yjg/auth/presentation/viewmodels/login_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 
 class LogoutDataSource {
@@ -15,7 +14,7 @@ class LogoutDataSource {
 
   // 로그아웃
   Future<void> postLogoutAPI(WidgetRef ref) async {
-    bool? isAdmin = ref.watch(isAdminProvider); // false: Student, true: Admin
+    bool? isAdmin = await storage.read(key: 'isAdmin') == 'ture' ? true : false; // false: Student, true: Admin
     debugPrint('isAdmin: $isAdmin');
     final token = await storage.read(key: 'auth_token');
     final String url;

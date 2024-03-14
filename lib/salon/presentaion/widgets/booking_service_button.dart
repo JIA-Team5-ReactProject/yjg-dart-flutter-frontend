@@ -30,10 +30,8 @@ class _BookingServiceButtonState extends ConsumerState<BookingServiceButton> {
         .setSalonCategoryId(int.parse(serviceId));
 
     ref.read(selectedServiceIdProvider.notifier).state = int.parse(serviceId);
-    debugPrint('서비스의 아이디: $serviceId');
 
     ref.read(selettedServiceNameProvider.notifier).state = service;
-    debugPrint('서비스의 이름: $service');
     
 
     bookingNextModal(context, price); // 모달 표시

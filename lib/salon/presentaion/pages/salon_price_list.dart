@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yjg/salon/data/data_sources/price_data_source.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_service_list.dart';
 import 'package:yjg/shared/theme/palette.dart';

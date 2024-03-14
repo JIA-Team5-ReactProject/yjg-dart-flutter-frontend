@@ -25,9 +25,8 @@ class FilterServiceList extends ConsumerWidget {
         itemCount: services.length,
         itemBuilder: (context, index) {
           final service = services[index];
-          final formattedPrice = NumberFormat('#,###', 'ko_KR')
-                  .format(int.parse(service.price ?? '0')) +
-              '원'; // 금액 포맷팅
+          final formattedPrice = '${NumberFormat('#,###', 'ko_KR')
+                  .format(int.parse(service.price ?? '0'))}원'; // 금액 포맷팅
           return Container(
             padding: EdgeInsets.symmetric(horizontal: 30.0),
             margin: EdgeInsets.symmetric(vertical: 10.0),

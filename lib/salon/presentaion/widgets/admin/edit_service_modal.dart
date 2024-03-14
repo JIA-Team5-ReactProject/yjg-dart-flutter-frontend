@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-void editServiceModal(BuildContext context, Map<String, dynamic> service) {
+void editServiceModal(BuildContext context,String serviceId, int? salonCategoryId, String price, String service) {
   TextEditingController nameController =
-      TextEditingController(text: service['name']);
+      TextEditingController(text: service);
   TextEditingController priceController =
-      TextEditingController(text: service['price'].toString());
+      TextEditingController(text: price.toString());
 
   showModalBottomSheet(
     context: context,

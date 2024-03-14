@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
-import 'package:yjg/auth/presentation/viewmodels/login_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 
@@ -24,8 +23,9 @@ class LoginUseCase {
         );
 
     // 로그인 상태 업데이트
-    bool? isAdmin = ref.watch(isAdminProvider); // false: Student, true: Admin
+     // false: Student, true: Admin
     String adminPrivilege = ref.watch(adminPrivilegesProvider);
+    bool? isAdmin = await storage.read(key: 'isAdmin') == 'true' ? true : false;
 
     try {
       if (isAdmin == false) {

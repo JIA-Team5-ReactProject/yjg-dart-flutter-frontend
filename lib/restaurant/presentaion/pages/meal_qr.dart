@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -12,6 +13,11 @@ class MealQr extends StatefulWidget {
 }
 
 class _MealQrState extends State<MealQr> {
+
+  String getApiUrl() {
+    return apiURL;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +99,7 @@ class _MealQrState extends State<MealQr> {
                   width: 220,
                   height: 220,
                   child: Image.network(
-                    'http://wwcqek8uqz.laravel-sail.site:8080/api/admin/qr',
+                    '$apiURL/api/user/qr',
                     fit: BoxFit.cover, // 이미지가 위젯의 전체 공간을 차지하도록 설정
                   ),
                 ),
