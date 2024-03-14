@@ -52,7 +52,7 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: isAdmin == true
           ? IconButton(
-              onPressed: () => authService.logout(context),
+              onPressed: () => authService.logout(context, ref),
               icon: const Icon(
                 Icons.logout_outlined,
                 color: Colors.white,

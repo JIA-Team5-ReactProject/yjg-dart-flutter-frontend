@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:yjg/auth/data/data_resources/logout_data_source.dart';
 
 class AuthService {
   final FlutterSecureStorage storage = FlutterSecureStorage();
 
-  Future<void> logout(BuildContext context) async {
-    await storage.delete(key: 'auth_token');
-    await storage.delete(key: 'refresh_token');
-    await storage.delete(key: 'studentName');
-    debugPrint('로그아웃 완료');
+  Future<void> logout(BuildContext context, WidgetRef ref) async {
+    LogoutDataSource().postLogoutAPI(ref);
     Navigator.pushNamedAndRemoveUntil(context, '/login_student', (route) => false);
   }
 
