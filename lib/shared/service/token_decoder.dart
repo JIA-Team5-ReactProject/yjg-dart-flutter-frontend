@@ -6,8 +6,7 @@ import 'package:yjg/main.dart';
 
 final storage = FlutterSecureStorage();
 
-void tokenDecoder(String? token, String autoLoginStr) async {
-  bool hasExpired = JwtDecoder.isExpired(token!);
+void tokenDecoder(String token, String autoLoginStr, bool hasExpired) async {
 
   debugPrint('토큰 만료 여부: $hasExpired');
 

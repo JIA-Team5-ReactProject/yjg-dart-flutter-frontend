@@ -55,31 +55,36 @@ void main() async {
   String initialRoute = '/login_student';
 
   final token = await storage.read(key: 'auth_token');
-  final autoLoginStr = await storage.read(key: 'auto_login');
+  final autoLoginStr = await storage.read(key: 'auto_login') ?? 'false';
   final refreshToken = await storage.read(key: 'refresh_token');
-  bool hasExpired = JwtDecoder.isExpired(token!);
+
   debugPrint('token: $token');
   debugPrint('refreshToken: $refreshToken');
-  
-  tokenDecoder(token, autoLoginStr!);
+
   String? userType = await storage.read(key: 'userType');
 
-  // 자동로그인이 true이고, 토큰이 만료되지 않았을 경우
-  if (autoLoginStr == 'true' && hasExpired == false) {
-    switch (userType) {
-      case 'student':
-        initialRoute = '/dashboard_main'; // 학생 대시보드로 이동
-        break;
-      case 'admin':
-        initialRoute = '/as_admin'; // AS 관리자 페이지로 이동
-        break;
-      case 'salon':
-        initialRoute = '/admin_salon_main'; // 미용실 관리자 페이지로 이동
-        break;
-      default:
-        // 사용자 유형이 지정되지 않았거나 잘못된 경우, 로그인 페이지로 이동
-        initialRoute = '/login_student';
-        break;
+  if (token != null) {
+    bool hasExpired = JwtDecoder.isExpired(token);
+    tokenDecoder(token, autoLoginStr, hasExpired);
+
+
+    // 자동로그인이 true이고, 토큰이 만료되지 않았을 경우
+    if (autoLoginStr == 'true' && hasExpired == false) {
+      switch (userType) {
+        case 'student':
+          initialRoute = '/dashboard_main'; // 학생 대시보드로 이동
+          break;
+        case 'admin':
+          initialRoute = '/as_admin'; // AS 관리자 페이지로 이동
+          break;
+        case 'salon':
+          initialRoute = '/admin_salon_main'; // 미용실 관리자 페이지로 이동
+          break;
+        default:
+          // 사용자 유형이 지정되지 않았거나 잘못된 경우, 로그인 페이지로 이동
+          initialRoute = '/login_student';
+          break;
+      }
     }
   }
 
