@@ -27,6 +27,7 @@ import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
 import 'package:yjg/restaurant/presentaion/pages/weekend_meal.dart';
 import 'package:yjg/salon/presentaion/pages/admin/admin_salon_booking.dart';
 import 'package:yjg/salon/presentaion/pages/admin/admin_salon_main.dart';
+import 'package:yjg/salon/presentaion/pages/admin/admin_salon_price_list.dart';
 import 'package:yjg/salon/presentaion/pages/salon_booking_step_one.dart';
 import 'package:yjg/salon/presentaion/pages/salon_booking_step_two.dart';
 import 'package:yjg/salon/presentaion/pages/salon_main.dart';
@@ -158,7 +159,7 @@ class MyApp extends ConsumerWidget {
 
         // 미용실 관련(관리자)
         '/admin_salon_main': (context) => AdminSalonMain(),
-        '/admin_salon_price_list': (context) => SalonPriceList(),
+        '/admin_salon_price_list': (context) => AdminSalonPricelist(),
         '/admin_salon_booking': (context) => AdminSalonBooking(),
 
         // 버스 관련
