@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:yjg/salon(admin)/presentation/widgets/booking_box.dart';
-import 'package:yjg/salon(admin)/presentation/widgets/empty_bookings.dart';
+import 'package:yjg/salon/presentaion/widgets/admin/booking_box.dart';
+import 'package:yjg/salon/presentaion/widgets/admin/empty_bookings.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class BookingCalendar extends StatefulWidget {
