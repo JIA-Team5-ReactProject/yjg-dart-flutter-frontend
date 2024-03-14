@@ -39,7 +39,6 @@ class LoginDataSource {
 
     if (response.statusCode == 200) {
       String? token = tokenGenerated.accessToken; // 토큰값 추출
-      int userId = tokenGenerated.user!.id!; // 사용자 ID 추출
       String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
       String refreshToken = tokenGenerated.refreshToken!;
       if (token != null) {
@@ -47,7 +46,6 @@ class LoginDataSource {
         debugPrint('토큰 저장: $token');
         await storage.write(key: 'refresh_token', value: refreshToken);
         debugPrint('리프레시 토큰 저장: $refreshToken');
-        ref.read(userIdProvider.notifier).setUserId(userId); // 사용자 ID 저장
         ref
             .read(studentNameProvider.notifier)
             .setStudentName(studentName); // 사용자 이름 저장
@@ -75,17 +73,18 @@ class LoginDataSource {
         },
         body: body);
 
-    debugPrint(
-        "postAdminLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
-
     if (response.statusCode == 200) {
       final result = Admingenerated.fromJson(jsonDecode(response.body));
       String? token = result.accessToken; // 토큰값 추출
-      int adminId = result.user!.id!; // 관리자 ID 추출
+      String? refreshToken = result.refreshToken; // 리프레시 토큰값 추출
 
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
-        ref.read(adminIdProvider.notifier).setAdminId(adminId); // 관리자 ID 저장
+        await storage.write(
+            key: 'refresh_token', value: refreshToken); // 리프레시 토큰 저장
+
+        debugPrint('토큰 저장: $token');
+        debugPrint('리프레시 토큰 저장: $refreshToken');
 
         // 관리자 권한 유형 관리
         if (result.user != null) {
@@ -115,6 +114,8 @@ class LoginDataSource {
         'Authorization': 'Bearer $refreshToken',
       },
     );
+
+    debugPrint('리프레시 토큰 교환 결과: ${response.statusCode}, ${response.body}');
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
