@@ -56,7 +56,9 @@ class BookingDataSource {
   // 예약 취소
   Future<bool> deleteReservationAPI(int reservationId) async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon/reservation/$reservationId';
+    String url = '$apiURL/api/salon/reservation/$reservationId';  
+
+    debugPrint(url);
 
     final response = await http.delete(
       Uri.parse(url),
@@ -66,6 +68,7 @@ class BookingDataSource {
       },
     );
 
+    debugPrint(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {

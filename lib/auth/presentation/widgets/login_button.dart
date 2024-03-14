@@ -27,6 +27,7 @@ class LoginButton extends ConsumerWidget {
               ? ref.read(isAdminProvider.notifier).setIsAdminState(false)
               : ref.read(isAdminProvider.notifier).setIsAdminState(true);
 
+          debugPrint('유형: ${ref.watch(isAdminProvider).toString()}, 현재 라우트: $currentRouteName');
           // LoginUseCase 인스턴스 생성
           final loginUseCase =
               LoginUseCase(ref: ref);

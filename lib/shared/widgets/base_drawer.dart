@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:dotted_line/dotted_line.dart";
 import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/theme/palette.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // BaseDrawer를 ConsumerWidget으로 변환
 class BaseDrawer extends ConsumerWidget {
@@ -202,7 +201,7 @@ class BaseDrawer extends ConsumerWidget {
               ),
             ),
             onTap: () =>
-                authService.logout(context), // onTap 이벤트를 직접 logout 함수 호출로 변경
+                authService.logout(context, ref), // onTap 이벤트를 직접 logout 함수 호출로 변경
           ),
           SizedBox(
             height: 40,

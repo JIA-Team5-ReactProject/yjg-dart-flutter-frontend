@@ -1,12 +1,14 @@
 class Admingenerated {
   User? user;
   String? accessToken;
+  String? refreshToken;
 
-  Admingenerated({this.user, this.accessToken});
+  Admingenerated({this.user, this.accessToken, this.refreshToken});
 
   Admingenerated.fromJson(Map<String, dynamic> json) {
-    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
     accessToken = json['access_token'];
+    refreshToken = json['refresh_token'];
   }
 
   Map<String, dynamic> toJson() {
@@ -15,6 +17,7 @@ class Admingenerated {
       data['user'] = user!.toJson();
     }
     data['access_token'] = accessToken;
+    data['refresh_token'] = refreshToken;
     return data;
   }
 }
