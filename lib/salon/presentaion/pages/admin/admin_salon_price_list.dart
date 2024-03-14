@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/salon/presentaion/widgets/admin/edit_service_button.dart';
 import 'package:yjg/salon/presentaion/widgets/booking_service_button.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
 import 'package:yjg/shared/theme/palette.dart';
@@ -25,12 +26,26 @@ class AdminSalonPricelist extends StatelessWidget {
               SizedBox(
                 height: 12.0,
               ),
-              Text(
-                '1. 서비스를 선택해 주세요.',
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Text(
+                    '카테고리',
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      // 카테고리 추가 모달 호출
+                    },
+                    child: Icon(
+                      Icons.add,
+                      size: 20.0,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                height: 12.0,
+                height: 15.0,
               ),
               Row(
                 children: [
@@ -62,7 +77,28 @@ class AdminSalonPricelist extends StatelessWidget {
               SizedBox(
                 height: 30.0,
               ),
-              BookingServiceButton(),
+              Row(
+                children: [
+                  Text(
+                    '서비스',
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      // 카테고리 추가 모달 호출
+                    },
+                    child: Icon(
+                      Icons.add,
+                      size: 20.0,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
+              EditServiceButton()
             ],
           ),
         ),
