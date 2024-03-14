@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
 import 'package:yjg/administration/presentaion/pages/as_page.dart';
@@ -47,19 +48,25 @@ void main() async {
   final storage = FlutterSecureStorage();
   await dotenv.load(fileName: ".env");
 
-  final deviceInfo = await getDeviceInfo();
+  await getDeviceInfo();
 
   // String initialRoute = '/salon_main'; // ! 로그인 안 할 경우 원하는 라우터를 입력해주세요.
 
   // ! 로그인 할 경우 FlutterNativePlash.remove() 전에 작성된 모든 코드의 주석을 해제해주세요.
   String initialRoute = '/login_student';
-  final autoLoginStr = await storage.read(key: 'auto_login');
-  final isAutoLogin = autoLoginStr == 'true';
+
   final token = await storage.read(key: 'auth_token');
-  tokenDecoder(token);
+  final autoLoginStr = await storage.read(key: 'auto_login');
+  final refreshToken = await storage.read(key: 'refresh_token');
+  bool hasExpired = JwtDecoder.isExpired(token!);
+  debugPrint('token: $token');
+  debugPrint('refreshToken: $refreshToken');
+  
+  tokenDecoder(token, autoLoginStr!);
   String? userType = await storage.read(key: 'userType');
 
-  if (isAutoLogin && token != null) {
+  // 자동로그인이 true이고, 토큰이 만료되지 않았을 경우
+  if (autoLoginStr == 'true' && hasExpired == false) {
     switch (userType) {
       case 'student':
         initialRoute = '/dashboard_main'; // 학생 대시보드로 이동
@@ -166,7 +173,7 @@ class MyApp extends ConsumerWidget {
 
         // AS 관련(관리자)
         '/as_admin': (context) => AsMain(),
-        // '/as_detail': (context) => AsDetail(),
+        '/as_detail': (context) => AsDetail(),
       },
     );
   }
