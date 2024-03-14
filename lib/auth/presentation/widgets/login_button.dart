@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/auth/domain/usecases/login_usecase.dart';
-import 'package:yjg/auth/presentation/viewmodels/login_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class LoginButton extends ConsumerWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
+  static final storage = FlutterSecureStorage();
 
   LoginButton({
     Key? key,
@@ -24,10 +25,10 @@ class LoginButton extends ConsumerWidget {
 
           // 현재 라우트가 '/login_student'인 경우 isAdminProvider의 상태를 false로 설정(라우터에 따른 API 통신 변경)
           currentRouteName == '/login_student'
-              ? ref.read(isAdminProvider.notifier).setIsAdminState(false)
-              : ref.read(isAdminProvider.notifier).setIsAdminState(true);
+              ? storage.write(key: 'isAdmin', value: 'false') 
+              : storage.write(key: 'isAdmin', value: 'true'); 
 
-          debugPrint('유형: ${ref.watch(isAdminProvider).toString()}, 현재 라우트: $currentRouteName');
+          debugPrint('유형: ${await storage.read(key: 'isAdmin')}, 현재 라우트: $currentRouteName');
           // LoginUseCase 인스턴스 생성
           final loginUseCase =
               LoginUseCase(ref: ref);
