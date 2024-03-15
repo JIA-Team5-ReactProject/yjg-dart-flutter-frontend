@@ -3,14 +3,14 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import 'package:yjg/salon/presentaion/viewmodels/booking_select_id_viewmodel.dart';
 import "package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart";
 import "package:yjg/salon/presentaion/viewmodels/service_viewmodel.dart";
-import "package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart";
 import "package:yjg/salon/presentaion/widgets/admin/edit_service_modal.dart";
 import "package:yjg/salon/presentaion/widgets/booking_next_modal.dart";
 import "package:yjg/shared/theme/palette.dart";
 import 'package:intl/intl.dart';
 
 class EditServiceButton extends ConsumerStatefulWidget {
-  const EditServiceButton({super.key});
+  EditServiceButton({super.key, required this.uniqueKey});
+  final String uniqueKey;
 
   @override
   _EditServiceButton createState() => _EditServiceButton();
@@ -37,13 +37,10 @@ class _EditServiceButton extends ConsumerState<EditServiceButton> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final userSelection = ref.watch(userSelectionProvider);
-    final selectedGender = userSelection.selectedGender;
-    final selectedCategoryId = userSelection.selectedCategoryId;
-    String uniqueKey = "${selectedGender}_${selectedCategoryId}";
-
-    final servicesAsyncValue = ref.watch(servicesProvider(uniqueKey));
+  Widget build(
+    BuildContext context,
+  ) {
+    final servicesAsyncValue = ref.watch(servicesProvider(widget.uniqueKey));
 
     return servicesAsyncValue.when(
       data: (services) => ListView.builder(
@@ -67,8 +64,8 @@ class _EditServiceButton extends ConsumerState<EditServiceButton> {
                   serviceName,
                   service.gender!,
                   ref,
-                  uniqueKey),
-              debugPrint('${ref.read(salonCategoryProvider)}')
+                  widget.uniqueKey),
+              debugPrint('${ref.read(salonCategoryProvider)}'),
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
