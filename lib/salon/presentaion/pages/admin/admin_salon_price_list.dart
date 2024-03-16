@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
+import 'package:yjg/salon/presentaion/widgets/admin/add_service_modal.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/edit_service_button.dart';
-import 'package:yjg/salon/presentaion/widgets/booking_service_button.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
@@ -8,11 +10,15 @@ import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 
-class AdminSalonPricelist extends StatelessWidget {
+class AdminSalonPricelist extends ConsumerWidget {
   AdminSalonPricelist({Key? key}) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userSelection = ref.watch(userSelectionProvider);
+    final selectedGender = userSelection.selectedGender;
+    final selectedCategoryId = userSelection.selectedCategoryId;
+    String uniqueKey = "${selectedGender}_${selectedCategoryId}";
+
     return Scaffold(
       appBar: BaseAppBar(title: "미용실 예약"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
@@ -33,14 +39,18 @@ class AdminSalonPricelist extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
                   InkWell(
                     onTap: () {
-                      // 카테고리 추가 모달 호출
+                      addServiceModal(context, ref, uniqueKey);
                     },
-                    child: Icon(
-                      Icons.add,
-                      size: 20.0,
-                    ),
+                    child: Text('추가',
+                        style: TextStyle(
+                            color: Palette.mainColor,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -84,21 +94,25 @@ class AdminSalonPricelist extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
                   InkWell(
                     onTap: () {
-                      // 카테고리 추가 모달 호출
+                      addServiceModal(context, ref, uniqueKey);
                     },
-                    child: Icon(
-                      Icons.add,
-                      size: 20.0,
-                    ),
+                    child: Text('추가',
+                        style: TextStyle(
+                            color: Palette.mainColor,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
               SizedBox(
                 height: 15.0,
               ),
-              EditServiceButton()
+              EditServiceButton(uniqueKey: uniqueKey)
             ],
           ),
         ),
