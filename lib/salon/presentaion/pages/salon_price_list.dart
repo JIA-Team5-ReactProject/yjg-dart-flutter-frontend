@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_service_list.dart';
 import 'package:yjg/shared/theme/palette.dart';
@@ -13,6 +14,10 @@ class SalonPriceList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+     final userSelection = ref.watch(userSelectionProvider);
+    final selectedGender = userSelection.selectedGender;
+    final selectedCategoryId = userSelection.selectedCategoryId;
+    String uniqueKey = "${selectedGender}_${selectedCategoryId}";
     return Scaffold(
       appBar: BaseAppBar(
         title: '가격표',
@@ -46,7 +51,7 @@ class SalonPriceList extends ConsumerWidget {
                     SizedBox(
                       width: 10.0,
                     ),
-                    FilterGroupButton(dataType: '성별')
+                    FilterGroupButton(dataType: '성별', uniqueKey: uniqueKey)
                   ],
                 ),
                 SizedBox(
@@ -62,7 +67,7 @@ class SalonPriceList extends ConsumerWidget {
                     SizedBox(
                       width: 10.0,
                     ),
-                    FilterGroupButton(dataType: '유형')
+                    FilterGroupButton(dataType: '유형', uniqueKey: uniqueKey)
                   ],
                 ),
                 SizedBox(
