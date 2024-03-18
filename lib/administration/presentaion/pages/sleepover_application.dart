@@ -22,6 +22,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   final Color _cancelColor = Colors.red; // 취소 버튼 색상
   static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
 
+  //외박/외출 필드 전부 안 채웠을 때 함수
   void _showDialog(String title, String content) {
     showDialog(
       context: context,
@@ -34,6 +35,27 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
               child: Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //외박/외출 필드 입력 완료 후 함수
+  void _showSuccessDialog(String title, String content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 성공 메시지 대화상자 닫기
                 Navigator.of(context).pop(); // 외박/외출 신청 페이지 닫기
                 Navigator.of(context)
                     .pushReplacementNamed('/sleepover'); // '/sleepover' 경로로 이동
@@ -94,15 +116,31 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     );
   }
 
+  //날짜 선택 함수
   Widget _datePickerButton(
       String hint, DateTime? selectedDate, ValueChanged<DateTime> onSelected) {
     return OutlinedButton(
       onPressed: () async {
+        DateTime firstDate = DateTime.now(); // 선택 가능한 첫 번째 날짜, 기본값은 오늘
+        DateTime lastDate = DateTime.now()
+            .add(Duration(days: 30)); // 선택 가능한 마지막 날짜, 기본값은 오늘부터 30일 후
+
+        if (hint.contains('시작')) {
+          // 시작 날짜 선택기
+          if (_endDate != null) {
+            // 종료 날짜가 이미 선택되어 있다면, 선택 가능한 마지막 날짜를 종료 날짜로 설정
+            lastDate = _endDate!;
+          }
+        } else {
+          // 종료 날짜 선택기
+          // 종료 날짜 선택기의 경우 firstDate와 lastDate의 기본값 사용
+        }
+
         final DateTime? pickedDate = await showDatePicker(
           context: context,
           initialDate: selectedDate ?? DateTime.now(),
-          firstDate: DateTime.now(), // 오늘 날짜로 변경
-          lastDate: DateTime(DateTime.now().year + 5),
+          firstDate: firstDate,
+          lastDate: lastDate,
           locale: const Locale('ko', 'KR'),
         );
         if (pickedDate != null) {
@@ -207,7 +245,8 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
           'content': _reasonController.text,
           'type': type,
         }),
-        headers: {          //아래 토큰 $token으로 바꿔줘야함
+        headers: {
+          //아래 토큰 $token으로 바꿔줘야함
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json', // JSON 컨텐트 타입
         },
@@ -217,7 +256,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
         String successMessage = '외출/외박 신청이 완료되었습니다.\n\n'
             '시작일: ${DateFormat('yyyy-MM-dd').format(_startDate!)}\n'
             '종료일: ${DateFormat('yyyy-MM-dd').format(_endDate!)}';
-        _showDialog('성공', successMessage);
+        _showSuccessDialog('성공', successMessage);
       } else {
         _showDialog('실패', '외출/외박 신청에 실패했습니다. 다시 시도해주세요.');
       }

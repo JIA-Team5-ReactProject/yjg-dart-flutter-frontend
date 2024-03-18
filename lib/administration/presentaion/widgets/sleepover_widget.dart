@@ -67,13 +67,16 @@ class _SleepoverWidgetState extends State<SleepoverWidget> {
                 onPressed: () async {
                   await deleteApplication(widget.id);
                   // 결과를 전달하며 Navigator.pop 메서드 호출
-                  Navigator.of(context).pop(true); // true는 성공적으로 삭제됐음을 나타냄
+                  Navigator.of(context).pop(); //현재 alert창 닫기
+                  Navigator.of(context).pop(); //외박/외출 메인 창 닫기
+                  Navigator.pushNamed(context, '/sleepover');
                 },
               ),
               TextButton(
                 child: Text('닫기'),
                 onPressed: () {
                   Navigator.of(context).pop(); // alert 창 닫기
+
                 },
               ),
             ],
