@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
@@ -27,6 +26,7 @@ class AdminMain extends StatefulWidget {
 class _AdminMainState extends State<AdminMain> {
   static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
 
+  //예약 AS get 함수
   Future<Map<String, dynamic>?> fetchLatestASRequest() async {
     final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
 
@@ -46,6 +46,25 @@ class _AdminMainState extends State<AdminMain> {
     return null;
   }
 
+  Future<Map<String, dynamic>?> fetchLatestReservation() async {
+    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+
+    final response = await http.get(
+      Uri.parse('$apiURL/api/meeting-room/reservation/user'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      List<dynamic> reservations = data['meeting_room_reservations'];
+      if (reservations.isNotEmpty) {
+        // 가장 최근의 예약 정보 반환
+        return reservations.first;
+      }
+    }
+    return null; // 예약 정보가 없는 경우
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,19 +81,37 @@ class _AdminMainState extends State<AdminMain> {
               child: Stack(
                 children: [
                   BlueMainRoundedBox(),
-                  Positioned(
-                    top: 15,
-                    left: 0,
-                    right: 0,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      child: WhiteMainRoundedBox(
-                        iconData: Icons.headset_mic,
-                        mainText: '생활관B동 - 208호',
-                        secondaryText: '회의실 예약 인권: $person명',
-                        actionText: '예약취소',
-                        timeText: '',
-                      ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.04),
+                    child: FutureBuilder<Map<String, dynamic>?>(
+                      future: fetchLatestReservation(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator(); // 로딩 중
+                        } else if (snapshot.hasData && snapshot.data != null) {
+                          final reservation = snapshot.data!;
+                          final meetingRoomNumber =
+                              reservation['meeting_room_number'];
+                          final startTime =
+                              reservation['reservation_s_time'].substring(0, 5);
+                          final endTime =
+                              "${reservation['reservation_e_time'].substring(0, 2)}:59";
+
+                          return WhiteMainRoundedBox(
+                            iconData: Icons.headset_mic,
+                            mainText: '생활관B동 - $meetingRoomNumber호',
+                            secondaryText:
+                                '예약 날짜: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(reservation['reservation_date']))}',
+                            actionText: '예약 시간: $startTime ~ $endTime',
+                            timeText: '',
+                          );
+                        } else {
+                          return Text('회의실 예약 정보가 없습니다.');
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -117,7 +154,7 @@ class _AdminMainState extends State<AdminMain> {
                       icon: Icons.groups,
                       text1: '회의실 예약',
                       text2: '생활관,라운지 회의실 예약',
-                      route: '/meeting_room'),
+                      route: '/meeting_room_main'),
                 ],
               ),
             ),
