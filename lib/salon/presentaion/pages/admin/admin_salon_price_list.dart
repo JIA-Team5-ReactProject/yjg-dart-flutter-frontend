@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
+import 'package:yjg/salon/presentaion/widgets/admin/add_category_modal.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/add_service_modal.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/edit_service_button.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
@@ -20,7 +21,7 @@ class AdminSalonPricelist extends ConsumerWidget {
     String uniqueKey = "${selectedGender}_${selectedCategoryId}";
 
     return Scaffold(
-      appBar: BaseAppBar(title: "미용실 예약"),
+      appBar: BaseAppBar(title: "미용실 가격표"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       drawer: const BaseDrawer(),
       body: CustomSingleChildScrollView(
@@ -44,7 +45,7 @@ class AdminSalonPricelist extends ConsumerWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      addServiceModal(context, ref, uniqueKey);
+                      addCategoryModal(context, ref, uniqueKey);
                     },
                     child: Text('추가',
                         style: TextStyle(
@@ -55,7 +56,7 @@ class AdminSalonPricelist extends ConsumerWidget {
                 ],
               ),
               SizedBox(
-                height: 15.0,
+                height: 10.0,
               ),
               Row(
                 children: [
@@ -66,11 +67,11 @@ class AdminSalonPricelist extends ConsumerWidget {
                   SizedBox(
                     width: 10.0,
                   ),
-                  FilterGroupButton(dataType: '성별')
+                  FilterGroupButton(dataType: '성별', uniqueKey: uniqueKey)
                 ],
               ),
               SizedBox(
-                height: 13.0,
+                height: 5.0,
               ),
               Row(
                 children: [
@@ -81,7 +82,7 @@ class AdminSalonPricelist extends ConsumerWidget {
                   SizedBox(
                     width: 10.0,
                   ),
-                  FilterGroupButton(dataType: '유형')
+                  FilterGroupButton(dataType: '유형', uniqueKey: uniqueKey)
                 ],
               ),
               SizedBox(
