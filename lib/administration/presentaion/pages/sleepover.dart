@@ -87,7 +87,7 @@ class _SleepoverState extends State<Sleepover> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/sleepover_application');
+                      Navigator.pushNamed(context, '/sleepover_application');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
