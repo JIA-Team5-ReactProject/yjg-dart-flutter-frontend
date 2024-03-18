@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/shared/constants/api_url.dart';
-import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -98,7 +97,7 @@ class _AsDetailState extends State<AsDetail> {
       },
     );
 
-    // 사용자가 '예'를 선택한 경우에만 삭제 진행
+    // 사용자가 예를 선택한 경우에만 삭제 진행
     if (confirmDelete) {
       final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
       final response = await http.delete(
@@ -202,11 +201,11 @@ class _AsDetailState extends State<AsDetail> {
                     const SizedBox(height: 15.0),
                     const AsNoticeBox(),
                     ServiceRequester(
-                      requester: asDetail['afterService']['user']['name'], // 신청자 이름
-                      serviceLocation: asDetail['afterService']['visit_place'], // 처리장소
-                      stateNum: asDetail['afterService']['status'], // 상태
-                      phoneNumber: asDetail['afterService']['user']['phone_number'], // 전화번호
-                      visitDate: asDetail['afterService']['visit_date'], // 희망처리일자
+                      requester: asDetail['afterService']['user']['name']?? '이름 미정', // 신청자 이름
+                      serviceLocation: asDetail['afterService']['visit_place']?? '처리 장소 미정', // 처리장소
+                      stateNum: asDetail['afterService']['status']?? '처리 상태 미정', // 상태
+                      phoneNumber: asDetail['afterService']['user']['phone_number']?? '전화번호 미정', // 전화번호
+                      visitDate: asDetail['afterService']['visit_date']?? '처리 날짜 미정', // 희망처리일자
                       isEditing: _isEditing,
                       onVisitDateChanged: (newValue) {
                         _editedVisitDate = newValue;
