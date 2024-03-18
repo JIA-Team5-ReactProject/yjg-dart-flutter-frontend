@@ -6,7 +6,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
 import 'package:yjg/administration/presentaion/pages/as_page.dart';
-import 'package:yjg/administration/presentaion/pages/meeting_room.dart';
+import 'package:yjg/administration/presentaion/pages/meeting_room_app.dart';
+import 'package:yjg/administration/presentaion/pages/meeting_room_main.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
 import 'package:yjg/as(admin)/presentation/pages/as_detail.dart';
@@ -34,7 +35,7 @@ import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
 import 'package:yjg/shared/service/device_info.dart';
-import 'package:yjg/shared/service/load_set_student_name.dart';
+// import 'package:yjg/shared/service/load_set_student_name.dart';
 import 'package:yjg/shared/service/token_decoder.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -111,7 +112,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    loadAndSetStudentName(ref); // 로그인 이름 설정
+    // loadAndSetStudentName(ref); // 로그인 이름 설정
 
     return MaterialApp(
       //외박 신청 달력 언어 설정
@@ -174,7 +175,8 @@ class MyApp extends ConsumerWidget {
         '/as_application': (context) => AsApplication(),
         '/sleepover': (context) => Sleepover(),
         '/sleepover_application': (context) => SleepoverApplication(),
-        '/meeting_room': (context) => MeetingRoom(),
+        '/meeting_room_app': (context) => MeetingRoomApp(),
+        '/meeting_room_main':(context) => MeetingRoomMain(),
 
         // AS 관련(관리자)
         '/as_admin': (context) => AsMain(),
