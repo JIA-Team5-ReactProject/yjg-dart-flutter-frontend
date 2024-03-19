@@ -51,9 +51,6 @@ class SalonBookingStepOne extends ConsumerWidget {
                   FilterGroupButton(dataType: '성별', uniqueKey: uniqueKey)
                 ],
               ),
-              SizedBox(
-                height: 13.0,
-              ),
               Row(
                 children: [
                   Text(
@@ -67,7 +64,7 @@ class SalonBookingStepOne extends ConsumerWidget {
                 ],
               ),
               SizedBox(
-                height: 30.0,
+                height: 20.0,
               ),
               BookingServiceButton(),
             ],

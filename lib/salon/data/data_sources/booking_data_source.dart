@@ -37,11 +37,14 @@ class BookingDataSource {
       int serviceId, String reservationDate, String reservationTime) async {
     final token = await storage.read(key: 'auth_token');
     String url = '$apiURL/api/salon/reservation';
+
     final body = jsonEncode({
       'salon_service_id': serviceId,
-      'r_date': reservationDate,
-      'r_time': reservationTime
+      'reservation_date': reservationDate,
+      'reservation_time': reservationTime
     });
+
+    debugPrint(body);
 
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{

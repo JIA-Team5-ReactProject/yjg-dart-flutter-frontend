@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:yjg/salon/presentaion/widgets/booking_calendar.dart";
+import "package:yjg/salon/presentaion/widgets/admin/admin_booking_calendar.dart";
 import "package:yjg/shared/widgets/base_appbar.dart";
 import "package:yjg/shared/widgets/bottom_navigation_bar.dart";
 
@@ -12,19 +12,22 @@ class AdminSalonBooking extends StatelessWidget {
       appBar: const BaseAppBar(title: "예약 관리"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              alignment: Alignment(-0.85, 0.2),
-              child: const Text(
-                '예약 날짜 선택',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                alignment: Alignment(-0.85, 0.2),
+                child: const Text(
+                  '예약 날짜 선택',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            BookingCalendar(),
-            SizedBox(height: 20),
-          ],
+              AdminBookingCalendar(),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
