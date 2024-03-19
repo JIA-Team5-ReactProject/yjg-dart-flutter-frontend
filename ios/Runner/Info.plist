@@ -31,6 +31,10 @@
 			<array>
 				<string>$(GIDClientID)</string>
 			</array>
+			<key>NSCameraUsageDescription</key>
+			<string>이 앱에서는 사진을 찍기 위해 카메라에 접근이 필요함.</string>
+			<key>NSPhotoLibraryUsageDescription</key>
+			<string>이 앱에서는 사진을 선택하기 위해 사진 앨범에 접근이 필요함.</string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
