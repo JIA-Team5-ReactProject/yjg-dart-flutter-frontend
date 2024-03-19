@@ -48,10 +48,14 @@ class RoundedBox extends ConsumerWidget {
                     // 수평 정렬
                     children: <Widget>[
                       CustomRoundedButton(
-                          onPressed: () {}, buttonText: '버스 QR'),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/meal_qr');
+                          }, buttonText: '버스 QR'),
                       SizedBox(width: 8),
                       CustomRoundedButton(
-                          onPressed: () {}, buttonText: '식수 QR'),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/meal_qr');
+                          }, buttonText: '식수 QR'),
                     ],
                   ),
                 ],
