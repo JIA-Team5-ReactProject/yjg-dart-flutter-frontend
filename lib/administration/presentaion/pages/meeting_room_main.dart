@@ -181,7 +181,7 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
                     );
                   } else {
                     // 데이터가 없을 경우 사용자에게 알림
-                    return Center(child: Text("현재 예약된 회의실이 없습니다."));
+                    return Center(child: Text("현재 예약된 회의실이 없습니다.",style: TextStyle(color: Colors.grey),));
                   }
                 }
               },

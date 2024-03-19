@@ -100,18 +100,19 @@ class _SleepoverWidgetState extends State<SleepoverWidget> {
         ),
         child: Row(
           children: [
+            SizedBox(width: 25,),
             Container(
-              margin: EdgeInsets.all(10),
               child: Text(
                 statusText,
                 style: TextStyle(color: statusColor, fontSize: 25),
               ),
             ),
+            SizedBox(width: 25,),
             Text(
               widget.startDate,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            Text('~'),
+            Text(' ~ '),
             Container(
               width: 170,
               child: Stack(
@@ -122,7 +123,7 @@ class _SleepoverWidgetState extends State<SleepoverWidget> {
                       opacity: 0.4,
                       child: Image.asset(
                         'assets/img/yju_tiger_logo.png',
-                        width: 80,
+                        width: 90,
                       ),
                     ),
                   ),

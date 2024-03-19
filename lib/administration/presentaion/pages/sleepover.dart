@@ -102,6 +102,24 @@ class _SleepoverState extends State<Sleepover> {
               ],
             ),
           ),
+
+          //신청 내역 글자
+          Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.only(left: 20, top: 20, bottom: 10),
+            child: Text('신청 내역'),
+          ),
+
+          //선
+          Container(
+            width: 380,
+            margin: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              border:
+                  Border(top: BorderSide(color: Color.fromARGB(255, 0, 0, 0))),
+            ),
+          ),
+          
           Expanded(
             child: FutureBuilder<List<dynamic>>(
               future: _sleepoverApplications,
@@ -111,7 +129,7 @@ class _SleepoverState extends State<Sleepover> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('외박/외출 신청 목록 없음'));
+                  return Center(child: Text('현재 신청된 외박/외출이 없습니다.',style: TextStyle(color: Colors.grey),));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
