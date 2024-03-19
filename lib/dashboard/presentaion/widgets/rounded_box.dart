@@ -49,7 +49,7 @@ class RoundedBox extends ConsumerWidget {
                     children: <Widget>[
                       CustomRoundedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/meal_qr');
+                            Navigator.pushNamed(context, '/bus_qr');
                           }, buttonText: '버스 QR'),
                       SizedBox(width: 8),
                       CustomRoundedButton(
