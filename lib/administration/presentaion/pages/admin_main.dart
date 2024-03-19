@@ -13,9 +13,6 @@ import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
 import 'package:http/http.dart' as http;
 
-//임의 나중에 제거
-var person = 8;
-
 class AdminMain extends StatefulWidget {
   const AdminMain({super.key});
 
@@ -109,7 +106,61 @@ class _AdminMainState extends State<AdminMain> {
                             timeText: '',
                           );
                         } else {
-                          return Text('회의실 예약 정보가 없습니다.');
+                          return Container(
+                            height: 120.0,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 10.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Palette.stateColor4.withOpacity(0.5),
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(20.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  spreadRadius: 0,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Palette.mainColor.withOpacity(0.1),
+                                  radius: 30.0,
+                                  child: Icon(
+                                    Icons.headset_mic,
+                                    color: Palette.mainColor.withOpacity(0.7),
+                                    size: 30.0,
+                                  ),
+                                ),
+                                SizedBox(width: 10.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '예약 된 회의실 없음',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Palette.textColor,
+                                          fontSize: 15.0,
+                                        ),
+                                      ),
+                                      SizedBox(height: 3.0), // 텍스트 간격 조정
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       },
                     ),

@@ -83,9 +83,9 @@ class _RestaurantMainState extends State<RestaurantMain> {
         }
 
         setState(() {
-          breakfastMenu = newBreakfastMenu.isNotEmpty ? newBreakfastMenu : ['등록 된','메뉴가','없습니다.'];
-          lunchMenu = newLunchMenu.isNotEmpty ? newLunchMenu : ['등록 된','메뉴가','없습니다.'];
-          dinnerMenu = newDinnerMenu.isNotEmpty ? newDinnerMenu : ['등록 된','메뉴가','없습니다.'];
+          breakfastMenu = newBreakfastMenu.isNotEmpty ? newBreakfastMenu : [' ','등록 된','메뉴가','없습니다.'];
+          lunchMenu = newLunchMenu.isNotEmpty ? newLunchMenu : [' ','등록 된','메뉴가','없습니다.'];
+          dinnerMenu = newDinnerMenu.isNotEmpty ? newDinnerMenu : [' ','등록 된','메뉴가','없습니다.'];
         }); // 데이터를 가져왔으므로 UI 갱신
       } else {
         print('메뉴 가져오기 실패');
