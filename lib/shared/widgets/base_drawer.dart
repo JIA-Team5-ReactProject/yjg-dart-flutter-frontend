@@ -56,7 +56,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('시간표'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context); //drawer 닫기
+              Navigator.of(context).popUntil((route) => route.isFirst); //열린 창 다 닫고 첫 페이지(홈) 이동
+              Navigator.pushNamed(context, '/bus_schedule'); // 원하는 페이지 이동
+            },
           ),
 
           Padding(
@@ -84,7 +88,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('식단표'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/menu_list');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.event),
@@ -92,7 +100,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('주말 식수'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/weekend_meal');
+            },
           ),
           Padding(
             padding:
@@ -119,7 +131,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('예약'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/salon_booking_step_one');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.content_paste_search),
@@ -127,7 +143,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('가격표'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/salon_price_list');
+            },
           ),
           Padding(
             padding:
@@ -154,7 +174,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('공지사항'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/notice');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.construction),
@@ -162,7 +186,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('AS 요청'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/as_application');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.work_history_outlined),
@@ -170,7 +198,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('외박/외출 신청'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/sleepover_application');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.groups_outlined),
@@ -178,7 +210,11 @@ class BaseDrawer extends ConsumerWidget {
             focusColor: Palette.mainColor,
             title: const Text('회의실 예약'),
             trailing: const Icon(Icons.navigate_next),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushNamed(context, '/meeting_room_app');
+            },
           ),
           Padding(
             padding:
