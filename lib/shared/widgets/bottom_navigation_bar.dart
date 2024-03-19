@@ -18,7 +18,19 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ),
       ],
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Palette.mainColor
+      selectedItemColor: Palette.mainColor,
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            // 현재 열려있는 창 다 닫고 홈(첫번째 페이지)으로 이동
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            break;
+          case 1:
+            // 설정으로 이동하는 네비게이션
+            
+            break;
+        }
+      },
     );
   }
 }
