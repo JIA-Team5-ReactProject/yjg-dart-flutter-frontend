@@ -1,11 +1,8 @@
 import 'dart:collection';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:yjg/salon/data/data_sources/booking_data_source.dart';
-import 'package:yjg/salon/data/models/business_hours.dart';
 import 'package:yjg/salon/presentaion/viewmodels/booking_business_hours_viewmodel.dart';
 import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
 import 'package:yjg/salon/presentaion/widgets/time_slots_grid.dart';
@@ -67,22 +64,6 @@ class _BookingCalendarState extends ConsumerState<BookingCalendar> {
           focusedDay: _focusedDay,
           eventLoader: _getEventForDay,
           calendarBuilders: CalendarBuilders(
-            markerBuilder: (context, day, events) {
-              if (events.isNotEmpty) {
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 1),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Palette.stateColor1,
-                    ),
-                    width: 5.0,
-                    height: 5.0,
-                  ),
-                );
-              }
-            },
             dowBuilder: (context, day) {
               switch (day.weekday) {
                 case 1:
