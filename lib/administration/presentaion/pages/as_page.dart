@@ -120,6 +120,8 @@ class _AsPageState extends State<AsPage> {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text("에러(as_page.dart)"));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('현재 요청된 AS가 없습니다.',style: TextStyle(color: Colors.grey),));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
