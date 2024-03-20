@@ -38,6 +38,7 @@ class NoticeBox extends StatelessWidget {
             title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
+              overflow: TextOverflow.ellipsis,
               fontSize: 16.0,
             ),
           ),
@@ -45,6 +46,7 @@ class NoticeBox extends StatelessWidget {
           Text(
             content,
             style: TextStyle(
+              overflow: TextOverflow.ellipsis,
               fontSize: 14.0,
             ),
           ),
