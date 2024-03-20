@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/viewmodels/category_viewmodel.dart';
 import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
-import 'package:yjg/salon/presentaion/widgets/admin/add_category_modal.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/edit_category_modal.dart';
 
 import 'package:yjg/shared/theme/palette.dart';
