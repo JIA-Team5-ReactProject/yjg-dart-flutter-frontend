@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class User extends ChangeNotifier {
   String email;
   String password;
+  String newPassword;
   String name;
   String phoneNumber;
   String displayName;
@@ -12,6 +13,7 @@ class User extends ChangeNotifier {
   User(
       {required this.email,
       required this.password,
+      required this.newPassword,
       required this.name,
       required this.phoneNumber,
       required this.displayName,
@@ -51,11 +53,14 @@ class User extends ChangeNotifier {
     String? studentId,
     String? name,
     String? phoneNumber,
+    String? newPassword,
+    String? password,
   }) {
     if (studentId != null) this.studentId = studentId;
     if (name != null) this.name = name;
     if (phoneNumber != null) this.phoneNumber = phoneNumber;
-
+    if (newPassword != null) this.newPassword = newPassword;
+    if (password != null) this.password = password;
     notifyListeners(); // User 객체가 변경되었음을 알림
   }
 
