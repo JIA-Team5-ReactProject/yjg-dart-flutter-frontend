@@ -32,7 +32,7 @@ class _NoticeState extends State<Notice> {
   Future<void> fetchNotices(int page, String tag) async {
     final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
     final response = await http.get(
-      Uri.parse('$apiURL/api/notice?page=$page&tag=$tag'),
+      Uri.parse('$apiURL/api/notice?page=$page'),
       headers: {
         "Content-Type": "application/json",
         "Authorization"://아래에 토큰을 $token으로 바꿔줘야함
