@@ -42,13 +42,10 @@ class AdminServiceDataSource {
   Future<http.Response> patchServiceAPI(
       int serviceId, String? serviceName, String? gender, String? price) async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon/service';
-    final body = jsonEncode({
-      'service_id': serviceId,
-      'service': serviceName,
-      "gender": gender,
-      "price": price
-    });
+    String url = '$apiURL/api/salon/service/$serviceId';
+
+    final body =
+        jsonEncode({'service': serviceName, "gender": gender, "price": price});
 
     final response = await http.patch(Uri.parse(url),
         headers: <String, String>{
@@ -57,7 +54,7 @@ class AdminServiceDataSource {
         },
         body: body);
 
-    debugPrint('서비스 수정 결과: ${response.statusCode}, ${response.body}');
+    debugPrint('서비스 수정 결과: ${response.statusCode},');
 
     if (response.statusCode == 200) {
       return response;
