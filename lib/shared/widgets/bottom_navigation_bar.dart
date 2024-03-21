@@ -26,8 +26,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             Navigator.of(context).popUntil((route) => route.isFirst);
             break;
           case 1:
-            // 설정으로 이동하는 네비게이션
-            
+            Navigator.of(context).pushNamed('/setting');
             break;
         }
       },
