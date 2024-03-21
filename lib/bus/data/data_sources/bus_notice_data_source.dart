@@ -32,14 +32,25 @@ class BusNoticeDataSource {
     );
 
     if (response.statusCode == 200) {
-      // JSON 문자열을 Noticegenerated 객체로 변환
       final noticeGenerated =
           Noticegenerated.fromJson(json.decode(response.body));
 
-      // Noticegenerated 객체에서 notices 리스트를 반환
+      // 각 공지사항의 content 필드에서 HTML 태그를 제거
+      noticeGenerated.notices?.forEach((notice) {
+        notice.content = _removeHtmlTags(notice.content);
+      });
+
       return noticeGenerated.notices ?? [];
     } else {
       throw Exception('공지사항을 불러오는데 실패했습니다.');
     }
   }
+}
+
+// html 태그 제거
+String _removeHtmlTags(String? htmlText) {
+  if (htmlText == null) return '';
+  final RegExp regExp =
+      RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+  return htmlText.replaceAll(regExp, '');
 }
