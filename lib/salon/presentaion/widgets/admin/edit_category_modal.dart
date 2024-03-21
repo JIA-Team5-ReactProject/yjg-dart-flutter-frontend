@@ -42,6 +42,9 @@ void editCategoryModal(
                   controller: categoryController,
                   decoration: InputDecoration(
                     labelText: '카테고리명',
+                    labelStyle: TextStyle(
+                      color: Palette.textColor.withOpacity(0.7),
+                    ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Palette.mainColor),
                     ),

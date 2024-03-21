@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:yjg/salon/data/data_sources/admin/admin_reservation_data_source.dart';
 import 'package:yjg/salon/data/models/admin_booking.dart';
 import 'package:yjg/salon/domain/entities/admin_reservation.dart';
 import 'package:yjg/salon/domain/usecases/admin_reservation_usecase.dart';
 import 'package:yjg/salon/presentaion/viewmodels/admin_reservation_viewmodel.dart';
+import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 enum BookingAction { confirm, reject }
@@ -14,7 +16,7 @@ void showBookingStateModal(
   bool? isConfirm = true;
   final reservationUseCases =
       FetchReservationsUseCase(AdminReservationDataSource());
-
+  final selectedDay = ref.read(selectedDateProvider);
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
@@ -34,6 +36,12 @@ void showBookingStateModal(
                 ),
                 ListTile(
                   title: const Text('승인하기'),
+                  onTap: () {
+                    setState(() {
+                      selectedAction = BookingAction.confirm;
+                      isConfirm = true;
+                    });
+                  },
                   leading: Radio<BookingAction>(
                     value: BookingAction.confirm,
                     activeColor: Palette.mainColor,
@@ -49,14 +57,20 @@ void showBookingStateModal(
                 ),
                 ListTile(
                   title: const Text('거절하기'),
+                  onTap: () {
+                    setState(() {
+                      selectedAction = BookingAction.reject;
+                      isConfirm = false;
+                    });
+                  },
                   leading: Radio<BookingAction>(
                     value: BookingAction.reject,
+                    activeColor: Palette.mainColor,
                     groupValue: selectedAction,
                     onChanged: (BookingAction? value) {
                       setState(() => {
                             selectedAction = value,
                             isConfirm = false,
-                            debugPrint('isConfirm: $isConfirm')
                           });
                     },
                   ),
@@ -71,9 +85,13 @@ void showBookingStateModal(
                       );
                       ReservationResult result =
                           await reservationUseCases.updateStatus(updateState);
-
+                      debugPrint('selectedDay: $selectedDay');
                       if (result.isSuccess) {
-                        ref.refresh(reservationViewModelProvider);
+                        ref
+                            .read(reservationViewModelProvider.notifier)
+                            .fetchReservations(
+                                reservationDate: DateFormat('yyyy-MM-dd')
+                                    .format(selectedDay ?? DateTime.now()));
 
                         // 성공 알림 표시
                         ScaffoldMessenger.of(context).showSnackBar(
