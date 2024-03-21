@@ -18,33 +18,65 @@ class AsPage extends StatefulWidget {
 
 class _AsPageState extends State<AsPage> {
   static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  List<dynamic> asRequests = [];
+  String selectedFilter = '모두보기';
+  bool isLoading = true;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchASRequests();
+  }
 
   // API 통신 함수 (AS카드에 쓸 데이터 불러오기)
-  Future<List<dynamic>> fetchASRequests() async {
+  Future<void> fetchASRequests() async {
+    setState(() {
+      isLoading = true; // API 호출 시작 시 로딩 상태로 설정
+      errorMessage = ''; // 이전 에러 메시지 초기화
+    });
+
     try {
-      final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+      final token = await storage.read(key: 'auth_token');
       final response = await http.get(
         Uri.parse('$apiURL/api/after-service/user'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> data = jsonDecode(response.body);
-        return data['after_services'];
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        setState(() {
+          asRequests = data['after_services'];
+          isLoading = false; // 로딩 상태 해제
+        });
       } else {
-        print('Server returned ${response.statusCode}');
-        throw Exception('Failed to load AS requests');
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Failed to load AS requests';
+        });
       }
     } catch (e) {
-      print('Error occurred: $e');
-      throw Exception('Failed to fetch AS requests');
+      setState(() {
+        isLoading = false;
+        errorMessage = e.toString();
+      });
     }
+  }
+
+  //필터링 해서 API 함수 부르는 함수
+  List<dynamic> getFilteredRequests() {
+    if (selectedFilter == '처리전') {
+      return asRequests.where((req) => req['status'] == 0).toList();
+    } else if (selectedFilter == '처리완료') {
+      return asRequests.where((req) => req['status'] == 1).toList();
+    }
+    return asRequests;
   }
 
   @override
   Widget build(BuildContext context) {
+    List<dynamic> filteredRequests = getFilteredRequests();
+
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: 'AS요청'),
@@ -96,10 +128,38 @@ class _AsPageState extends State<AsPage> {
           ),
 
           //신청 내역 글자
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 20, top: 20, bottom: 10),
-            child: Text('신청 내역'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('신청 내역', style: TextStyle(fontSize: 13)),
+                DropdownButton<String>(
+                  value: selectedFilter,
+                  items: [
+                    DropdownMenuItem(
+                      value: '모두보기',
+                      child:
+                          Text('모두 보기', style: TextStyle(color: Colors.black,fontSize: 11)),
+                    ),
+                    DropdownMenuItem(
+                      value: '처리전',
+                      child: Text('처리 전', style: TextStyle(color: Colors.black,fontSize: 11)),
+                    ),
+                    DropdownMenuItem(
+                      value: '처리완료',
+                      child:
+                          Text('처리 완료', style: TextStyle(color: Colors.black,fontSize: 11)),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedFilter = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
 
           //선
@@ -113,31 +173,31 @@ class _AsPageState extends State<AsPage> {
           ),
 
           Expanded(
-            child: FutureBuilder<List<dynamic>>(
-              future: fetchASRequests(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("에러(as_page.dart)"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('현재 요청된 AS가 없습니다.',style: TextStyle(color: Colors.grey),));
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      var asRequest = snapshot.data![index];
-                      return AsCard(
-                        id: asRequest['id'], // 각 AS 요청의 고유 ID를 AsCard에 전달
-                        state: asRequest['status'], // status를 state에 연결
-                        title: asRequest['title'], // title을 title에 연결
-                        day: asRequest['visit_date'], // visit_date를 day에 연결
-                      );
-                    },
-                  );
-                }
-              },
-            ),
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : errorMessage.isNotEmpty
+                    ? Center(child: Text("에러: $errorMessage"))
+                    : filteredRequests.isEmpty
+                        ? Center(
+                            child: Text(
+                              '현재 요청된 AS가 없습니다.',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: filteredRequests.length,
+                            itemBuilder: (context, index) {
+                              var req = filteredRequests[index];
+                              return AsCard(
+                                id: int.parse(
+                                    req['id'].toString()), // 문자열을 정수형으로 변환
+                                state: int.parse(
+                                    req['status'].toString()), // 문자열을 정수형으로 변환
+                                title: req['title'],
+                                day: req['visit_date'],
+                              );
+                            },
+                          ),
           ),
         ],
       ),
