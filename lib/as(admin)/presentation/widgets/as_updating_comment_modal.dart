@@ -1,20 +1,20 @@
-import "package:flutter/material.dart";
-import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:yjg/as(admin)/data/data_sources/as_comment_data_source.dart";
-import "package:yjg/as(admin)/domain/entities/comment.dart";
-import "package:yjg/as(admin)/domain/usecases/as_comment_usecase.dart";
-import "package:yjg/as(admin)/presentation/viewmodels/as_viewmodel.dart";
-import "package:yjg/shared/theme/theme.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/as(admin)/domain/entities/comment.dart';
+import 'package:yjg/shared/theme/theme.dart';
 
-void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
+import '../../data/data_sources/as_comment_data_source.dart';
+import '../../domain/usecases/as_comment_usecase.dart';
+
+void showAsUpdatingCommentModal(
+    BuildContext context, String comment, int commentId, WidgetRef ref) {
+  TextEditingController commentController =
+      TextEditingController(text: comment);
   final commentUseCases = CommentUseCases(AsCommentDataSource());
-  final serviceId = ref.watch(serviceIdProvider.notifier).state;
-  TextEditingController commentController = TextEditingController();
   showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
       return StatefulBuilder(
-        // 모달 내에서 상태를 업데이트하기 위해 StatefulBuilder 사용
         builder: (BuildContext context, StateSetter setState) {
           return Container(
             padding: const EdgeInsets.all(20.0),
@@ -23,16 +23,16 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
               borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
             child: SingleChildScrollView(
-              // SingleChildScrollView 추가
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('댓글 작성',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    '댓글 수정',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: 20),
                   TextField(
-                    controller: commentController,
+                    controller: commentController, // 수정 폼에 추가된 컨트롤러
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.grey.withOpacity(0.1),
@@ -45,10 +45,8 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
                         borderRadius: BorderRadius.circular(5.0),
                         borderSide: BorderSide(color: Palette.mainColor),
                       ),
-                      hintText: ' 댓글을 입력해주세요.',
                       contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 20.0), // 상하 패딩 조절
-
+                          horizontal: 10.0, vertical: 20.0),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -63,14 +61,13 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
                       ),
                     ),
                     onPressed: () async {
-                      Comment createComment = Comment(
-                        serviceId: serviceId,
+                      Comment updateComment = Comment(
+                        commentId: commentId,
                         comment: commentController.text,
                       );
 
                       CommentResult result =
-                          await commentUseCases.createComment(createComment);
-                      Navigator.pop(context);
+                          await commentUseCases.updateComment(updateComment);
 
                       if (result.isSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,6 +78,7 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
                         );
 
                         // 모달 창 닫기
+                        Navigator.pop(context);
                       } else {
                         // 실패 시 실패 알림 표시
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -91,9 +89,11 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
                         );
                       }
                     },
-                    child: Text('작성',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      '수정',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   SizedBox(height: 20),
                 ],
@@ -104,6 +104,6 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
       );
     },
     backgroundColor: Colors.transparent,
-    isScrollControlled: true, // 모달의 크기를 조절하기 위해 필요
+    isScrollControlled: true,
   );
 }
