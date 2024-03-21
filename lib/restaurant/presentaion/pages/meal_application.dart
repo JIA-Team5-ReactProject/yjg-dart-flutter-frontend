@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:group_button/group_button.dart';
-import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
@@ -12,13 +12,10 @@ import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 
-//신청 유형 확인 변수
-final mealCategoryProvider = StateProvider<String>((ref) => '');
-
-//신청 여부 확인 변수
+// 신청 여부 확인 변수
 var application = false;
 
-//입금 여부 확인 변수
+// 입금 여부 확인 변수
 var deposit = false;
 
 class MealApplication extends ConsumerStatefulWidget {
@@ -29,37 +26,199 @@ class MealApplication extends ConsumerStatefulWidget {
 }
 
 class _MealApplicationState extends ConsumerState<MealApplication> {
+  // 선택된 식사 유형 ID를 추적하는 변수 (버튼에서 선택 된 유형을 말하는 거임)
+  String? selectedMealTypeId;
+
+  //신청한 식수의 ID를 담는 변수
+  int? applicationId;
+
+  // 사용자 정보를 보여주는 위젯 (학번, 이름, 전화번호 등)
+  Widget userInfoContainer(String title, String content) {
+    return UserInfoContainer(title: title, content: content);
+  }
+
+  // 구분선 위젯
+  Widget dottedLineSeparator() {
+    return const DottedLineSeparator();
+  }
+
+  // 버튼 위젯
+  Widget customElevatedButton(
+      String text, Color color, VoidCallback onPressed) {
+    return CustomElevatedButton(text: text, color: color, onPressed: onPressed);
+  }
+
+  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+
+  // 사용자 정보를 저장할 변수
+  Map<String, dynamic> userData = {};
+
+  // 버튼에 넣어줄 식수 유형의 정보를 저장할 변수
+  List<dynamic> semesterMealTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserInfo(); // 사용자 정보를 가져오는 메서드 호출
+    fetchMealTypes(); // 식수 유형의 정보를 가져오는 메서드 호출
+    fetchApplicationStatus(); // API로부터 식수 신청 상태를 가져오는 메서드
+  }
+
+  // 사용자 정보를 가져오는 API 함수
+  Future<void> fetchUserInfo() async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      final response = await http.get(
+        Uri.parse('$apiURL/api/restaurant/semester/show/user'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        setState(() {
+          userData = data['userData'];
+        });
+      } else {
+        print('Server returned ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  // 식수 유형의 정보를 가져오는 API 함수
+  Future<void> fetchMealTypes() async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      final response = await http.get(
+        Uri.parse('$apiURL/api/restaurant/semester/meal-type/get'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        setState(() {
+          semesterMealTypes = data['semester_meal_type']; // 데이터 업데이트
+        });
+      } else {
+        print('Server returned ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  // 식수 신청을 하는 API 함수
+  Future<void> submitMealApplication(String mealType) async {
+    final token = await storage.read(key: 'auth_token');
+
+    final body = json.encode({
+      'meal_type': mealType,
+    });
+
+    var url = Uri.parse('$apiURL/api/restaurant/semester');
+    var response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      // 신청 후 상태를 다시 가져와서 화면을 업데이트
+      await fetchApplicationStatus();
+      print('$mealType유형을 성공적으로 보냈다아');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
+
+  // 식수 신청 상태를 가져오는 API 함수
+  Future<void> fetchApplicationStatus() async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      final response = await http.get(
+        Uri.parse('$apiURL/api/restaurant/semester/show/user/after'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final List<dynamic> applicationData = data['userData']['data'];
+
+        setState(() {
+          application = applicationData.isNotEmpty;
+          if (applicationData.isNotEmpty) {
+            applicationId = applicationData[0]['id']; // 신청 ID를 저장
+            selectedMealTypeId =
+                applicationData[0]['semester_meal_type'][0]['meal_type'];
+            deposit = applicationData[0]['payment'] == 1;
+          } else {
+            selectedMealTypeId = null;
+            applicationId = null; // 신청이 없을 경우 null로 설정
+          }
+        });
+      } else {
+        print('Server returned ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  // 식수 신청을 취소하는 API 함수
+  Future<void> cancelMealApplication() async {
+    if (applicationId == null) {
+      print("No application to cancel");
+      return;
+    }
+
+    final token = await storage.read(key: 'auth_token');
+    final url =
+        Uri.parse('$apiURL/api/restaurant/semester/delete/$applicationId');
+
+    final response = await http.delete(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      print("Application cancelled successfully");
+      await fetchApplicationStatus(); // 상태를 다시 가져와 화면을 업데이트
+    } else {
+      print("Failed to cancel application with status: ${response.statusCode}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    //신청 여부 변수 가져오기
-    final mealCategory = ref.watch(mealCategoryProvider);
-
-    //첫 신청인 경우
+    //신청 x인 경우
     if (application == false) {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
         drawer: const BaseDrawer(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: const CustomBottomNavigationBar(),
         body: CustomSingleChildScrollView(
           child: Column(
             children: [
-              //상단 겹쳐져 있는 바
               SizedBox(
                 height: 150.0,
                 child: Stack(
                   children: [
-                    BlueMainRoundedBox(),
+                    const BlueMainRoundedBox(),
                     Positioned(
                       top: 15,
                       left: 0,
                       right: 0,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: WhiteMainRoundedBox(
                           iconData: Icons.campaign,
-                          mainText: '현재 1학기 식수 신청 기간입니다.',
-                          secondaryText: '신청기간 2024.02.20 ~ 2024.03.01',
-                          actionText: '유형 외의 식사는 자유식 티켓을 구입해 주세요.',
+                          mainText: '현재 식수 신청 기간입니다.',
+                          secondaryText: '유형 외의 식사는 자유식 티켓을 구입해 주세요.',
+                          actionText: '',
                           timeText: '',
                         ),
                       ),
@@ -68,275 +227,134 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                 ),
               ),
 
-              //학생정보 글자
+              // 학생정보 글자
               Container(
-                margin: EdgeInsets.all(15),
-                child: Text(
+                margin: const EdgeInsets.all(15),
+                child: const Text(
                   '학생정보',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
 
-              //학번 적힌 컨테이너
+              // 학번, 이름, 번호 컨테이너
+              userInfoContainer('이름', userData['name'] ?? '정보 없음'),
+              userInfoContainer('학번', userData['student_id'] ?? '정보 없음'),
+              userInfoContainer(
+                  '번호', formatPhoneNumber(userData['phone_number'])),
+
+              dottedLineSeparator(),
+
+              // 식사정보 글자
               Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('학번'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '2201333',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //이름 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('이름'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '김정원',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //전화번호 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('번호'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '010-6525-6480',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //구분 점선
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 10),
+                margin: const EdgeInsets.only(top: 15, bottom: 5),
                 child: const Text(
-                    '............................................................................................',
-                    style:
-                        TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
-              ),
-
-              //식사 정보 글자
-              Container(
-                margin: EdgeInsets.only(top: 15, bottom: 5),
-                child: Text(
                   '식사정보',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
 
-              //기간 산정 금액 글자
+              // 기간 산정 금액 글자
               Container(
-                margin: EdgeInsets.only(bottom: 10),
+                margin: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      child: Text(
-                        '2024.03.02 ~ 2024.07.18 ',
-                        style: TextStyle(
-                          color: const Color.fromARGB(255, 29, 127, 159),
-                        ),
+                    Text(
+                      '2024.03.02 ~ 2024.07.18 ',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 29, 127, 159),
                       ),
                     ),
-                    Container(
-                      child: Text(
-                        '기간 산정 금액',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 120, 120, 120),
-                        ),
+                    const Text(
+                      '기간 산정 금액',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 120, 120, 120),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              //유형 선택 박스
-              GroupButton(
-                //버튼 디자인
-                options: const GroupButtonOptions(
-                  //버튼 그림자
-                  selectedShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 207, 207, 207), //그림자 색상
-                      spreadRadius: 0.5, // 그림자 넓이
-                      blurRadius: 5, // 그림자 흐림도
-                      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
+              // 유형 선택 버튼
+              Wrap(
+                spacing: 8.0, // 버튼 사이의 가로 간격
+                runSpacing: 8.0, // 버튼 사이의 세로 간격
+                children: semesterMealTypes.map((type) {
+                  bool isSelected = selectedMealTypeId == type['meal_type'];
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: isSelected
+                          ? const Color.fromARGB(255, 255, 255, 255)
+                          : Color.fromARGB(
+                              255, 255, 255, 255), // 선택된 버튼은 파란색, 그 외는 흰색
+                      onPrimary: isSelected
+                          ? Colors.white
+                          : Colors.black, // 선택된 버튼의 텍스트 색상은 흰색, 그 외는 검은색
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: BorderSide(
+                            color: isSelected
+                                ? const Color.fromARGB(255, 0, 0, 0)
+                                : Color.fromARGB(255, 255, 255,
+                                    255)), // 선택된 버튼은 파란색 테두리, 그 외는 기본 색상
+                      ),
                     ),
-                  ],
-                  unselectedShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 207, 207, 207), //그림자 색상
-                      spreadRadius: 0.5, // 그림자 넓이
-                      blurRadius: 5, // 그림자 흐림도
-                      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
+                    onPressed: () {
+                      setState(() {
+                        selectedMealTypeId = type['meal_type'];
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "${type['meal_type']}유형\n",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: "${type['content']}\n",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12,
+                                  color: Colors.grey),
+                            ),
+                            TextSpan(
+                              text: "${type['price']}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Palette.mainColor),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-
-                  //버튼 글자 스타일
-                  selectedTextStyle: TextStyle(
-                    fontSize: 13,
-                    color: Color.fromARGB(255, 29, 127, 159),
-                  ),
-                  unselectedTextStyle: TextStyle(
-                    fontSize: 13,
-                    color: Color.fromARGB(255, 29, 127, 159),
-                  ),
-
-                  //버튼 컬러
-                  selectedColor: Colors.white,
-                  selectedBorderColor: Color.fromARGB(255, 29, 127, 159),
-
-                  //버튼 테두리
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-
-                  //버튼 간격
-                  spacing: 10,
-
-                  //버튼 크기
-                  buttonHeight: 120,
-                  buttonWidth: 120,
-                ),
-                isRadio: true,
-
-                //버튼 클릭시 실행 되는 함수
-                onSelected: (index, isSelected, isPressed) {
-                  final mealCategory = ref.read(mealCategoryProvider.notifier);
-                  if (isSelected == 0) {
-                    mealCategory.state = 'A';
-                  } else if (isSelected == 1) {
-                    mealCategory.state = 'B';
-                  } else if (isSelected == 2) {
-                    mealCategory.state = 'C';
-                  }
-                },
-
-                //버튼 내용
-                buttons: const [
-                  'A유형\n점심+저녁\n228식(1식3,000)\n750,000',
-                  'B유형\n점심\n152식(1식3,500)\n520,000',
-                  'C유형\n저녁\n152식(1식3,500)\n520,000'
-                ],
+                  );
+                }).toList(),
               ),
 
-              //구분 점선
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text(
-                    '............................................................................................',
-                    style:
-                        TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
+              dottedLineSeparator(),
+
+              // 계좌 정보 글자
+              const Text(
+                '계좌 정보',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
 
-              //계좌 정보 글자
-              Container(
-                child: const Text(
-                  '계좌 정보',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+              // 입금 기간 글자
+              const Text(
+                '2024.03.01까지 입금 완료',
+                style: TextStyle(
+                    fontSize: 12, color: Color.fromARGB(255, 168, 168, 168)),
               ),
 
-              //입금 기간 글자
-              Container(
-                margin: const EdgeInsets.only(top: 5, bottom: 10),
-                child: const Text(
-                  '2024.03.01까지 입금 완료',
-                  style: TextStyle(
-                      fontSize: 12, color: Color.fromARGB(255, 168, 168, 168)),
-                ),
-              ),
-
-              //계좌번호 박스
+              // 계좌번호 박스
               Container(
                 alignment: Alignment.center,
                 width: 350,
@@ -346,7 +364,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                     color: const Color.fromARGB(255, 168, 168, 168),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   '농협 352 1299 5358 33',
                   style: TextStyle(
                     color: Color.fromARGB(255, 121, 121, 121),
@@ -354,272 +372,52 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                 ),
               ),
 
-              //신청 버튼
-              Container(
-                margin: EdgeInsets.only(top: 15, bottom: 15, right: 25),
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromARGB(255, 29, 127, 159),
-                    ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      // 테두리 둥글기 조절
-                      RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(15), // 둥글기 정도를 조절하는 값
-                      ),
-                    ),
-                  ),
-
-                  //버튼 클릭 시 동작
-                  onPressed: () async {
-                    final mealCategory = ref.watch(mealCategoryProvider);
-                    if (mealCategory.isNotEmpty) {
-                      await submitMealApplication(mealCategory);
-                      setState(() {
-                        application = true;
-                      });
-                    } else {
-                      non_select(context);
-                    }
-                  },
-                  child: Text(
-                    '신청',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+              SizedBox(
+                height: 10,
               ),
+
+              // 신청 버튼
+              customElevatedButton('신청', Color.fromARGB(255, 29, 127, 159),
+                  () async {
+                if (selectedMealTypeId != null) {
+                  await submitMealApplication(selectedMealTypeId!); // 알파벳을 전달
+                } else {
+                  non_select(context); // 사용자에게 식사 유형을 선택하라는 메시지를 보여줌
+                }
+              }),
             ],
           ),
         ),
       );
     }
 
-    //신청 완료 && 입금x인 경우
+    //신청 O 결제 x인 경우
     else if (application == true && deposit == false) {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
         drawer: const BaseDrawer(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: const CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              //상단 겹쳐져 있는 바
-              SizedBox(
-                height: 150.0,
-                child: Stack(
-                  children: [
-                    BlueMainRoundedBox(),
-                    Positioned(
-                      top: 15,
-                      left: 0,
-                      right: 0,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: WhiteMainRoundedBox(
-                          iconData: Icons.campaign,
-                          mainText: '현재 1학기 식수 신청 기간입니다.',
-                          secondaryText: '신청기간 2024.02.20 ~ 2024.03.01',
-                          actionText: '유형 외의 식사는 자유식 티켓을 구입해 주세요.',
-                          timeText: '',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              // 상단 겹쳐져 있는 바, 학생정보 글자, 학번, 이름, 번호 컨테이너
+              ...topSection(),
+              userInfoContainer('이름', userData['name'] ?? '정보 없음'),
+              userInfoContainer('학번', userData['student_id'] ?? '정보 없음'),
+              userInfoContainer(
+                  '번호', formatPhoneNumber(userData['phone_number'])),
+              userInfoContainer('신청', '$selectedMealTypeId 유형',),
+              dottedLineSeparator(),
+
+              // 신청 현황 글자
+              const Text(
+                '신청 현황',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
-              //학생정보 글자
+              // 입금 X 컨테이너
               Container(
-                margin: EdgeInsets.all(15),
-                child: Text(
-                  '학생정보',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-
-              //학번 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('학번'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '2201333',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //이름 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('이름'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '김정원',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //전화번호 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('번호'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '010-6525-6480',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //신청 유형 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('신청'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            mealCategory,
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //구분 점선
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text(
-                    '............................................................................................',
-                    style:
-                        TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
-              ),
-
-              //신청 현황 글자
-              Container(
-                margin: EdgeInsets.all(15),
-                child: Text(
-                  '신청 현황',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-
-              //입금 x 컨테이너
-              Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 width: 350,
                 height: 150,
                 decoration: BoxDecoration(
@@ -632,9 +430,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                   children: [
                     Icon(Icons.sentiment_very_dissatisfied,
                         color: Colors.red, size: 40),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10),
                     Text(
                       '기간내에 입금을 완료해주세요',
                       style: TextStyle(color: Colors.red),
@@ -642,271 +438,51 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                     Text(
                       '계좌번호 : 농협 352 1299 5358 33',
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
+                        color: Color.fromARGB(255, 162, 162, 162),
                       ),
                     )
                   ],
                 ),
               ),
 
-              //신청 취소 버튼
-              Container(
-                margin: EdgeInsets.all(15),
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 159, 29, 29),
-                    ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      // 테두리 둥글기 조절
-                      RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(15), // 둥글기 정도를 조절하는 값
-                      ),
-                    ),
-                  ),
-
-                  //버튼 클릭 시 동작
-                  onPressed: () {
-                    meal_application_cancel(context);
-                  },
-                  child: Text(
-                    '신청 취소',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+              // 신청 취소 버튼
+              customElevatedButton('신청 취소', Color.fromARGB(255, 159, 29, 29),
+                  () {
+                meal_application_cancel(context);
+              }),
             ],
           ),
         ),
       );
     }
 
-    //신청완료 && 입금O인 경우
+    //신청 O 결제 O인 경우
     else {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
         drawer: const BaseDrawer(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: const CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              //상단 겹쳐져 있는 바
-              SizedBox(
-                height: 150.0,
-                child: Stack(
-                  children: [
-                    BlueMainRoundedBox(),
-                    Positioned(
-                      top: 15,
-                      left: 0,
-                      right: 0,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: WhiteMainRoundedBox(
-                          iconData: Icons.campaign,
-                          mainText: '현재 1학기 식수 신청 기간입니다.',
-                          secondaryText: '신청기간 2024.02.20 ~ 2024.03.01',
-                          actionText: '유형 외의 식사는 자유식 티켓을 구입해 주세요.',
-                          timeText: '',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              // 상단 겹쳐져 있는 바, 학생정보 글자, 학번, 이름, 번호 컨테이너
+              ...topSection(),
+              userInfoContainer('이름', userData['name'] ?? '정보 없음'),
+              userInfoContainer('학번', userData['student_id'] ?? '정보 없음'),
+              userInfoContainer(
+                  '번호', formatPhoneNumber(userData['phone_number'])),
+              userInfoContainer('신청', '$selectedMealTypeId 유형'),
+              dottedLineSeparator(),
+
+              // 신청 현황 글자
+              const Text(
+                '신청 현황',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
-              //학생정보 글자
+              // 입금 O 컨테이너
               Container(
-                margin: EdgeInsets.all(15),
-                child: Text(
-                  '학생정보',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-
-              //학번 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('학번'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '2201333',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //이름 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('이름'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '김정원',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //전화번호 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('번호'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            '010-6525-6480',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //신청 유형 적힌 컨테이너
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text('신청'),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 35,
-                      margin: EdgeInsets.only(left: 15),
-
-                      //박스 디자인
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 241, 241, 241),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: Color.fromARGB(255, 214, 214, 214))),
-
-                      //박스 텍스트
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
-                        child: Align(
-                          alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
-                          child: Text(
-                            mealCategory,
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 134, 134, 134)),
-                            textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //구분 점선
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text(
-                    '............................................................................................',
-                    style:
-                        TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
-              ),
-
-              //신청 현황 글자
-              Container(
-                margin: EdgeInsets.all(15),
-                child: Text(
-                  '신청 현황',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-
-              //입금 O 컨테이너
-              Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 width: 350,
                 height: 150,
                 decoration: BoxDecoration(
@@ -919,9 +495,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                   children: [
                     Icon(Icons.sentiment_satisfied_alt,
                         color: Color.fromARGB(255, 29, 127, 159), size: 40),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10),
                     Text(
                       '입금 확인이 완료 되었습니다.',
                       style:
@@ -930,7 +504,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                     Text(
                       '감사합니다.',
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
+                        color: Color.fromARGB(255, 162, 162, 162),
                       ),
                     )
                   ],
@@ -943,97 +517,39 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     }
   }
 
-  //신청 완료 alert
-  Future<dynamic> meal_application(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Icon(
-          Icons.campaign,
-          size: 50,
-          color: const Color.fromARGB(255, 29, 127, 159),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              '신청 완료되었습니다!',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              '3월 1일까지 입금해 주세요.',
-              style: TextStyle(
-                fontSize: 14,
-                color: const Color.fromARGB(255, 29, 127, 159),
+  List<Widget> topSection() {
+    return [
+      SizedBox(
+        height: 150.0,
+        child: Stack(
+          children: [
+            const BlueMainRoundedBox(),
+            Positioned(
+              top: 15,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: WhiteMainRoundedBox(
+                  iconData: Icons.campaign,
+                  mainText: '현재 식수 신청 기간입니다.',
+                  secondaryText: '유형 외의 식사는 자유식 티켓을 구입해 주세요.',
+                  actionText: '',
+                  timeText: '',
+                ),
               ),
             ),
-            SizedBox(
-              height: 25,
-            ),
           ],
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('확인'),
-          ),
-        ],
       ),
-    );
+      const Text(
+        '학생정보',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+    ];
   }
 
-  //취소 질문 버튼
-  Future<dynamic> meal_application_cancel(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Icon(
-          Icons.campaign,
-          size: 50,
-          color: const Color.fromARGB(255, 29, 127, 159),
-        ),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              '정말 취소 하시겠습니까?',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.popAndPushNamed(context, '/restaurant_main');
-              setState(() {
-                application = false;
-                ref.read(mealCategoryProvider.notifier).state = '';
-              });
-            },
-            child: Text('예'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('아니오'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  //다 골라라 alert
+  // 다 골라라 alert
   Future<dynamic> non_select(BuildContext context) {
     return showDialog(
       context: context,
@@ -1042,7 +558,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
         title: const Icon(
           Icons.campaign,
           size: 50,
-          color: const Color.fromARGB(255, 29, 127, 159),
+          color: Color.fromARGB(255, 29, 127, 159),
         ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,
@@ -1051,58 +567,174 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
               '유형을 선택해주세요.',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
-            SizedBox(
-              height: 25,
-            ),
+            SizedBox(height: 25),
           ],
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.cancel_outlined))
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.cancel_outlined),
+          )
         ],
       ),
     );
   }
 
-  //API 통신 로직
-  Future<void> submitMealApplication(mealCategory) async {
-    int userId = ref.watch(userIdProvider);
-
-    // API URL 가져오기
-    String getApiUrl() {
-      return apiURL;
-    }
-
-    final body = json.encode(<String, dynamic>{
-      'id': '1',
-      'user_id': "1", // userId 변수를 사용하여 동적으로 할당
-      'payment': false,
-      'meal_type': 'B',
-      // 필요한 다른 데이터를 함께 전송할 수 있습니다.
-    });
-
-    debugPrint('보낸 값 : $body');
-
-    var url = Uri.parse('$apiURL/api/restaurant/semester');
-    var response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: body,
+  // 신청 취소 질문 버튼
+  Future<dynamic> meal_application_cancel(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Icon(
+          Icons.campaign,
+          size: 50,
+          color: Color.fromARGB(255, 29, 127, 159),
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              '정말 취소 하시겠습니까?',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            SizedBox(height: 25),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context); // 다이얼로그를 닫습니다.
+              await cancelMealApplication(); // 신청 취소 API 호출
+            },
+            child: const Text('예'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // 다이얼로그만 닫기
+            },
+            child: const Text('아니오'),
+          ),
+        ],
+      ),
     );
-
-    if (response.statusCode == 200) {
-      // 성공적으로 데이터를 전송했을 때의 처리
-      debugPrint('성공');
-    } else {
-      // 오류 처리
-      debugPrint('실패');
-      debugPrint('Status Code: ${response.statusCode}');
-      debugPrint('Response Body: ${response.body}');
-    }
   }
 }
+
+  //전화번호 사이에 하이픈 넣는 함수
+  String formatPhoneNumber(String? phoneNumber) {
+    if (phoneNumber == null || phoneNumber.isEmpty) {
+      return '정보 없음';
+  }
+
+  // 하이픈이 이미 있는 경우, 원본 번호를 반환
+  if (phoneNumber.contains('-')) {
+    return phoneNumber;
+  }
+
+  // 휴대폰 번호 형식에 맞게 하이픈 추가
+  if (phoneNumber.length == 11) {
+    return '${phoneNumber.substring(0, 3)} - ${phoneNumber.substring(3, 7)} - ${phoneNumber.substring(7, 11)}';
+  }
+
+  // 다른 형식의 번호는 원본 반환
+  return phoneNumber;
+}
+  
+  
+  
+  class UserInfoContainer extends StatelessWidget {
+    final String title;
+    final String content;
+
+    const UserInfoContainer({
+      Key? key,
+      required this.title,
+      required this.content,
+    }) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        child: Row(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(left: 30),
+              child: Text(title),
+            ),
+            Container(
+              width: 300,
+              height: 35,
+              margin: const EdgeInsets.only(left: 15),
+              decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 241, 241, 241),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 214, 214, 214))),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    content,
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 134, 134, 134)),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  class DottedLineSeparator extends StatelessWidget {
+    const DottedLineSeparator({Key? key}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 10),
+        child: const Text(
+            '............................................................................................',
+            style: TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
+      );
+    }
+  }
+
+  class CustomElevatedButton extends StatelessWidget {
+    final String text;
+    final Color color;
+    final VoidCallback onPressed;
+
+    const CustomElevatedButton({
+      Key? key,
+      required this.text,
+      required this.color,
+      required this.onPressed,
+    }) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+      return ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(color),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
+    }
+  }
