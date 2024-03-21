@@ -174,6 +174,7 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
         _selectedTimes.isEmpty) {
       showDialog(
         context: context,
+        barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Error"),
@@ -234,6 +235,7 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
         // 수정된 AlertDialog 호출
         showDialog(
           context: context,
+          barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("회의실 예약 완료"),

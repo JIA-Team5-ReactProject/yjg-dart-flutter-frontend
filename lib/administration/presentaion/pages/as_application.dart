@@ -18,6 +18,7 @@ class AsApplication extends StatefulWidget {
 
 class _AsApplicationState extends State<AsApplication> {
   List<XFile> _images = []; //이미지를 담을 변수 선언
+  
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
   static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
@@ -26,6 +27,7 @@ class _AsApplicationState extends State<AsApplication> {
   Future getImage(ImageSource imageSource) async {
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
+    debugPrint(pickedFile!.path);
     if (pickedFile != null) {
       setState(() {
         _images.add(XFile(pickedFile.path)); //가져온 이미지를 _images에 저장
@@ -385,6 +387,7 @@ class _AsApplicationState extends State<AsApplication> {
     if (title != '' && day != '' && place != '' && input != '') {
       showDialog(
         context: context,
+        barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('AS신청완료'),

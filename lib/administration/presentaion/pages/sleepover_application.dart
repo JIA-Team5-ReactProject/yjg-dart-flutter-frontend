@@ -47,6 +47,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   void _showSuccessDialog(String title, String content) {
     showDialog(
       context: context,
+      barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),

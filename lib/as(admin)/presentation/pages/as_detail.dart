@@ -6,7 +6,6 @@ import 'package:yjg/administration/presentaion/widgets/std_as_floating_button.da
 import 'package:yjg/as(admin)/data/models/as_list.dart';
 import 'package:yjg/as(admin)/presentation/widgets/admin_as_floating_button.dart';
 import 'package:yjg/shared/constants/api_url.dart';
-import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -113,8 +112,11 @@ class _AsDetailState extends State<AsDetail> {
               child: Text('아니오'),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true), // '예' 선택 시 true 반환
+             onPressed: () {
+                 Navigator.of(context).pop(true); // '예' 선택 시 true 반환
+                 Navigator.pop(context);
+                 Navigator.pushNamed(context, '/as_page');
+              },
               child: Text('예'),
             ),
           ],
