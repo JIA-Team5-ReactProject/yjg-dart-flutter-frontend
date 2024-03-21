@@ -28,7 +28,8 @@ class AuthTextFormField extends ConsumerWidget {
       width: width * 0.8,
       height: height * 0.08,
       child: TextFormField(
-        obscureText: labelText == "비밀번호" ? true : false,
+        // 라벨텍스트에 비밀번호라는 글자가 포함되어 있으면 obscureText를 true로 설정
+        obscureText: labelText.contains("비밀번호") ? true : false,
         controller: controller,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
