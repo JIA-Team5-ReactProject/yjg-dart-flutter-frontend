@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:yjg/administration/presentaion/widgets/std_as_floating_button.dart';
+import 'package:yjg/as(admin)/data/models/as_list.dart';
+import 'package:yjg/as(admin)/presentation/widgets/admin_as_floating_button.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -22,15 +26,32 @@ class AsDetail extends StatefulWidget {
 
 class _AsDetailState extends State<AsDetail> {
   bool _isEditing = false; // 수정 선택 여부
-  TextEditingController _contentController = TextEditingController(); // 컨텐츠 컨트롤러
+  bool isAdmin = false;
+  TextEditingController _contentController =
+      TextEditingController(); // 컨텐츠 컨트롤러
   String? _editedVisitDate; // 수정된 희망 처리일자를 저장하는 변수
   bool _isCommentsEmpty = true; // 댓글이 비어있는지 확인하는 변수, 초기값은 true
-
   static final storage = FlutterSecureStorage(); // 정원이가 말해준 코드(토큰)
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfAdmin();
+  }
+
+  // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
+  Future<void> _checkIfAdmin() async {
+    final isAdminValue = await storage.read(key: 'isAdmin');
+    setState(() {
+      isAdmin = isAdminValue == 'true';
+      debugPrint('isAdmin: $isAdmin');
+    });
+  }
 
   // API 함수(get으로 데이터 불러오기)
   Future<Map<String, dynamic>> fetchAsDetail(int id) async {
-    final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
+    final token =
+        await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
     final response = await http.get(
       Uri.parse('$apiURL/api/after-service/$id'),
       headers: {
@@ -42,7 +63,8 @@ class _AsDetailState extends State<AsDetail> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       // "after_service_comments" 배열이 비어 있는지 확인하여 _isCommentsEmpty 변수 업데이트
-      _isCommentsEmpty = (data['afterService']['after_service_comments'] as List).isEmpty;
+      _isCommentsEmpty =
+          (data['afterService']['after_service_comments'] as List).isEmpty;
       return data;
     } else {
       throw Exception('에러(as_detail.dart GET 함수)');
@@ -51,7 +73,8 @@ class _AsDetailState extends State<AsDetail> {
 
   // API 함수 (PATCH로 데이터 통신)
   Future<void> updateAsDetail(int id, String content, String visitDate) async {
-    final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
+    final token =
+        await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
     final response = await http.patch(
       Uri.parse('$apiURL/api/after-service/$id'),
       headers: {
@@ -85,11 +108,13 @@ class _AsDetailState extends State<AsDetail> {
           content: Text('정말 삭제하시겠습니까?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // '아니오' 선택 시 false 반환
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // '아니오' 선택 시 false 반환
               child: Text('아니오'),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // '예' 선택 시 true 반환
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // '예' 선택 시 true 반환
               child: Text('예'),
             ),
           ],
@@ -99,7 +124,8 @@ class _AsDetailState extends State<AsDetail> {
 
     // 사용자가 예를 선택한 경우에만 삭제 진행
     if (confirmDelete) {
-      final token = await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
+      final token =
+          await storage.read(key: 'auth_token'); // 정원이가 말해준 코드(위에서 토큰 불러오기)
       final response = await http.delete(
         Uri.parse('$apiURL/api/after-service/$id'),
         headers: {
@@ -130,44 +156,30 @@ class _AsDetailState extends State<AsDetail> {
       bottomNavigationBar: const CustomBottomNavigationBar(),
 
       // 수정, 삭제 버튼
-      floatingActionButton: FutureBuilder<Map<String, dynamic>>(
-        future: fetchAsDetail(asId),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final asDetailData = snapshot.data!;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 3.0), // 하단 간격
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end, // 오른쪽 정렬
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {
+      floatingActionButton: isAdmin == true
+          ? AdminAsFloatingButton()
+          : FutureBuilder<Map<String, dynamic>>(
+              future: fetchAsDetail(asId),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return StudentAsFloatingButton(
+                    onEdit: () {
                       setState(() {
                         _isEditing = true;
-                        // FutureBuilder의 snapshot.data를 사용하여 초기화
-                        _contentController.text = asDetailData['afterService']['content'];
-                        _editedVisitDate = asDetailData['afterService']['visit_date'];
+                        _contentController.text =
+                            snapshot.data!['afterService']['content'];
+                        _editedVisitDate =
+                            snapshot.data!['afterService']['visit_date'];
                       });
                     },
-                    child: Icon(Icons.edit, size: 20),
-                    heroTag: 'editBtn',
-                  ),
-                  SizedBox(width: 5),
-                  FloatingActionButton(
-                    onPressed: () {
+                    onDelete: () {
                       deleteAsDetail(asId);
                     },
-                    child: Icon(Icons.delete, size: 20),
-                    backgroundColor: Colors.red,
-                    heroTag: 'deleteBtn',
-                  ),
-                ],
-              ),
-            );
-          }
-          return SizedBox(); // 데이터가 없을 경우 빈 위젯 반환
-        },
-      ),
+                  );
+                }
+                return SizedBox(); // 데이터가 없을 경우 빈 위젯 반환
+              },
+            ),
 
       body: FutureBuilder<Map<String, dynamic>>(
         future: fetchAsDetail(asId),
@@ -178,34 +190,49 @@ class _AsDetailState extends State<AsDetail> {
             return const Center(child: Text("에러(as_detail.dart)"));
           } else {
             final asDetail = snapshot.data!;
-            DateTime createdAt = DateTime.parse(asDetail['afterService']['created_at']); // created_at 값을 DateTime 객체로
-            String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt); // DateFormat으로 원하는 날짜 형식으로 변경
-            final List<String> imageUrls = asDetail['afterService']['after_service_images']
+            DateTime createdAt = DateTime.parse(asDetail['afterService']
+                ['created_at']); // created_at 값을 DateTime 객체로
+            String formattedDate = DateFormat('yyyy-MM-dd HH:mm')
+                .format(createdAt); // DateFormat으로 원하는 날짜 형식으로 변경
+            final List<String> imageUrls = asDetail['afterService']
+                    ['after_service_images']
                 .map<String>((img) => img['image'] as String)
                 .toList(); // as_image.view.dart에 이미지URL목록 넘겨주려고 API에서 이미지 URL 목록 뽑기
 
             return CustomSingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       asDetail['afterService']['title'],
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     Text(
                       formattedDate,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey),
                     ),
                     const SizedBox(height: 15.0),
                     const AsNoticeBox(),
                     ServiceRequester(
-                      requester: asDetail['afterService']['user']['name']?? '이름 미정', // 신청자 이름
-                      serviceLocation: asDetail['afterService']['visit_place']?? '처리 장소 미정', // 처리장소
-                      stateNum: asDetail['afterService']['status']?? '처리 상태 미정', // 상태
-                      phoneNumber: asDetail['afterService']['user']['phone_number']?? '전화번호 미정', // 전화번호
-                      visitDate: asDetail['afterService']['visit_date']?? '처리 날짜 미정', // 희망처리일자
+                      requester: asDetail['afterService']['user']['name'] ??
+                          '이름 미정', // 신청자 이름
+                      serviceLocation: asDetail['afterService']
+                              ['visit_place'] ??
+                          '처리 장소 미정', // 처리장소
+                      stateNum: asDetail['afterService']['status'] ??
+                          '처리 상태 미정', // 상태
+                      phoneNumber: asDetail['afterService']['user']
+                              ['phone_number'] ??
+                          '전화번호 미정', // 전화번호
+                      visitDate: asDetail['afterService']['visit_date'] ??
+                          '처리 날짜 미정', // 희망처리일자
                       isEditing: _isEditing,
                       onVisitDateChanged: (newValue) {
                         _editedVisitDate = newValue;
@@ -222,11 +249,16 @@ class _AsDetailState extends State<AsDetail> {
                                   controller: _contentController,
                                   maxLines: null,
                                   keyboardType: TextInputType.multiline,
-                                  decoration: InputDecoration(border: OutlineInputBorder(), labelText: '내용 수정'),
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: '내용 수정'),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    updateAsDetail(asId, _contentController.text, _editedVisitDate ?? "");
+                                    updateAsDetail(
+                                        asId,
+                                        _contentController.text,
+                                        _editedVisitDate ?? "");
                                   },
                                   child: Text('수정 완료'),
                                 ),
@@ -234,18 +266,30 @@ class _AsDetailState extends State<AsDetail> {
                             )
                           : Text(asDetail['afterService']['content']),
                     ),
+                    
                     Text(
                       "첨부파일(${asDetail['afterService']['after_service_images'].length})",
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 20.0),
-                    AsImageView(imageUrls: imageUrls),
+                    asDetail['afterService']['after_service_images'].length == 0
+                        ? Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text("첨부 파일이 없습니다."),
+                          )
+                        : AsImageView(imageUrls: imageUrls),
                     const SizedBox(height: 50.0),
                     Text(
-                      "댓글($commentCount)",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      "댓글(${asDetail['afterService']['after_service_comments'].length})",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    const AsCommentBox(),
+                    AsCommentBox(
+                        comments: asDetail['afterService']
+                                ['after_service_comments']
+                            .map<AfterServiceComment>((comment) =>
+                                AfterServiceComment.fromJson(comment))
+                            .toList()),
                     SizedBox(height: 60.0),
                   ],
                 ),

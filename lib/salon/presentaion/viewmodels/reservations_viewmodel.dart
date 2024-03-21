@@ -16,6 +16,7 @@ final reservationsProvider = FutureProvider<List<Reservations>>((ref) async {
     debugPrint('예약 목록: $jsonResponse');
     return jsonResponse.map((json) => Reservations.fromJson(json)).toList();
   } else {
+    debugPrint('예약 목록 불러오기 실패: ${response.statusCode}');
     throw Exception('예약 목록을 불러오지 못했습니다.');
   }
 });

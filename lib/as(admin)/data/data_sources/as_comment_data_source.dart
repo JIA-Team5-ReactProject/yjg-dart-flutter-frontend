@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/shared/constants/api_url.dart';
 
-class AdminServiceDataSource {
+class AsCommentDataSource {
   String getApiUrl() {
     // 상수 파일에서 가져온 apiURL 사용
     return apiURL;
@@ -12,18 +12,15 @@ class AdminServiceDataSource {
 
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
-// * 서비스 생성
-  Future<http.Response> postServiceAPI(int categoryId, String? serviceName,
-      String? gender, String? price) async {
+// * 댓글 등록
+  Future<http.Response> postCommentAPI(int serviceId, String comment) async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon/service';
+    String url = '$apiURL/api/after-service/${serviceId.toString()}/comment';
     final body = jsonEncode({
-      'category_id': categoryId,
-      'service': serviceName,
-      "gender": gender,
-      "price": price
+      'comment' : comment,
     });
 
+    debugPrint('댓글 등록 body: $body');
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -31,21 +28,24 @@ class AdminServiceDataSource {
         },
         body: body);
 
-    if (response.statusCode == 200) {
+    debugPrint('댓글 등록 결과: ${response.statusCode}, ${response.body}');
+    if (response.statusCode == 201) {
       return response;
     } else {
-      throw Exception('서비스 수정에 실패했습니다.');
+      throw Exception('댓글 작성에 실패했습니다.');
     }
   }
 
-  // * 서비스 수정
-  Future<http.Response> patchServiceAPI(
-      int serviceId, String? serviceName, String? gender, String? price) async {
+  // * 댓글 수정
+  Future<http.Response> patchCommentAPI(
+      int commentId, String comment) async {
     final token = await storage.read(key: 'auth_token');
-    String url = '$apiURL/api/salon/service/$serviceId';
+    String url = '$apiURL/api/after-service/comment/${commentId.toString()}';
 
     final body =
-        jsonEncode({'service': serviceName, "gender": gender, "price": price});
+        jsonEncode({'comment': comment});
+
+
 
     final response = await http.patch(Uri.parse(url),
         headers: <String, String>{
@@ -54,34 +54,32 @@ class AdminServiceDataSource {
         },
         body: body);
 
-    debugPrint('서비스 수정 결과: ${response.statusCode},');
-
     if (response.statusCode == 200) {
       return response;
     } else {
-      throw Exception('서비스 수정에 실패했습니다.');
+      throw Exception('댓글 수정에 실패했습니다.');
     }
   }
 
-  // * 서비스 삭제
-  Future<http.Response> deleteServiceListAPI(int serviceId) async {
+  // * 댓글 삭제
+  Future<http.Response> deleteCommentAPI(int commentId) async {
     final token = await storage.read(key: 'auth_token');
-    String baseUrl = '$apiURL/api/salon/service';
+    String baseUrl = '$apiURL/api/after-service/comment/${commentId.toString()}';
 
     final response = await http.delete(
-      Uri.parse('$baseUrl/$serviceId'),
+      Uri.parse(baseUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
 
-    debugPrint('서비스 삭제 결과: ${response.statusCode}, ');
+    debugPrint('댓글 삭제 결과: ${response.statusCode}, ');
 
     if (response.statusCode == 200) {
       return response;
     } else {
-      throw Exception('서비스 삭제에 실패했습니다.');
+      throw Exception('댓글 삭제에 실패했습니다.');
     }
   }
 }

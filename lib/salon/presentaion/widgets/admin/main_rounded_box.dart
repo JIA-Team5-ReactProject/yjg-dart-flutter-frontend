@@ -64,13 +64,19 @@ class MainRoundedBox extends StatelessWidget {
                 ),
                 SizedBox(height: 3.0), // 텍스트 간격 조절
                 
-                SizedBox(height: 5.0), // 텍스트 간격 조절
-                Text(
+                SizedBox(height: 5.0),// 텍스트 간격 조절
+                InkWell(
+                onTap: () {
+                  // 미용실 예약 페이지로 이동
+                  Navigator.pushNamed(context, '/admin_salon_booking');
+                },
+                child: Text(
                   actionText,
                   style: TextStyle(
                     color: Palette.mainColor,
                     fontSize: 12.0
                   ),
+                ),
                 ),
               ],
             ),

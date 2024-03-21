@@ -43,6 +43,9 @@ void editServiceModal(
                   controller: nameController,
                   decoration: InputDecoration(
                     labelText: '서비스명',
+                    labelStyle: TextStyle(
+                      color: Palette.textColor.withOpacity(0.7),
+                    ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Palette.mainColor),
                     ),
@@ -53,6 +56,9 @@ void editServiceModal(
                   controller: priceController,
                   decoration: InputDecoration(
                     labelText: '가격',
+                    labelStyle: TextStyle(
+                      color: Palette.textColor.withOpacity(0.7),
+                    ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Palette.mainColor),
                     ),

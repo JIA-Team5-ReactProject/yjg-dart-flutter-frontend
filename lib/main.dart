@@ -11,7 +11,7 @@ import 'package:yjg/administration/presentaion/pages/meeting_room_main.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover.dart';
 import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
 import 'package:yjg/as(admin)/presentation/pages/as_detail.dart';
-import 'package:yjg/as(admin)/presentation/pages/as_main.dart';
+import 'package:yjg/as(admin)/presentation/pages/admin_as_main.dart';
 import 'package:yjg/auth/presentation/pages/international_registration.dart';
 import 'package:yjg/auth/presentation/pages/student_login.dart';
 import 'package:yjg/auth/presentation/pages/admin_login.dart';
@@ -51,9 +51,6 @@ void main() async {
 
   await getDeviceInfo();
 
-  // String initialRoute = '/salon_main'; // ! 로그인 안 할 경우 원하는 라우터를 입력해주세요.
-
-  // ! 로그인 할 경우 FlutterNativePlash.remove() 전에 작성된 모든 코드의 주석을 해제해주세요.
   String initialRoute = '/login_student';
 
   final token = await storage.read(key: 'auth_token');

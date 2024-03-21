@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/salon/presentaion/viewmodels/admin_reservation_viewmodel.dart';
+import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/empty_bookings.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/reservation_info_list.dart';
 import 'package:yjg/shared/theme/palette.dart';
@@ -129,6 +130,9 @@ class _AdminBookingCalendarState extends ConsumerState<AdminBookingCalendar> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
+
+              // 선택한 날짜 업데이트
+              ref.read(selectedDateProvider.notifier).state = selectedDay;
               ref.read(reservationViewModelProvider.notifier).fetchReservations(
                   reservationDate:
                       DateFormat('yyyy-MM-dd').format(selectedDay));
@@ -145,74 +149,78 @@ class _AdminBookingCalendarState extends ConsumerState<AdminBookingCalendar> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Consumer(
-                  builder: (context, ref, child) {
-                    final reservationAsyncValue =
-                        ref.watch(reservationViewModelProvider);
-                    return reservationAsyncValue.when(
-                      data: (reservations) {
-                        if (reservations.isEmpty) {
-                          return EmptyBookings(); // 예약 목록이 비었을 때 보여줄 위젯
-                        } else {
-                          // 상태별로 예약 목록 분류
-                          final submitReservations = reservations
-                              .where((r) => r.status == 'submit')
-                              .toList();
-                          final confirmReservations = reservations
-                              .where((r) => r.status == 'confirm')
-                              .toList();
-                          final rejectReservations = reservations
-                              .where((r) => r.status == 'reject')
-                              .toList();
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final reservationAsyncValue =
+                          ref.watch(reservationViewModelProvider);
+                      return reservationAsyncValue.when(
+                        data: (reservations) {
+                          if (reservations.isEmpty) {
+                            return EmptyBookings(); // 예약 목록이 비었을 때 보여줄 위젯
+                          } else {
+                            // 상태별로 예약 목록 분류
+                            final submitReservations = reservations
+                                .where((r) => r.status == 'submit')
+                                .toList();
+                            final confirmReservations = reservations
+                                .where((r) => r.status == 'confirm')
+                                .toList();
+                            final rejectReservations = reservations
+                                .where((r) => r.status == 'reject')
+                                .toList();
 
-                          return SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (submitReservations.isNotEmpty) ...[
-                                  Text('접수된 예약',
-                                      style: TextStyle(
-                                          fontSize: 17.0,
-                                          fontWeight: FontWeight.bold)),
-                                  ...submitReservations
-                                      .map((reservation) => ReservationInfoList(
-                                          reservation: reservation))
-                                      .toList(),
-                                  Divider(),
+                            return SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (submitReservations.isNotEmpty) ...[
+                                    Text('접수된 예약',
+                                        style: TextStyle(
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.bold)),
+                                    ...submitReservations
+                                        .map((reservation) =>
+                                            ReservationInfoList(
+                                                reservation: reservation))
+                                        .toList(),
+                                    Divider(),
+                                  ],
+                                  if (confirmReservations.isNotEmpty) ...[
+                                    Text('승인한 예약',
+                                        style: TextStyle(
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.bold)),
+                                    ...confirmReservations
+                                        .map((reservation) =>
+                                            ReservationInfoList(
+                                                reservation: reservation))
+                                        .toList(),
+                                    Divider(),
+                                  ],
+                                  if (rejectReservations.isNotEmpty) ...[
+                                    Text('거절한 예약',
+                                        style: TextStyle(
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.bold)),
+                                    ...rejectReservations
+                                        .map((reservation) =>
+                                            ReservationInfoList(
+                                              reservation: reservation,
+                                            ))
+                                        .toList(),
+                                  ],
                                 ],
-                                if (confirmReservations.isNotEmpty) ...[
-                                  Text('승인한 예약',
-                                      style: TextStyle(
-                                          fontSize: 17.0,
-                                          fontWeight: FontWeight.bold)),
-                                  ...confirmReservations
-                                      .map((reservation) => ReservationInfoList(
-                                          reservation: reservation))
-                                      .toList(),
-                                  Divider(),
-                                ],
-                                if (rejectReservations.isNotEmpty) ...[
-                                  Text('거절한 예약',
-                                      style: TextStyle(
-                                          fontSize: 17.0,
-                                          fontWeight: FontWeight.bold)),
-                                  ...rejectReservations
-                                      .map((reservation) => ReservationInfoList(
-                                          reservation: reservation))
-                                      .toList(),
-                                ],
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                      loading: () => Center(
-                          child: CircularProgressIndicator(
-                              color: Palette.stateColor4)),
-                      error: (error, stack) => Text('Error: $error'),
-                    );
-                  },
-                ),
+                              ),
+                            );
+                          }
+                        },
+                        loading: () => Center(
+                            child: CircularProgressIndicator(
+                                color: Palette.stateColor4)),
+                        error: (error, stack) => Text('Error: $error'),
+                      );
+                    },
+                  ),
               ],
             ),
           ),
