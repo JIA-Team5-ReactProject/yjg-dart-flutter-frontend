@@ -6,6 +6,7 @@ final userProvider = ChangeNotifierProvider<User>((ref) {
   return User(
     email: "email",
     password: "password",
+    newPassword: "newPassword",
     name: "name",
     phoneNumber: "phoneNumber",
     displayName: "displayName",

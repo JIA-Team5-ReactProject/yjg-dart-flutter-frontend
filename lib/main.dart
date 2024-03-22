@@ -16,6 +16,7 @@ import 'package:yjg/auth/presentation/pages/international_registration.dart';
 import 'package:yjg/auth/presentation/pages/student_login.dart';
 import 'package:yjg/auth/presentation/pages/admin_login.dart';
 import 'package:yjg/auth/presentation/pages/registration_details.dart';
+import 'package:yjg/auth/presentation/pages/update_user.dart';
 import 'package:yjg/bus/presentaion/pages/bus_main.dart';
 import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
 import 'package:yjg/bus/presentaion/pages/bus_schedule.dart';
@@ -34,6 +35,7 @@ import 'package:yjg/salon/presentaion/pages/salon_booking_step_two.dart';
 import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
+import 'package:yjg/setting/setting_page.dart';
 import 'package:yjg/shared/service/device_info.dart';
 // import 'package:yjg/shared/service/load_set_student_name.dart';
 import 'package:yjg/shared/service/token_decoder.dart';
@@ -57,9 +59,9 @@ void main() async {
   final autoLoginStr = await storage.read(key: 'auto_login') ?? 'false';
   final refreshToken = await storage.read(key: 'refresh_token');
 
+
   debugPrint('token: $token');
   debugPrint('refreshToken: $refreshToken');
-
   String? userType = await storage.read(key: 'userType');
 
   if (token != null) {
@@ -140,6 +142,7 @@ class MyApp extends ConsumerWidget {
         '/registration_detail': (context) => RegistrationDetails(),
         '/registration_international': (context) =>
             InternationalRegisteration(),
+        '/update_user': (context) => UpdateUser(),
 
         // 식수 관련
         '/restaurant_main': (context) => RestaurantMain(),
@@ -178,6 +181,9 @@ class MyApp extends ConsumerWidget {
         // AS 관련(관리자)
         '/as_admin': (context) => AsMain(),
         '/as_detail': (context) => AsDetail(),
+
+        // 설정
+        '/setting' : (context) => SettingPage(),
       },
     );
   }

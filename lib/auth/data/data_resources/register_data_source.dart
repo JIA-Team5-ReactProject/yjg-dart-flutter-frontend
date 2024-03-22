@@ -49,6 +49,8 @@ class RegisterDataSource {
       "student_id": detailRegisterState.studentId,
       "name": detailRegisterState.name,
       "phone_number": detailRegisterState.phoneNumber,
+      "password": detailRegisterState.password,
+      "new_password": detailRegisterState.newPassword,
     });
 
     final response = await http.patch(Uri.parse('$apiURL/api/user'),
@@ -59,7 +61,7 @@ class RegisterDataSource {
         // state 값을 json 형태로 변환
         body: body);
 
-    debugPrint('추가 정보 입력 결과: ${response.body}, ${response.statusCode}');
+    debugPrint('추가 정보 입력 결과: ${response.body}, ${jsonDecode(utf8.decode(response.bodyBytes))}');
 
     // status code가 200이 아닐 경우
     if (response.statusCode != 200) {
