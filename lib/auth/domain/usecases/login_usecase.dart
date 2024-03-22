@@ -25,7 +25,7 @@ class LoginUseCase {
     // 로그인 상태 업데이트
      // false: Student, true: Admin
     String adminPrivilege = ref.watch(adminPrivilegesProvider);
-    bool? isAdmin = await storage.read(key: 'isAdmin') == 'true' ? true : false;
+    bool? isAdmin = ref.watch(isAdminProvider);
 
     try {
       if (isAdmin == false) {
