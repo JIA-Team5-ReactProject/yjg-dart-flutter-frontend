@@ -29,12 +29,8 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>$(GIDClientID)</string>
+				<string>com.googleusercontent.apps.897194487261-bo0ic2hrhinjcrkts5t5klv3850nmlo2</string>
 			</array>
-			<key>NSCameraUsageDescription</key>
-			<string>이 앱에서는 사진을 찍기 위해 카메라에 접근이 필요함.</string>
-			<key>NSPhotoLibraryUsageDescription</key>
-			<string>이 앱에서는 사진을 선택하기 위해 사진 앨범에 접근이 필요함.</string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
@@ -64,5 +60,15 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Used to demonstrate image picker plugin</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need to take a picture!</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need to take a picture!</string>
 </dict>
 </plist>

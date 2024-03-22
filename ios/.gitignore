@@ -29,6 +29,7 @@ Runner/GeneratedPluginRegistrant.*
 
 
 **/GoogleService-Info.plist
+**/Config.xcconfig
 
 # Exceptions to above rules.
 !default.mode1v3

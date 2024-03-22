@@ -19,6 +19,7 @@ class GoogleLoginButton extends ConsumerWidget {
         onPressed: () async {
           try {
             await GoogleLoginDataSource().signInWithGoogle(ref, context);
+            Navigator.pushNamed(context, '/dashboard_main');
           } catch (error) {
             debugPrint('Error signing in with Google: $error');
           }
