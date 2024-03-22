@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
+import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
@@ -294,6 +295,7 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
     return Scaffold(
       appBar: BaseAppBar(title: "회의실 예약"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
+      drawer: BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Column(
           children: [
