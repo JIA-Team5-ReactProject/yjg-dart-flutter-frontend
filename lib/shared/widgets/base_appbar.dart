@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/shared/service/auth_service.dart';
 
 class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -13,11 +14,10 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final storage = FlutterSecureStorage();
 
     Future<bool> getIsAdmin() async {
-      final isAdminString = await storage.read(key: 'isAdmin') == 'true' ? true : false;
-      return isAdminString;
+      final isAdmin = ref.watch(isAdminProvider);
+      return isAdmin!;
     }
 
     Widget titleWidget = title != null
