@@ -43,16 +43,3 @@ final adminIdProvider = StateNotifierProvider<AdminIdNotifier, int>((ref) {
   return AdminIdNotifier();
 });
 
-
-// 학생 이름 상태 업데이트를 위한 StudentNameProvider
-class StudentNameNotifier extends StateNotifier<String> {
-  StudentNameNotifier() : super(''); // 초기값은 빈 문자열
-
-  void setStudentName(String newStudentName) {
-    state = newStudentName;
-  }
-}
-
-final studentNameProvider = StateNotifierProvider<StudentNameNotifier, String>((ref) {
-  return StudentNameNotifier();
-});
