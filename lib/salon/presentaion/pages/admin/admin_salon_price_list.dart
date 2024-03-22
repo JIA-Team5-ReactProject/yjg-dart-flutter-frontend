@@ -23,7 +23,7 @@ class AdminSalonPricelist extends ConsumerWidget {
     return Scaffold(
       appBar: BaseAppBar(title: "미용실 가격표"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

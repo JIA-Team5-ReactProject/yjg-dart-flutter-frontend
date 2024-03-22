@@ -105,7 +105,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '식수'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

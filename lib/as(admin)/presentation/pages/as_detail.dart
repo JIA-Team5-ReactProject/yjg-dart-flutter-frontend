@@ -154,7 +154,6 @@ class _AsDetailState extends State<AsDetail> {
 
     return Scaffold(
       appBar: BaseAppBar(title: 'AS관리'),
-      drawer: const BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
 
       // 수정, 삭제 버튼

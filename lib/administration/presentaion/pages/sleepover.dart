@@ -65,7 +65,7 @@ class _SleepoverState extends State<Sleepover> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '외박/외출'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: Column(
         children: [
           SingleChildScrollView(

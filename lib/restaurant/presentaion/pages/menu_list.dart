@@ -100,7 +100,7 @@ class _MenuListState extends State<MenuList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(title: '식단표'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
         // 스크롤 가능한 구조로 변경

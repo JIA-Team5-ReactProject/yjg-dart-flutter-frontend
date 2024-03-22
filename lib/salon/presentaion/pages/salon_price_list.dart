@@ -5,7 +5,6 @@ import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_service_list.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
-import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 
@@ -23,7 +22,6 @@ class SalonPriceList extends ConsumerWidget {
         title: '가격표',
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      drawer: const BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: SizedBox(
           child: Padding(

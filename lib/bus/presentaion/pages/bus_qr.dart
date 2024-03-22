@@ -17,7 +17,7 @@ class _BusQrState extends State<BusQr> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 29, 127, 159),
       appBar: BaseAppBar(title: '버스QR'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       bottomNavigationBar: CustomBottomNavigationBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -80,7 +80,7 @@ class _AsPageState extends State<AsPage> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: 'AS요청'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: Column(
         children: [
           //AS 신청하기 버튼
