@@ -84,7 +84,7 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '회의실 예약'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: Column(
         children: [
           //AS 신청하기 버튼

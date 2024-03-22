@@ -55,7 +55,7 @@ class _NoticeState extends State<Notice> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(title: '공지사항'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: Column(
         children: [

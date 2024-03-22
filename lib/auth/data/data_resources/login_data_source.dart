@@ -41,14 +41,13 @@ class LoginDataSource {
       String? token = tokenGenerated.accessToken; // 토큰값 추출
       String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
       String refreshToken = tokenGenerated.refreshToken!;
+      String studentNum = tokenGenerated.user!.studentId!;
+      
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
-        debugPrint('토큰 저장: $token');
         await storage.write(key: 'refresh_token', value: refreshToken);
-        debugPrint('리프레시 토큰 저장: $refreshToken');
-        ref
-            .read(studentNameProvider.notifier)
-            .setStudentName(studentName); // 사용자 이름 저장
+        await storage.write(key: 'name', value: studentName); // 사용자 이름 저장
+        await storage.write(key: 'student_num', value: studentNum);
       } else {
         throw Exception('토큰이 없습니다.');
       }

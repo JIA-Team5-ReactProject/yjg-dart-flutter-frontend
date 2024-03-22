@@ -22,4 +22,16 @@ final adminPrivilegesProvider = StateNotifierProvider<AdminPrivilegesNotifier, S
 });
 
 
-//     final privilege = watch(adminPrivilegesProvider);
+// isAdmin 상태를 관리하는 프로바이더
+class IsAdminNotifier extends StateNotifier<bool?> {
+  IsAdminNotifier() : super(null); // 초기값은 빈 문자열
+
+  void setStudentName(bool isAdmin) {
+    state = isAdmin;
+  }
+}
+
+final isAdminProvider = StateNotifierProvider<IsAdminNotifier, bool?>((ref) {
+  return IsAdminNotifier();
+});
+

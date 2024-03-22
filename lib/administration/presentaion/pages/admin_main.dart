@@ -67,7 +67,7 @@ class _AdminMainState extends State<AdminMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '행정'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

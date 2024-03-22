@@ -72,7 +72,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(title: '외박/외출'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -17,7 +17,7 @@ class BusSchedule extends ConsumerWidget {
 
     return Scaffold(
       appBar: const BaseAppBar(title: '버스 시간표'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

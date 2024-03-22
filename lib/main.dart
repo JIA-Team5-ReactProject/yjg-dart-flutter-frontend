@@ -37,7 +37,6 @@ import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
 import 'package:yjg/setting/setting_page.dart';
 import 'package:yjg/shared/service/device_info.dart';
-// import 'package:yjg/shared/service/load_set_student_name.dart';
 import 'package:yjg/shared/service/token_decoder.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -47,7 +46,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   final storage = FlutterSecureStorage();
   await dotenv.load(fileName: ".env");
 
@@ -58,8 +59,6 @@ void main() async {
   final token = await storage.read(key: 'auth_token');
   final autoLoginStr = await storage.read(key: 'auto_login') ?? 'false';
   final refreshToken = await storage.read(key: 'refresh_token');
-
-
   debugPrint('token: $token');
   debugPrint('refreshToken: $refreshToken');
   String? userType = await storage.read(key: 'userType');
@@ -67,7 +66,6 @@ void main() async {
   if (token != null) {
     bool hasExpired = JwtDecoder.isExpired(token);
     tokenDecoder(token, autoLoginStr, hasExpired);
-
 
     // 자동로그인이 true이고, 토큰이 만료되지 않았을 경우
     if (autoLoginStr == 'true' && hasExpired == false) {
@@ -176,14 +174,14 @@ class MyApp extends ConsumerWidget {
         '/sleepover': (context) => Sleepover(),
         '/sleepover_application': (context) => SleepoverApplication(),
         '/meeting_room_app': (context) => MeetingRoomApp(),
-        '/meeting_room_main':(context) => MeetingRoomMain(),
+        '/meeting_room_main': (context) => MeetingRoomMain(),
 
         // AS 관련(관리자)
         '/as_admin': (context) => AsMain(),
         '/as_detail': (context) => AsDetail(),
 
         // 설정
-        '/setting' : (context) => SettingPage(),
+        '/setting': (context) => SettingPage(),
       },
     );
   }

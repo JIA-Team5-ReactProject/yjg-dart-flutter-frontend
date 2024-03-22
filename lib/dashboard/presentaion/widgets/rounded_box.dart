@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/widgets/custom_rounded_button.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-class RoundedBox extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 학생 이름
-    final studentName = ref.watch(studentNameProvider);
+class RoundedBox extends StatefulWidget {
+  RoundedBox({super.key});
+  String? name;
 
+  @override
+  State<RoundedBox> createState() => _RoundedBoxState();
+}
+
+class _RoundedBoxState extends State<RoundedBox> {
+  @override
+  void initState() {
+    getUserInfo();
+
+    super.initState();
+  }
+
+  // 로컬스토리지에 저장된 사용자 정보를 불러오기
+  Future<void> getUserInfo() async {
+    final storage = FlutterSecureStorage();
+    String? name = await storage.read(key: 'name');
+    debugPrint('name: $name');
+    setState(() {
+      widget.name = name;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity, // 상자의 너비
       height: 170, // 상자의 높이
@@ -39,8 +60,9 @@ class RoundedBox extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.start, // 위젯들을 위쪽으로 정렬
                 children: <Widget>[
                   SizedBox(height: 10),
-                  Text(studentName,
-                    style: 
+                  Text(
+                    widget.name ?? '정보 없음',
+                    style:
                         TextStyle(color: Palette.backgroundColor, fontSize: 18),
                   ),
                   SizedBox(height: 10), // 텍스트 - 버튼 간격
@@ -50,12 +72,14 @@ class RoundedBox extends ConsumerWidget {
                       CustomRoundedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/bus_qr');
-                          }, buttonText: '버스 QR'),
+                          },
+                          buttonText: '버스 QR'),
                       SizedBox(width: 8),
                       CustomRoundedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/meal_qr');
-                          }, buttonText: '식수 QR'),
+                          },
+                          buttonText: '식수 QR'),
                     ],
                   ),
                 ],

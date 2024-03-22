@@ -15,7 +15,7 @@ class DashboardMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: CustomSingleChildScrollView(
         child: Column(

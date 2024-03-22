@@ -198,7 +198,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     if (application == false) {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
-        drawer: const BaseDrawer(),
+        drawer: BaseDrawer(),
         bottomNavigationBar: const CustomBottomNavigationBar(),
         body: CustomSingleChildScrollView(
           child: Column(
@@ -395,7 +395,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     else if (application == true && deposit == false) {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
-        drawer: const BaseDrawer(),
+        drawer: BaseDrawer(),
         bottomNavigationBar: const CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(
@@ -460,7 +460,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     else {
       return Scaffold(
         appBar: const BaseAppBar(title: '식수 신청'),
-        drawer: const BaseDrawer(),
+        drawer: BaseDrawer(),
         bottomNavigationBar: const CustomBottomNavigationBar(),
         body: SingleChildScrollView(
           child: Column(

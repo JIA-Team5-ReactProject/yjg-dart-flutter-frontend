@@ -120,7 +120,7 @@ class _AsApplicationState extends State<AsApplication> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: 'AS요청'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [

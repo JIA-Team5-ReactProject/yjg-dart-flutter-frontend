@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/viewmodels/notice_viewmodel.dart';
 import 'package:yjg/salon/presentaion/viewmodels/reservations_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
-import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/notice_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
@@ -36,7 +35,6 @@ class _SalonMainState extends ConsumerState<SalonMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '미용실'),
-      drawer: const BaseDrawer(),
       body: Stack(
         children: [
           AnimatedSwitcher( // 두 개의 비동기 상태를 모두 로딩이 완료되면 페이지 내용을 표시

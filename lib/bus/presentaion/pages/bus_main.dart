@@ -25,7 +25,7 @@ class _BusMainState extends ConsumerState<BusMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '버스'),
-      drawer: const BaseDrawer(),
+      drawer: BaseDrawer(),
       body: SingleChildScrollView( // SingleChildScrollView 추가하여 스크롤 가능하도록 수정
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

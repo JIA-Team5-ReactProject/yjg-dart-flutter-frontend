@@ -5,7 +5,6 @@ import 'package:yjg/salon/presentaion/widgets/booking_service_button.dart';
 import 'package:yjg/salon/presentaion/widgets/filter_group_botton.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
-import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 
@@ -22,7 +21,6 @@ class SalonBookingStepOne extends ConsumerWidget {
     return Scaffold(
       appBar: BaseAppBar(title: "미용실 예약"),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      drawer: const BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
