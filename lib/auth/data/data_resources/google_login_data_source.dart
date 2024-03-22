@@ -11,63 +11,49 @@ import 'package:yjg/main.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 
 class GoogleLoginDataSource {
-  // 상수 파일에서 가져온 apiURL 사용
-  String getApiUrl() {
-    return apiURL;
-  }
-
-  // 구글 로그인
-  static final _googleSignin = GoogleSignIn(
+  static final _googleSignIn = GoogleSignIn(
     scopes: <String>[
       'email',
     ],
   );
 
-  // 구글 로그인 통신
+  static final _storage = FlutterSecureStorage();
+
+  // 구글로 로그인하는 함수
   Future<void> signInWithGoogle(WidgetRef ref, BuildContext context) async {
     try {
-      await _googleSignin.signIn();
-      final GoogleSignInAccount? account = _googleSignin.currentUser;
+      await _googleSignIn.signIn();
+      final GoogleSignInAccount? account = _googleSignIn.currentUser;
       final domainValidationUseCase = DomainValidationUseCase();
 
+      // 이메일 도메인이 학교 이메일인지 확인
       if (account != null) {
-        // 이메일 도메인 검증
         if (!domainValidationUseCase(account.email)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('학교 이메일(@g.yju.ac.kr)이 아닐 경우 로그인을 할 수 없습니다.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-          await _googleSignin.disconnect(); // 로그인 실패 시 연결 해제
+          _showSnackBar(context, '학교 이메일(@g.yju.ac.kr)이 아닐 경우 로그인을 할 수 없습니다.');
+          await _googleSignIn.disconnect();
           return;
         }
 
+        // 구글 로그인 후 토큰을 교환
         GoogleSignInAuthentication googleAuth = await account.authentication;
 
-        // Riverpod를 통해 User 상태를 업데이트
         ref.read(userProvider.notifier).updateWithGoogleSignIn(
               email: account.email,
               displayName: account.displayName,
-              idToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
             );
 
-        debugPrint("Google User Token: ${googleAuth.accessToken}");
-        debugPrint('구글 계정 정보: $account');
-        await postGoogleLoginAPI(ref);
+        await _postGoogleLoginAPI(ref);
       }
     } catch (error) {
-      debugPrint('Error signing in with Google: $error');
+      debugPrint('Google 로그인 시 오류 발생: $error');
     }
   }
 
-  // 토큰 담는 곳
-  static final storage = FlutterSecureStorage();
-
-  // 구글 로그인 후 토큰 교환 통신
-  Future<http.Response> postGoogleLoginAPI(WidgetRef ref) async {
+  // 구글로 로그인 후 토큰을 교환하는 함수
+  Future<http.Response> _postGoogleLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
-    final deviceInfo = await storage.read(key: 'deviceType');
+    final deviceInfo = await _storage.read(key: 'deviceType');
     final body = jsonEncode(<String, String>{
       'email': loginState.email,
       'displayName': loginState.displayName,
@@ -75,50 +61,59 @@ class GoogleLoginDataSource {
       'os_type': deviceInfo ?? 'unknown',
     });
 
-    debugPrint('내가 보내려는 값: $body');
     final response = await http.post(Uri.parse('$apiURL/api/user/google-login'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
         body: body);
 
-    debugPrint(
-        "postGoogleLoginAPI 토큰 교환 결과: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}");
+    // 모델 클래스로 변환
+    final result = Tokengenerated.fromJson(jsonDecode(response.body));
+    int? approved = result.user?.approved;
 
-    if (response.statusCode == 403) {
-      navigatorKey.currentState!
-          .pushNamed('/registration_detail'); // 추가 정보 입력 페이지로 이동
-    }
-    if (response.statusCode == 200) {
+    // 승인이 되지 않은 경우
+    if (approved == 0) {
+      navigatorKey.currentState!.pushNamed('/registration_detail');
+    } else {
+      // 승인이 된 경우
       final jsonData = json.decode(response.body);
       Tokengenerated result = Tokengenerated.fromJson(jsonData);
 
-      int? id = result.user?.id; // 응답으로부터 사용자 ID 추출
-      int? approved = result.user?.approved;
-      if (id != null) {
-        // 새 사용자 ID로 상태 업데이트
-        ref.read(userIdProvider.notifier).setUserId(id);
-      } else {
-        // ID가 null인 경우 처리
-        debugPrint('사용자 ID가 null입니다.');
-      }
+      String? token = result.accessToken;
+      String? refreshToken = result.refreshToken;
+      String? studentNum = result.user?.studentId;
 
-      String? token = result.accessToken; // 응답으로부터 토큰 추출
-
+      // 토큰이 존재하는 경우
       if (token != null) {
-        // 토큰을 저장하기 위해 사용
-        await storage.write(key: 'auth_token', value: token);
-        await storage.write(key: 'studentName', value: loginState.displayName);
+        await _saveTokens(
+            token, refreshToken, studentNum, loginState.displayName);
+        return response;
       } else {
-        // 토큰이 null인 경우 처리
         debugPrint('토큰이 없습니다.');
       }
-      return response;
-    } else {
-      throw Exception('로그인 실패: ${response.statusCode}');
     }
+    throw Exception('토큰 처리에 실패했습니다.');
   }
 
-  // 구글 로그아웃
-  static Future<void> logout() => _googleSignin.signOut();
+  // 토큰을 저장하는 함수
+  Future<void> _saveTokens(String token, String? refreshToken,
+      String? studentNum, String displayName) async {
+    await _storage.write(key: 'auth_token', value: token);
+    await _storage.write(key: 'name', value: displayName);
+    await _storage.write(key: 'refresh_token', value: refreshToken ?? '');
+    await _storage.write(key: 'student_num', value: studentNum ?? '');
+  }
+
+  // 스낵바를 표시하는 함수
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  // 로그아웃하는 함수
+  static Future<void> logout() => _googleSignIn.signOut();
 }
