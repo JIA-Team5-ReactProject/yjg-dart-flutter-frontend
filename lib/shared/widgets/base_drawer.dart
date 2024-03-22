@@ -1,28 +1,49 @@
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:dotted_line/dotted_line.dart";
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-// BaseDrawer를 ConsumerWidget으로 변환
-class BaseDrawer extends ConsumerWidget {
-  const BaseDrawer({Key? key}) : super(key: key);
+class BaseDrawer extends ConsumerStatefulWidget {
+  BaseDrawer({super.key});
+  String? name;
+  String? studenNum; // 학번
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _BaseDrawerState();
+}
+
+class _BaseDrawerState extends ConsumerState<BaseDrawer> {
+  @override
+  void initState() {
+    getUserInfo();
+    super.initState();
+  }
+
+  Future<void> getUserInfo() async {
+    final storage = FlutterSecureStorage();
+    String? name = await storage.read(key: 'name');
+    String? studentNum = await storage.read(key: 'student_num');
+    setState(() {
+      widget.name = name;
+      widget.studenNum = studentNum;
+    });
+  }
+
+  // AuthService 인스턴스 생성
+  final authService = AuthService();
+
+  Future<void> checkUserState() async {
+    if (!(await authService.isLoggedIn())) {
+      debugPrint('토큰 미존재. 로그인 페이지로 이동');
+      Navigator.pushNamed(context, '/login_student');
+    } else {
+      debugPrint('로그인 중');
+    }
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // AuthService 인스턴스 생성
-    final authService = AuthService();
-
-    Future<void> checkUserState() async {
-      if (!(await authService.isLoggedIn())) {
-        debugPrint('토큰 미존재. 로그인 페이지로 이동');
-        Navigator.pushNamed(context, '/login_student');
-      } else {
-        debugPrint('로그인 중');
-      }
-    }
-
-    // initState 대신, ConsumerWidget에서는 addPostFrameCallback 내에서 직접 호출
+  Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => checkUserState());
 
     return Drawer(
@@ -33,8 +54,8 @@ class BaseDrawer extends ConsumerWidget {
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/img/yju_tiger_logo.png'),
             ),
-            accountName: const Text('김영진'), // ! 추후 통신
-            accountEmail: const Text('2201333'),
+            accountName: Text(widget.name ?? '정보 없음'),
+            accountEmail: Text(widget.studenNum ?? '정보 없음'),
             decoration: const BoxDecoration(
               color: Palette.mainColor,
               borderRadius: BorderRadius.only(
@@ -58,7 +79,8 @@ class BaseDrawer extends ConsumerWidget {
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context); //drawer 닫기
-              Navigator.of(context).popUntil((route) => route.isFirst); //열린 창 다 닫고 첫 페이지(홈) 이동
+              Navigator.of(context)
+                  .popUntil((route) => route.isFirst); //열린 창 다 닫고 첫 페이지(홈) 이동
               Navigator.pushNamed(context, '/bus_schedule'); // 원하는 페이지 이동
             },
           ),
@@ -236,8 +258,8 @@ class BaseDrawer extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () =>
-                authService.logout(context, ref), // onTap 이벤트를 직접 logout 함수 호출로 변경
+            onTap: () => authService.logout(
+                context, ref), // onTap 이벤트를 직접 logout 함수 호출로 변경
           ),
           SizedBox(
             height: 40,
