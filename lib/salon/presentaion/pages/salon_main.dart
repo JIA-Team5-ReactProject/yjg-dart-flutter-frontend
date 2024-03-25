@@ -10,6 +10,8 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
 
+import '../../../shared/widgets/base_drawer.dart';
+
 class SalonMain extends ConsumerStatefulWidget {
   const SalonMain({Key? key}) : super(key: key);
 
@@ -35,9 +37,11 @@ class _SalonMainState extends ConsumerState<SalonMain> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '미용실'),
+      drawer: BaseDrawer(),
       body: Stack(
         children: [
-          AnimatedSwitcher( // 두 개의 비동기 상태를 모두 로딩이 완료되면 페이지 내용을 표시
+          AnimatedSwitcher(
+            // 두 개의 비동기 상태를 모두 로딩이 완료되면 페이지 내용을 표시
             duration: const Duration(milliseconds: 300),
             child: (reservationsAsyncValue.when(
                       data: (_) => true,

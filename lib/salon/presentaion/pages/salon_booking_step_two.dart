@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/widgets/booking_calendar.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
+import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 
@@ -12,6 +13,7 @@ class SalonBookingStepTwo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: BaseAppBar(title: "미용실 예약"),
+      drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: CustomSingleChildScrollView(
         child: Padding(
