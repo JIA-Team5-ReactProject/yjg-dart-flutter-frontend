@@ -148,8 +148,8 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
     DateTime lastTime = DateFormat.Hm().parse(lastSelectedTime);
     DateTime maxTime;
 
-    // `_reservedTimes` 리스트를 순회하며 `lastTime` 이후의 가장 빠른 예약된 시간을 찾습니다.
-    // 예약된 시간이 없다면, 최대 선택 가능 시간을 하루의 마지막 시간으로 설정합니다.
+    // `_reservedTimes` 리스트를 순회하며 `lastTime` 이후의 가장 빠른 예약된 시간을 찾음.
+    // 예약된 시간이 없다면, 최대 선택 가능 시간을 하루의 마지막 시간으로 설정.
     final upcomingReservedTime = _reservedTimes
         .map((time) => DateFormat.Hm().parse(time))
         .where((time) => time.isAfter(lastTime))

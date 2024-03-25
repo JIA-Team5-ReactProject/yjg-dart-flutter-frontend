@@ -18,7 +18,7 @@ class AsApplication extends StatefulWidget {
 
 class _AsApplicationState extends State<AsApplication> {
   List<XFile> _images = []; //이미지를 담을 변수 선언
-  
+
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
   static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
@@ -67,7 +67,7 @@ class _AsApplicationState extends State<AsApplication> {
   Future<void> sendData() async {
 
     final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
-    
+
     var uri = Uri.parse('$apiURL/api/after-service');
     var request = http.MultipartRequest('POST', uri)
       ..fields['title'] = title_controller.text
@@ -294,6 +294,10 @@ class _AsApplicationState extends State<AsApplication> {
                   contentPadding: EdgeInsets.only(left: 16),
                 ),
               ),
+            ),
+
+            SizedBox(
+              height: 15,
             ),
 
             //사진 보여주는 곳
