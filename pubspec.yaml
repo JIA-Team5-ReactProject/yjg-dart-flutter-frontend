@@ -60,6 +60,7 @@ dependencies:
   device_info_plus: ^9.1.2
   jwt_decoder: ^2.0.1
   settings_ui: ^2.0.2
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:

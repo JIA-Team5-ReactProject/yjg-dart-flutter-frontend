@@ -70,5 +70,13 @@
 	<string>We need to take a picture!</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need to take a picture!</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+		<string>sms</string>
+		<string>tel</string>
+		<string>mailto</string>
+	</array>
 </dict>
 </plist>
