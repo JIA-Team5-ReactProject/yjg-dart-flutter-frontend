@@ -28,9 +28,9 @@ class AfterServiceResponse {
     required this.to,
     required this.total,
   });
+
   factory AfterServiceResponse.fromJson(Map<String, dynamic> json) {
-    final afterServices = json['after_services']
-        as Map<String, dynamic>; // 'after_services' 객체 접근
+    final afterServices = json['after_services'] as Map<String, dynamic>;
     return AfterServiceResponse(
       currentPage: afterServices['current_page'] ?? 1,
       data: afterServices['data'] != null
@@ -66,7 +66,6 @@ class AfterService {
   final String createdAt;
   final String updatedAt;
   final String userName;
-  final List<AfterServiceComment> afterServiceComments;
   final List<dynamic> afterServiceImages;
 
   AfterService({
@@ -80,25 +79,8 @@ class AfterService {
     required this.createdAt,
     required this.updatedAt,
     required this.userName,
-    required this.afterServiceComments,
     required this.afterServiceImages,
   });
-
-  // 댓글 생성
-  void addComment(AfterServiceComment newComment) {
-    afterServiceComments.add(newComment);
-  }
-
-  // 댓글 업데이트
-  void updateComment(AfterServiceComment updatedComment) {
-    int index = afterServiceComments
-        .indexWhere((comment) => comment.id == updatedComment.id);
-    if (index != -1) {
-      afterServiceComments[index] = updatedComment;
-    } else {
-      afterServiceComments.add(updatedComment);
-    }
-  }
 
   factory AfterService.fromJson(Map<String, dynamic> json) => AfterService(
         id: json['id'],
@@ -111,44 +93,7 @@ class AfterService {
         createdAt: json['created_at'],
         updatedAt: json['updated_at'],
         userName: json['user_name'],
-        afterServiceComments: json['after_service_comments'] == null
-            ? []
-            : List<AfterServiceComment>.from(json['after_service_comments']
-                .map((x) => AfterServiceComment.fromJson(x))),
-        afterServiceImages: json['after_service_images'] == null
-            ? []
-            : List<dynamic>.from(json['after_service_images'].map((x) => x)),
-      );
-}
-
-class AfterServiceComment {
-  final int id;
-  final int adminId;
-  final int afterServiceId;
-  final String comment;
-  final String? deletedAt;
-  final String createdAt;
-  final String updatedAt;
-
-  AfterServiceComment({
-    required this.id,
-    required this.adminId,
-    required this.afterServiceId,
-    required this.comment,
-    this.deletedAt,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory AfterServiceComment.fromJson(Map<String, dynamic> json) =>
-      AfterServiceComment(
-        id: json['id'],
-        adminId: json['admin_id'],
-        afterServiceId: json['after_service_id'],
-        comment: json['comment'],
-        deletedAt: json['deleted_at'],
-        createdAt: json['created_at'],
-        updatedAt: json['updated_at'],
+        afterServiceImages: json['after_service_images'] ?? [],
       );
 }
 

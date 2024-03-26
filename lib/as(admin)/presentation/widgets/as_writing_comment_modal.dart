@@ -4,6 +4,7 @@ import "package:yjg/as(admin)/data/data_sources/as_comment_data_source.dart";
 import "package:yjg/as(admin)/domain/entities/comment.dart";
 import "package:yjg/as(admin)/domain/usecases/as_comment_usecase.dart";
 import "package:yjg/as(admin)/presentation/viewmodels/as_viewmodel.dart";
+import "package:yjg/as(admin)/presentation/viewmodels/comment_viewmodel.dart";
 import "package:yjg/shared/theme/theme.dart";
 
 void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
@@ -73,6 +74,10 @@ void showAsWritingCommentModal(BuildContext context, WidgetRef ref) {
                       Navigator.pop(context);
 
                       if (result.isSuccess) {
+                        ref
+                            .read(commentViewModelProvider.notifier)
+                            .fetchComments(serviceId); // 상태 갱신
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(result.message),

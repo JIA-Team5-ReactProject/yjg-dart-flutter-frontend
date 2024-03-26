@@ -57,7 +57,7 @@ class AdminAsFloatingButton extends ConsumerWidget {
                         Navigator.pop(context);
 
                       if (result.isSuccess) {
-
+                        ref.read(asDataNotifierProvider.notifier).fetchAsData(0);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(result.message),

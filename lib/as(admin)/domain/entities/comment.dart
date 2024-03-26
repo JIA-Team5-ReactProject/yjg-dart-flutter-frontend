@@ -1,7 +1,7 @@
 class Comment {
-  final String? comment;
-  final int? commentId;
-  final int? serviceId;
+  final String? comment; // 내용
+  final int? commentId; // 수정, 삭제
+  final int? serviceId; // 작성
 
   Comment({
     this.comment,
