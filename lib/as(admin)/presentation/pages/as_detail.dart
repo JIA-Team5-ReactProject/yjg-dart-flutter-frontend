@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/administration/presentaion/widgets/std_as_floating_button.dart';
-import 'package:yjg/as(admin)/data/models/as_list.dart';
 import 'package:yjg/as(admin)/presentation/widgets/admin_as_floating_button.dart';
+import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
-import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/as(admin)/presentation/widgets/service_requester.dart';
@@ -16,16 +16,16 @@ import 'package:yjg/shared/widgets/as_image_view.dart';
 import 'package:yjg/as(admin)/presentation/widgets/as_notice_box.dart';
 import 'package:intl/intl.dart';
 
-class AsDetail extends StatefulWidget {
+class AsDetail extends ConsumerStatefulWidget {
   const AsDetail({Key? key}) : super(key: key);
 
   @override
-  State<AsDetail> createState() => _AsDetailState();
+  ConsumerState<AsDetail> createState() => _AsDetailState();
 }
 
-class _AsDetailState extends State<AsDetail> {
+class _AsDetailState extends ConsumerState<AsDetail> {
   bool _isEditing = false; // 수정 선택 여부
-  bool isAdmin = false;
+  bool? isAdmin;
   TextEditingController _contentController =
       TextEditingController(); // 컨텐츠 컨트롤러
   String? _editedVisitDate; // 수정된 희망 처리일자를 저장하는 변수
@@ -33,17 +33,18 @@ class _AsDetailState extends State<AsDetail> {
   static final storage = FlutterSecureStorage(); // 정원이가 말해준 코드(토큰)
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _checkIfAdmin();
   }
 
   // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
   Future<void> _checkIfAdmin() async {
-    final isAdminValue = await storage.read(key: 'isAdmin');
+    bool? isAdminValue = ref.watch(isAdminProvider);
+
     setState(() {
-      isAdmin = isAdminValue == 'true';
-      debugPrint('isAdmin: $isAdmin');
+      isAdminValue == true ? isAdmin = true : isAdmin = false;
+      debugPrint('관리자여부: $isAdmin');
     });
   }
 
@@ -112,10 +113,10 @@ class _AsDetailState extends State<AsDetail> {
               child: Text('아니오'),
             ),
             TextButton(
-             onPressed: () {
-                 Navigator.of(context).pop(true); // '예' 선택 시 true 반환
-                 Navigator.pop(context);
-                 Navigator.pushNamed(context, '/as_page');
+              onPressed: () {
+                Navigator.of(context).pop(true); // '예' 선택 시 true 반환
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/as_page');
               },
               child: Text('예'),
             ),
@@ -267,7 +268,6 @@ class _AsDetailState extends State<AsDetail> {
                             )
                           : Text(asDetail['afterService']['content']),
                     ),
-                    
                     Text(
                       "첨부파일(${asDetail['afterService']['after_service_images'].length})",
                       style: const TextStyle(
@@ -286,11 +286,7 @@ class _AsDetailState extends State<AsDetail> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     AsCommentBox(
-                        comments: asDetail['afterService']
-                                ['after_service_comments']
-                            .map<AfterServiceComment>((comment) =>
-                                AfterServiceComment.fromJson(comment))
-                            .toList()),
+                        serviceId: asId,),
                     SizedBox(height: 60.0),
                   ],
                 ),

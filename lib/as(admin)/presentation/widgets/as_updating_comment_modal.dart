@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/as(admin)/domain/entities/comment.dart';
+import 'package:yjg/as(admin)/presentation/viewmodels/comment_viewmodel.dart';
 import 'package:yjg/shared/theme/theme.dart';
 
 import '../../data/data_sources/as_comment_data_source.dart';
 import '../../domain/usecases/as_comment_usecase.dart';
 
 void showAsUpdatingCommentModal(
-    BuildContext context, String comment, int commentId, WidgetRef ref) {
+    BuildContext context, String comment, int commentId, int serviceId, WidgetRef ref) {
   TextEditingController commentController =
       TextEditingController(text: comment);
   final commentUseCases = CommentUseCases(AsCommentDataSource());
@@ -70,6 +71,10 @@ void showAsUpdatingCommentModal(
                           await commentUseCases.updateComment(updateComment);
 
                       if (result.isSuccess) {
+                        ref
+                            .read(commentViewModelProvider.notifier)
+                            .fetchComments(serviceId); // 상태 업데이트
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(result.message),
