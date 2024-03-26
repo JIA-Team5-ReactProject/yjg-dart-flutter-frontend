@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:yjg/shared/theme/theme.dart';
 
 class ServiceRequester extends StatefulWidget {
@@ -29,6 +30,8 @@ class ServiceRequester extends StatefulWidget {
 
 class _ServiceRequesterState extends State<ServiceRequester> {
   late String _formattedVisitDate; // 사용자가 선택한 날짜를 문자열로 저장
+
+  
 
   @override
   void initState() {
@@ -65,7 +68,14 @@ class _ServiceRequesterState extends State<ServiceRequester> {
                   ),
                 ),
                 SizedBox(width: 38.0),
-                Text(formatPhoneNumber(widget.phoneNumber)),
+                InkWell(
+                onTap: () {
+                  // 전화번호 클릭 시 전화 걸기
+                  // 전화번호를 전화 앱으로 넘겨주기 위해 tel:을 붙여줌
+                  launchUrl(Uri(scheme: 'tel', path: widget.phoneNumber));
+                },
+                child: Text(formatPhoneNumber(widget.phoneNumber),),
+                ),
               ],
             ),
             Row(
