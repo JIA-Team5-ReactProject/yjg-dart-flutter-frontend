@@ -56,12 +56,18 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
   // 버튼에 넣어줄 식수 유형의 정보를 저장할 변수
   List<dynamic> semesterMealTypes = [];
 
+  //get 함수로 불러온 계좌번호 데이터를 저장할 변수들
+  String bankName = '';
+  String accountNumber = '';
+  String accountHolder = '';
+
   @override
   void initState() {
     super.initState();
     fetchUserInfo(); // 사용자 정보를 가져오는 메서드 호출
     fetchMealTypes(); // 식수 유형의 정보를 가져오는 메서드 호출
     fetchApplicationStatus(); // API로부터 식수 신청 상태를 가져오는 메서드
+    fetchAccountData(); // 위젯 초기화 시 계좌번호 데이터를 가져오는 함수 호출
   }
 
   // 사용자 정보를 가져오는 API 함수
@@ -129,7 +135,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     if (response.statusCode == 200) {
       // 신청 후 상태를 다시 가져와서 화면을 업데이트
       await fetchApplicationStatus();
-      print('$mealType유형을 성공적으로 보냈다아');
+      print('$mealType유형 전송 성공');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
@@ -154,7 +160,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
             applicationId = applicationData[0]['id']; // 신청 ID를 저장
             selectedMealTypeId =
                 applicationData[0]['semester_meal_type'][0]['meal_type'];
-            deposit = applicationData[0]['payment'] == 1;
+                deposit = applicationData[0]['payment'] == 1;
           } else {
             selectedMealTypeId = null;
             applicationId = null; // 신청이 없을 경우 null로 설정
@@ -189,6 +195,27 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
       await fetchApplicationStatus(); // 상태를 다시 가져와 화면을 업데이트
     } else {
       print("Failed to cancel application with status: ${response.statusCode}");
+    }
+  }
+
+  //
+  //계좌 번호 데이터를 불러오는 GET API 함수
+  Future<void> fetchAccountData() async {
+    final token = await storage.read(key: 'auth_token');
+
+    final uri = Uri.parse('$apiURL/api/restaurant/account/show');
+    final response = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['data'];
+
+      setState(() {
+        bankName = data['bank_name'];
+        accountNumber = data['account'];
+        accountHolder = data['name'];
+      });
+    } else {
+      print('계좌 정보를 불러오는 데 실패했습니다.');
     }
   }
 
@@ -364,8 +391,8 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                     color: const Color.fromARGB(255, 168, 168, 168),
                   ),
                 ),
-                child: const Text(
-                  '농협 352 1299 5358 33',
+                child: Text(
+                  '$bankName  $accountNumber $accountHolder',
                   style: TextStyle(
                     color: Color.fromARGB(255, 121, 121, 121),
                   ),
@@ -425,7 +452,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                       color: const Color.fromARGB(255, 205, 205, 205),
                     ),
                     borderRadius: BorderRadius.circular(10)),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.sentiment_very_dissatisfied,
@@ -436,7 +463,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                       style: TextStyle(color: Colors.red),
                     ),
                     Text(
-                      '계좌번호 : 농협 352 1299 5358 33',
+                      '$bankName  $accountNumber $accountHolder',
                       style: TextStyle(
                         color: Color.fromARGB(255, 162, 162, 162),
                       ),
