@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
@@ -6,15 +9,21 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:group_button/group_button.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-//선택 유형 담는 변수
-var weekend = '';
-var category = '';
-var notEnoughPerson = '';
+// RefundOption 열거형 추가
+enum RefundOption { refund, convenienceStore }
+
+//선택 사항 저장하는 함수 초기화시 할당 되게 추가 해놔서 상관 ㄴㄴ
+int sat = -1;
+int sun = -1;
+String mealType = '';
+int refund = -1;
 
 //신청 여부 확인 변수
-var mealWeekend = false;
-var mealWeekendDeposit = false;
+int mealWeekend = -1;
+int mealWeekendDeposit = -1;
 
 class WeekendMeal extends StatefulWidget {
   const WeekendMeal({super.key});
@@ -24,11 +33,198 @@ class WeekendMeal extends StatefulWidget {
 
 class _WeekendMealState extends State<WeekendMeal> {
   final controller = GroupButtonController();
+  RefundOption? _refundOption; // 사용자가 선택한 환불 옵션을 저장하는 변수
+
+  List<dynamic> mealTypes = []; // API로부터 가져온 식사 유형 데이터를 저장할 리스트
+
+  //get 함수로 불러온 신청 유저의 데이터를 저장할 변수들
+  String studentId = '';
+  String name = '';
+  String phoneNumber = '';
+  String mealDay = '';
+  String mealTypeDetail = '';
+  String refundOption = '';
+
+  int applicationId = -1; // 신청 취소 하려고 신청건의 id 담아두는 변수
+
+  //get 함수로 불러온 계좌번호 데이터를 저장할 변수들
+  String bankName = '';
+  String accountNumber = '';
+  String accountHolder = '';
+
+  // 휴대전화 번호 - 추가 함수
+  String formatPhoneNumber(String phoneNumber) {
+    if (phoneNumber.length == 11) {
+      // 대부분의 한국 휴대폰 번호 길이는 11자리입니다.
+      return phoneNumber.replaceRange(3, 3, '-').replaceRange(8, 8, '-');
+    } else {
+      return phoneNumber; // 다른 길이의 번호는 그대로 반환합니다.
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchMealTypes(); // 위젯 초기화 시 식사 유형 데이터 가져오는 함수 호출
+    fetchUserData(); //위젯 초기화 시 신청자 데이터를 가져오는 함수 호출
+    fetchAccountData(); // 위젯 초기화 시 계좌번호 데이터를 가져오는 함수 호출
+  }
+
+  final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+
+  // 식수 유형 POST로 보내는 API 함수
+  Future<void> sendApplication() async {
+    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+
+    final uri = Uri.parse('$apiURL/api/restaurant/weekend');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    final body = json.encode({
+      'meal_type': mealType,
+      'refund': refund,
+      'sat': sat,
+      'sun': sun,
+    });
+
+    try {
+      final response = await http.post(uri, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청을 보냈을 때의 처리
+        print('Application sent successfully');
+      } else {
+        // 요청 실패 시의 처리
+        print('Failed to send application');
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (e) {
+      print('Error sending application: $e');
+    }
+  }
+
+  // 식사 유형 데이터(버튼) 불러오는 GET API 함수
+  Future<void> fetchMealTypes() async {
+    final response = await http.get(
+      Uri.parse('$apiURL/api/restaurant/weekend/meal-type/get'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        mealTypes = data['semester_meal_type'];
+      });
+    } else {
+      // 오류 처리
+      print('데이터 전송 실패');
+    }
+  }
+
+  // 신청자 데이터 불러오는 GET API 함수
+  Future<void> fetchUserData() async {
+    final token = await storage.read(key: 'auth_token');
+
+    final uri = Uri.parse('$apiURL/api/restaurant/weekend/show/user/table');
+    final response =
+        await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      final userData = responseBody['userData']['data'];
+
+      if (userData.isNotEmpty) {
+        // userData 리스트가 비어있지 않은 경우
+        final data = userData.first;
+
+        setState(() {
+          studentId = data['user']['student_id'];
+          name = data['user']['name'];
+          phoneNumber = data['user']['phone_number'];
+          applicationId = data['id'];
+
+          // 요일 처리
+          if (data['sat'] == 1 && data['sun'] == 0) {
+            mealDay = '토요일';
+          } else if (data['sat'] == 0 && data['sun'] == 1) {
+            mealDay = '일요일';
+          } else if (data['sat'] == 1 && data['sun'] == 1) {
+            mealDay = '토요일 + 일요일';
+          }
+
+          // 식사 유형 처리
+          mealTypeDetail = data['weekend_meal_type'].first['meal_type'] + '유형';
+
+          // 환불 옵션 처리
+          refundOption = data['refund'] == 1 ? '환불' : '편의점 도시락';
+
+          // payment 값을 확인하여 mealWeekendDeposit 설정
+          mealWeekendDeposit = data['payment'];
+
+          // userData 리스트가 존재하므로 mealWeekend를 1로 설정
+          mealWeekend = 1;
+        });
+      } else {
+        // userData 리스트가 비어있는 경우
+        setState(() {
+          // mealWeekend를 0으로 설정하여 신청이 없음을 나타냄
+          mealWeekend = 0;
+        });
+      }
+    } else {
+      // 오류 처리
+      print('정보 가져오기 실패');
+    }
+  }
+
+  // 신청 취소하는 DELETE API 함수
+  Future<void> deleteApplication(int id) async {
+    final token = await storage.read(key: 'auth_token');
+
+    final uri = Uri.parse('$apiURL/api/restaurant/weekend/delete/$id');
+    final response =
+        await http.delete(uri, headers: {'Authorization': 'Bearer $token'});
+
+    if (response.statusCode == 200) {
+      // 요청 성공 시 처리
+      print('삭제성공');
+    } else {
+      // 요청 실패 시 처리
+      print('삭제 실패');
+      print(response.statusCode);
+      print(response.body);
+    }
+  }
+
+  //계좌 번호 데이터를 불러오는 GET API 함수
+  Future<void> fetchAccountData() async {
+    final token = await storage.read(key: 'auth_token');
+
+    final uri = Uri.parse('$apiURL/api/restaurant/account/show');
+    final response =
+        await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['data'];
+
+      setState(() {
+        bankName = data['bank_name'];
+        accountNumber = data['account'];
+        accountHolder = data['name'];
+      });
+    } else {
+      print('계좌 정보를 불러오는 데 실패했습니다.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     //주말 식수 신청 x인 경우
-    if (mealWeekend == false) {
+    if (mealWeekend == 0) {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
         drawer: BaseDrawer(),
@@ -119,15 +315,18 @@ class _WeekendMealState extends State<WeekendMeal> {
                 onSelected: (index, isSelected, isPressed) {
                   if (isSelected == 0) {
                     setState(() {
-                      weekend = '토요일';
+                      sat = 1;
+                      sun = 0;
                     });
                   } else if (isSelected == 1) {
                     setState(() {
-                      weekend = '일요일';
+                      sat = 0;
+                      sun = 1;
                     });
                   } else if (isSelected == 2) {
                     setState(() {
-                      weekend = '토요일+일요일';
+                      sat = 1;
+                      sun = 1;
                     });
                   }
                 },
@@ -155,76 +354,67 @@ class _WeekendMealState extends State<WeekendMeal> {
               ),
 
               //식사 정보 선택 버튼
-              GroupButton(
-                //버튼 디자인
-                options: const GroupButtonOptions(
-                  //버튼 그림자
-                  selectedShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 207, 207, 207), //그림자 색상
-                      spreadRadius: 0.5, // 그림자 넓이
-                      blurRadius: 5, // 그림자 흐림도
-                      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
+              Wrap(
+                spacing: 8.0, // 버튼 사이의 가로 간격
+                runSpacing: 8.0, // 버튼 사이의 세로 간격
+                children: mealTypes.map((type) {
+                  bool isSelected = mealType == type['meal_type'];
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: isSelected
+                          ? const Color.fromARGB(255, 255, 255, 255)
+                          : Color.fromARGB(
+                              255, 255, 255, 255), // 선택된 버튼은 파란색, 그 외는 흰색
+                      onPrimary: isSelected
+                          ? Colors.white
+                          : Colors.black, // 선택된 버튼의 텍스트 색상은 흰색, 그 외는 검은색
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: BorderSide(
+                            color: isSelected
+                                ? const Color.fromARGB(255, 0, 0, 0)
+                                : Color.fromARGB(255, 255, 255,
+                                    255)), // 선택된 버튼은 파란색 테두리, 그 외는 기본 색상
+                      ),
                     ),
-                  ],
-                  unselectedShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 207, 207, 207), //그림자 색상
-                      spreadRadius: 0.5, // 그림자 넓이
-                      blurRadius: 5, // 그림자 흐림도
-                      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
+                    onPressed: () {
+                      setState(() {
+                        mealType = type['meal_type'];
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "${type['meal_type']}유형\n",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Palette.mainColor),
+                            ),
+                            TextSpan(
+                              text: "${type['content']}\n",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12,
+                                  color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: "${type['price']}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Color.fromARGB(255, 214, 80, 70)),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-
-                  //버튼 글자 스타일
-                  selectedTextStyle: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 29, 127, 159),
-                  ),
-                  unselectedTextStyle: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 29, 127, 159),
-                  ),
-
-                  //버튼 컬러
-                  selectedColor: Colors.white,
-                  selectedBorderColor: Color.fromARGB(255, 29, 127, 159),
-
-                  //버튼 테두리
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-
-                  //버튼 간격
-                  spacing: 10,
-
-                  //버튼 크기
-                  buttonHeight: 120,
-                  buttonWidth: 120,
-                ),
-                isRadio: true,
-
-                //버튼 클릭시 실행 되는 함수
-                onSelected: (index, isSelected, isPressed) {
-                  if (isSelected == 0) {
-                    setState(() {
-                      category = 'A유형';
-                    });
-                  } else if (isSelected == 1) {
-                    setState(() {
-                      category = 'B유형';
-                    });
-                  } else if (isSelected == 2) {
-                    setState(() {
-                      category = 'C유형';
-                    });
-                  }
-                },
-
-                //버튼 내용
-                buttons: const [
-                  'A유형\n점심+저녁\n\n750,000',
-                  'B유형\n점심\n\n520,000',
-                  'C유형\n저녁\n\n520,000'
-                ],
+                  );
+                }).toList(),
               ),
 
               //구분 점선
@@ -246,68 +436,45 @@ class _WeekendMealState extends State<WeekendMeal> {
               ),
 
               //인원 미충족 시 버튼
-              GroupButton(
-                //버튼 디자인
-                options: const GroupButtonOptions(
-                  //버튼 그림자
-                  selectedShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 207, 207, 207), //그림자 색상
-                      spreadRadius: 0.5, // 그림자 넓이
-                      blurRadius: 5, // 그림자 흐림도
-                      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
+              Container(
+                margin: const EdgeInsets.all(1),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center, // Row 내부 항목을 중앙에 배치
+                      children: <Widget>[
+                        // '환불' 라디오 버튼
+                        Radio<RefundOption>(
+                          value: RefundOption.refund,
+                          groupValue: _refundOption,
+                          onChanged: (RefundOption? value) {
+                            setState(() {
+                              _refundOption = value;
+                              refund = 1; // '환불' 옵션이 선택되었음을 나타내는 로직
+                            });
+                          },
+                          activeColor: Palette.mainColor, // 선택 시 색상을 파란색으로 설정
+                        ),
+                        const Text('환불'), // '환불' 텍스트
+                        SizedBox(width: 50), // 버튼 사이의 간격
+                        // '편의점 도시락' 라디오 버튼
+                        Radio<RefundOption>(
+                          value: RefundOption.convenienceStore,
+                          groupValue: _refundOption,
+                          onChanged: (RefundOption? value) {
+                            setState(() {
+                              _refundOption = value;
+                              refund = 0; // '편의점 도시락' 옵션이 선택되었음을 나타내는 로직
+                            });
+                          },
+                          activeColor: Palette.mainColor, // 선택 시 색상을 파란색으로 설정
+                        ),
+                        const Text('편의점 도시락'), // '편의점 도시락' 텍스트
+                      ],
                     ),
                   ],
-                  unselectedShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 207, 207, 207), //그림자 색상
-                      spreadRadius: 0.5, // 그림자 넓이
-                      blurRadius: 5, // 그림자 흐림도
-                      offset: Offset(3, 3), // 그림자가 박스랑 얼마나 떨어져서 나타날지
-                    ),
-                  ],
-
-                  //버튼 글자 스타일
-                  selectedTextStyle:
-                      TextStyle(fontSize: 16, color: Colors.white),
-                  unselectedTextStyle: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 29, 127, 159),
-                  ),
-
-                  //버튼 컬러
-                  selectedColor: Color.fromARGB(255, 29, 127, 159),
-
-                  //버튼 테두리
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-
-                  //버튼 간격
-                  spacing: 10,
-
-                  //버튼 크기
-                  buttonHeight: 50,
-                  buttonWidth: 120,
                 ),
-                isRadio: true,
-
-                //버튼 클릭시 실행 되는 함수
-                onSelected: (index, isSelected, isPressed) {
-                  if (isSelected == 0) {
-                    setState(() {
-                      notEnoughPerson = '환불';
-                    });
-                  } else if (isSelected == 1) {
-                    setState(() {
-                      notEnoughPerson = '편의점 도시락';
-                    });
-                  }
-                },
-
-                //버튼 내용
-                buttons: [
-                  '환불',
-                  '편의점 도시락',
-                ],
               ),
 
               //구분 점선
@@ -349,7 +516,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                   ),
                 ),
                 child: Text(
-                  '농협 352 1299 5358 33',
+                  '$bankName    $accountNumber    $accountHolder',
                   style: TextStyle(
                     color: Color.fromARGB(255, 121, 121, 121),
                   ),
@@ -374,13 +541,15 @@ class _WeekendMealState extends State<WeekendMeal> {
                     ),
                   ),
                   onPressed: () {
-                    if (weekend == '' || category == '' || notEnoughPerson == '') {
+                    if (sat == -1 ||
+                        sun == -1 ||
+                        mealType.isEmpty ||
+                        refund == -1) {
                       nonSelect(context);
                     } else {
                       weekendApplication(context);
-                      setState(() {
-                        mealWeekend = true;
-                      });
+                      sendApplication(); // API 호출 함수
+                      setState(() {});
                     }
                   },
                   child: Text(
@@ -396,7 +565,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     }
 
     //주말 식수 신청 O 결제 X인 경우
-    else if (mealWeekend = true && mealWeekendDeposit == false) {
+    else if (mealWeekend == 1 && mealWeekendDeposit == 0) {
       return Scaffold(
         appBar: BaseAppBar(title: '주말식수'),
         drawer: BaseDrawer(),
@@ -460,13 +629,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '2201333',
+                            studentId,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -500,13 +668,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '김정원',
+                            name,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -540,13 +707,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '010-6525-6480',
+                            formatPhoneNumber(phoneNumber),
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -586,11 +752,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '$weekend'
-                            ' | '
-                            '$category'
-                            ' | '
-                            '$notEnoughPerson',
+                            '$mealDay  |  $mealTypeDetail  |  $refundOption',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -630,7 +792,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       color: const Color.fromARGB(255, 205, 205, 205),
                     ),
                     borderRadius: BorderRadius.circular(10)),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.sentiment_very_dissatisfied,
@@ -643,7 +805,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                       style: TextStyle(color: Colors.red),
                     ),
                     Text(
-                      '계좌번호 : 농협 352 1299 5358 33',
+                      '$bankName $accountNumber $accountHolder',
                       style: TextStyle(
                         color: Color.fromARGB(255, 162, 162, 162),
                       ),
@@ -751,13 +913,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '2201333',
+                            studentId,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -791,13 +952,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '김정원',
+                            name,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -831,13 +991,12 @@ class _WeekendMealState extends State<WeekendMeal> {
                               color: Color.fromARGB(255, 214, 214, 214))),
 
                       //박스 텍스트
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0), // 왼쪽으로부터의 간격 추가
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '010-6525-6480',
+                            formatPhoneNumber(phoneNumber),
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -877,11 +1036,7 @@ class _WeekendMealState extends State<WeekendMeal> {
                         child: Align(
                           alignment: Alignment.centerLeft, // 텍스트를 왼쪽으로 정렬
                           child: Text(
-                            '$weekend'
-                            ' | '
-                            '$category'
-                            ' | '
-                            '$notEnoughPerson',
+                            '$mealDay  |  $mealTypeDetail  |  $refundOption',
                             style: TextStyle(
                                 color: Color.fromARGB(255, 134, 134, 134)),
                             textAlign: TextAlign.left, // 텍스트를 왼쪽으로 정렬
@@ -950,7 +1105,7 @@ class _WeekendMealState extends State<WeekendMeal> {
     }
   }
 
-  //신청 alert
+  // 신청 alert
   Future<dynamic> weekendApplication(BuildContext context) {
     return showDialog(
       context: context,
@@ -964,25 +1119,22 @@ class _WeekendMealState extends State<WeekendMeal> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            SizedBox(
-              height: 25,
-            ),
+            SizedBox(height: 25),
             Text(
               '신청이 완료 되었습니다.',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 25,
-            ),
+            SizedBox(height: 10),
+            SizedBox(height: 25),
           ],
         ),
         actions: [
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
+              
+              // 유저 데이터 불러오는 함수 다시 호출해서 화면 업데이트
+              await fetchUserData();
             },
             child: Text('확인'),
           ),
@@ -1018,11 +1170,9 @@ class _WeekendMealState extends State<WeekendMeal> {
           ElevatedButton(
             onPressed: () {
               Navigator.popAndPushNamed(context, '/restaurant_main');
+              deleteApplication(applicationId);
               setState(() {
-                mealWeekend = false;
-                weekend = '';
-                category = '';
-                notEnoughPerson = '';
+                mealType = '';
               });
             },
             child: Text('예'),
@@ -1062,9 +1212,11 @@ class _WeekendMealState extends State<WeekendMeal> {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {
-            Navigator.pop(context);
-          }, icon: Icon(Icons.cancel_outlined))
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.cancel_outlined))
         ],
       ),
     );
