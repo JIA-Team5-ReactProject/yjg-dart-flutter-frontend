@@ -9,8 +9,9 @@ import 'package:yjg/shared/widgets/move_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-//임의 나중에 제거
-var person = 7;
+//현재 신청 인원
+int satPerson = 7;
+int sunPerson = 7;
 
 //음식 메뉴 리스트로 담아놓기
 List<String> breakfastMenu = [];
@@ -25,80 +26,124 @@ class RestaurantMain extends StatefulWidget {
 }
 
 class _RestaurantMainState extends State<RestaurantMain> {
-  final storage = FlutterSecureStorage(); // 토큰 함수 (정원)
-
   @override
   void initState() {
     super.initState();
-    _fetchMenus();
+    _fetchMenus(); // 위젯 초기화 시 오늘 식단표 불러오기
+    _fetchWeekendApplicationCounts(); // 위젯 초기화 시 주말 식수 인원 불러오기
   }
 
-  Future<String?> _getToken() async {
-    return await storage.read(key: 'auth_token');
-  }
+  final storage = FlutterSecureStorage(); // 토큰 함수 (정원)
 
+  //오늘 식단표 불러오는 GET API 함수
   Future<void> _fetchMenus() async {
-  try {
-    final token = await _getToken(); // 토큰 가져오기
-    if (token != null) {
-      final formattedDate = DateTime.now().toIso8601String().substring(0, 10); // 시간 제외하고 날짜만 가져옴
-      final response = await http.get(
-        Uri.parse('$apiURL/api/restaurant/menu/get/d?date=$formattedDate'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
+    try {
+      final token = await storage.read(key: 'auth_token'); // 토큰 가져오기
+      if (token != null) {
+        final formattedDate = DateTime.now()
+            .toIso8601String()
+            .substring(0, 10); // 시간 제외하고 날짜만 가져옴
+        final response = await http.get(
+          Uri.parse('$apiURL/api/restaurant/menu/get/d?date=$formattedDate'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        print('메뉴 가져오기 성공');
-        final data = json.decode(response.body)['month_menus'];
-        print('메뉴 데이터: $data');
-        print(DateTime.now().toString());
-        List<String> newBreakfastMenu = [];
-        List<String> newLunchMenu = [];
-        List<String> newDinnerMenu = [];
+        if (response.statusCode == 200) {
+          print('메뉴 가져오기 성공');
+          final data = json.decode(response.body)['month_menus'];
+          print('메뉴 데이터: $data');
+          print(DateTime.now().toString());
+          List<String> newBreakfastMenu = [];
+          List<String> newLunchMenu = [];
+          List<String> newDinnerMenu = [];
 
-        // 기존 데이터 초기화
-        breakfastMenu.clear();
-        lunchMenu.clear();
-        dinnerMenu.clear();
+          // 기존 데이터 초기화
+          breakfastMenu.clear();
+          lunchMenu.clear();
+          dinnerMenu.clear();
 
-        for (var item in data) {
-          final String mealTime = item['meal_time'];
-          final List<String> menuItems = (item['menu'] as String)
-              .split(' ')
-              .where((s) => s.isNotEmpty)
-              .toList();
-          switch (mealTime) {
-            case 'b':
-              newBreakfastMenu.addAll(menuItems);
-              break;
-            case 'l':
-              newLunchMenu.addAll(menuItems);
-              break;
-            case 'd':
-              newDinnerMenu.addAll(menuItems);
-              break;
+          for (var item in data) {
+            final String mealTime = item['meal_time'];
+            final List<String> menuItems = (item['menu'] as String)
+                .split(' ')
+                .where((s) => s.isNotEmpty)
+                .toList();
+            switch (mealTime) {
+              case 'b':
+                newBreakfastMenu.addAll(menuItems);
+                break;
+              case 'l':
+                newLunchMenu.addAll(menuItems);
+                break;
+              case 'd':
+                newDinnerMenu.addAll(menuItems);
+                break;
+            }
           }
-        }
 
-        setState(() {
-          breakfastMenu = newBreakfastMenu.isNotEmpty ? newBreakfastMenu : [' ','등록 된','메뉴가','없습니다.'];
-          lunchMenu = newLunchMenu.isNotEmpty ? newLunchMenu : [' ','등록 된','메뉴가','없습니다.'];
-          dinnerMenu = newDinnerMenu.isNotEmpty ? newDinnerMenu : [' ','등록 된','메뉴가','없습니다.'];
-        }); // 데이터를 가져왔으므로 UI 갱신
+          setState(() {
+            breakfastMenu = newBreakfastMenu.isNotEmpty
+                ? newBreakfastMenu
+                : [' ', '등록 된', '메뉴가', '없습니다.'];
+            lunchMenu = newLunchMenu.isNotEmpty
+                ? newLunchMenu
+                : [' ', '등록 된', '메뉴가', '없습니다.'];
+            dinnerMenu = newDinnerMenu.isNotEmpty
+                ? newDinnerMenu
+                : [' ', '등록 된', '메뉴가', '없습니다.'];
+          }); // 데이터를 가져왔으므로 UI 갱신
+        } else {
+          print('메뉴 가져오기 실패');
+          throw Exception('Failed to load menus');
+        }
       } else {
-        print('메뉴 가져오기 실패');
-        throw Exception('Failed to load menus');
+        print('토큰 없음');
+        throw Exception('Token not found'); // 토큰이 없으면 예외 처리
       }
-    } else {
-      print('토큰 없음');
-      throw Exception('Token not found'); // 토큰이 없으면 예외 처리
+    } catch (e) {
+      print('오류 발생: $e');
     }
-  } catch (e) {
-    print('오류 발생: $e');
   }
-}
+
+//주말식수 신청 인원 불러오는 GET API 함수
+  Future<void> _fetchWeekendApplicationCounts() async {
+    try {
+      final token = await storage.read(key: 'auth_token'); // 토큰 가져오기
+      if (token != null) {
+        // 토요일 신청 인원 수 가져오기
+        final responseSat = await http.get(
+          Uri.parse('$apiURL/api/restaurant/weekend/show/sum?date=sat'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+
+        // 일요일 신청 인원 수 가져오기
+        final responseSun = await http.get(
+          Uri.parse('$apiURL/api/restaurant/weekend/show/sum?date=sun'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+
+        if (responseSat.statusCode == 200 && responseSun.statusCode == 200) {
+          final dataSat = json.decode(responseSat.body);
+          final dataSun = json.decode(responseSun.body);
+
+          setState(() {
+            satPerson = dataSat['satCount'];
+            sunPerson = dataSun['sunCount'];
+          });
+        } else {
+          print('주말 식수 신청 인원 수 가져오기 실패');
+          throw Exception('Failed to load weekend application counts');
+        }
+      } else {
+        print('토큰 없음');
+        throw Exception('Token not found');
+      }
+    } catch (e) {
+      print('오류 발생: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +180,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
             ),
 
             //이동 버튼 배치
-            const Wrap(
+            Wrap(
               spacing: 30, // 아이템들 사이의 가로 간격
               runSpacing: 30, // 아이템들 사이의 세로 간격
               children: <Widget>[
@@ -149,11 +194,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                     text1: '식수 QR',
                     text2: '식사 시 QR 찍기',
                     route: '/meal_qr'),
-                MoveButton(
-                    icon: Icons.calendar_month_outlined,
-                    text1: '주말 식수',
-                    text2: '주말 식수 신청',
-                    route: '/weekend_meal'),
+                conditionalMoveButton(),
                 MoveButton(
                     icon: Icons.assignment_turned_in_outlined,
                     text1: '식수 신청',
@@ -191,7 +232,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                     children: <Widget>[
                       Text('현재 주말식수 신청 인원'), // 중간 텍스트
                       Text(
-                        '토요일: $person명 | 일요일 $person명', // 아래 텍스트
+                        '토요일: $satPerson명 | 일요일 $sunPerson명', // 아래 텍스트
                         style: TextStyle(
                           color: Color.fromARGB(255, 29, 127, 159),
                         ),
@@ -230,6 +271,28 @@ Widget mealCard(String meal, List<String> menu) {
           const SizedBox(height: 5),
           Column(children: menu.map((item) => Text(item)).toList()),
         ],
+      ),
+    ),
+  );
+}
+
+// 월~수만 주말 식수버튼 클릭 가능하게 하는 버튼
+Widget conditionalMoveButton() {
+  final now = DateTime.now();
+  final currentDay = now.weekday; // 1: 월요일, 2: 화요일, ..., 7: 일요일
+
+  // 월요일, 화요일, 수요일에만 버튼 활성화
+  final isButtonActive = currentDay >= 1 && currentDay <= 3;
+
+  return Opacity(
+    opacity: isButtonActive ? 1.0 : 0.5, // 비활성화 시 투명도 조절로 비활성화 효과
+    child: IgnorePointer(
+      ignoring: !isButtonActive, // isButtonActive가 false이면 클릭 무시
+      child: MoveButton(
+        icon: Icons.calendar_month_outlined,
+        text1: '주말 식수',
+        text2: '월~수 신청가능',
+        route: '/weekend_meal',
       ),
     ),
   );
