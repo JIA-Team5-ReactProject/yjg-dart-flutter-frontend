@@ -10,8 +10,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 //현재 신청 인원
-int satPerson = 7;
-int sunPerson = 7;
+int satPerson = 0;
+int sunPerson = 0;
 
 //음식 메뉴 리스트로 담아놓기
 List<String> breakfastMenu = [];
@@ -114,13 +114,13 @@ class _RestaurantMainState extends State<RestaurantMain> {
       if (token != null) {
         // 토요일 신청 인원 수 가져오기
         final responseSat = await http.get(
-          Uri.parse('$apiURL/api/restaurant/weekend/show/sum?date=sat'),
+          Uri.parse('$apiURL/api/restaurant/weekend/show/sumApp?date=sat'),
           headers: {'Authorization': 'Bearer $token'},
         );
 
         // 일요일 신청 인원 수 가져오기
         final responseSun = await http.get(
-          Uri.parse('$apiURL/api/restaurant/weekend/show/sum?date=sun'),
+          Uri.parse('$apiURL/api/restaurant/weekend/show/sumApp?date=sun'),
           headers: {'Authorization': 'Bearer $token'},
         );
 
@@ -282,7 +282,7 @@ Widget conditionalMoveButton() {
   final currentDay = now.weekday; // 1: 월요일, 2: 화요일, ..., 7: 일요일
 
   // 월요일, 화요일, 수요일에만 버튼 활성화
-  final isButtonActive = currentDay >= 1 && currentDay <= 3;
+  final isButtonActive = currentDay >= 1 && currentDay <= 4;
 
   return Opacity(
     opacity: isButtonActive ? 1.0 : 0.5, // 비활성화 시 투명도 조절로 비활성화 효과

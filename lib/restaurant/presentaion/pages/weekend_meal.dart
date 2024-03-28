@@ -157,7 +157,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           }
 
           // 식사 유형 처리
-          mealTypeDetail = data['weekend_meal_type'].first['meal_type'] + '유형';
+          mealTypeDetail = data['weekend_meal_type']['meal_type'] + '유형';
 
           // 환불 옵션 처리
           refundOption = data['refund'] == 1 ? '환불' : '편의점 도시락';
