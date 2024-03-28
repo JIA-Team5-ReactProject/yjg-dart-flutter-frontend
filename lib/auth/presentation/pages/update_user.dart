@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:yjg/auth/domain/usecases/detail_usecase.dart";
 import "package:yjg/auth/domain/usecases/register_usecase.dart";
 import "package:yjg/auth/domain/usecases/update_usecase.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
@@ -43,10 +42,10 @@ class UpdateUser extends ConsumerWidget {
               child: const Text(
                 '빈칸 없이 모든 정보를 입력해 주세요.',
                 style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 15.0,
                     color: Palette.textColor,
                     letterSpacing: -0.5,
-                    fontWeight: FontWeight.bold),
+                    ),
               ),
             ),
 
