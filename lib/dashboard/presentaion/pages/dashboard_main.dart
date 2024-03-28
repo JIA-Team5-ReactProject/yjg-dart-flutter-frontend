@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/dashboard/data/data_sources/urgent_data_source.dart';
+import 'package:yjg/dashboard/presentaion/viewmodels/urgent_viewmodel.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/mini_rounded_box.dart';
 import 'package:yjg/dashboard/presentaion/widgets/rounded_box.dart';
@@ -8,11 +11,14 @@ import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
 
-class DashboardMain extends StatelessWidget {
+class DashboardMain extends ConsumerWidget {
   const DashboardMain({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // notice 상태 감시
+    final asyncNotice = ref.watch(urgentNoticeProvider);
+
     return Scaffold(
       appBar: const BaseAppBar(),
       drawer: BaseDrawer(),
@@ -66,10 +72,25 @@ class DashboardMain extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                MiniRoundedBox(
-                  iconData: Icons.support_agent,
-                  iconColor: Palette.stateColor1,
-                  text: '퇴관 원서 작성 시 참고',
+                InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {
+                    Navigator.pushNamed(context, '/notice');
+                  },
+                  child: asyncNotice.when(
+                    data: (notice) => MiniRoundedBox(
+                    
+                      iconData: Icons.support_agent,
+                      iconColor: Palette.stateColor1,
+                      text: notice.title,
+                       // API로부터 받은 긴급 공지사항 제목
+                    ),
+                    loading: () => Center(
+                        child: CircularProgressIndicator(
+                            color: Palette.stateColor4)),
+                    error: (e, _) => Text('Error: $e'),
+                  ),
                 ),
               ],
             )
