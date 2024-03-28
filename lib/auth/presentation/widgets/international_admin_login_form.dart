@@ -7,18 +7,15 @@ import "package:yjg/shared/theme/palette.dart";
 class InternationalAdminLoginForm extends StatefulWidget {
   const InternationalAdminLoginForm({super.key, this.studentOrAdmin});
   final bool? studentOrAdmin; // 관리자 로그인일 경우 회원가입 안 보이게 하기 위한 변수
-  
 
   @override
   _InternationalAdminLoginForm createState() => _InternationalAdminLoginForm();
 }
 
 class _InternationalAdminLoginForm extends State<InternationalAdminLoginForm> {
-  
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  
 
   @override
   Widget build(BuildContext context) {
@@ -53,37 +50,36 @@ class _InternationalAdminLoginForm extends State<InternationalAdminLoginForm> {
               children: [
                 AutoLoginCheckBox(),
                 Spacer(),
-                if(widget.studentOrAdmin == true) 
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, '/registration_international');
-                    },
-                    child: Text(
-                      "회원가입",
-                      style: TextStyle(
-                        color: Palette.mainColor,
-                        fontSize: fontSize * 0.035,
-                        letterSpacing: -0.5,
-                        fontWeight: FontWeight.w600,
+                if (widget.studentOrAdmin == true)
+                  Padding(
+                    padding: const EdgeInsets.only(),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/reset_password');
+                      },
+                      child: Text(
+                        "비밀번호 찾기",
+                        style: TextStyle(
+                          color: Palette.mainColor,
+                          fontSize: fontSize * 0.035,
+                          letterSpacing: -0.5,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                
               ],
             ),
             Padding(
               padding:
                   EdgeInsets.symmetric(horizontal: 8, vertical: height * 0.01),
               child: SizedBox(
-                  width: double.infinity, // 버튼을 부모의 가로 길이만큼 확장
-                  child: LoginButton(
-                    emailController: emailController,
-                    passwordController: passwordController,
-                  )),
+                width: double.infinity, // 버튼을 부모의 가로 길이만큼 확장
+                child: LoginButton(
+                  emailController: emailController,
+                  passwordController: passwordController,
+                ),
+              ),
             ),
           ],
         ),
