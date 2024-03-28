@@ -158,9 +158,10 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
           application = applicationData.isNotEmpty;
           if (applicationData.isNotEmpty) {
             applicationId = applicationData[0]['id']; // 신청 ID를 저장
+            
             selectedMealTypeId =
-                applicationData[0]['semester_meal_type'][0]['meal_type'];
-                deposit = applicationData[0]['payment'] == 1;
+                applicationData[0]['semester_meal_type']?.first['meal_type'];
+            deposit = applicationData[0]['payment'] == 1;
           } else {
             selectedMealTypeId = null;
             applicationId = null; // 신청이 없을 경우 null로 설정
@@ -204,7 +205,8 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     final token = await storage.read(key: 'auth_token');
 
     final uri = Uri.parse('$apiURL/api/restaurant/account/show');
-    final response = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+    final response =
+        await http.get(uri, headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['data'];
@@ -433,7 +435,10 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
               userInfoContainer('학번', userData['student_id'] ?? '정보 없음'),
               userInfoContainer(
                   '번호', formatPhoneNumber(userData['phone_number'])),
-              userInfoContainer('신청', '$selectedMealTypeId 유형',),
+              userInfoContainer(
+                '신청',
+                '$selectedMealTypeId 유형',
+              ),
               dottedLineSeparator(),
 
               // 신청 현황 글자
@@ -650,10 +655,10 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
   }
 }
 
-  //전화번호 사이에 하이픈 넣는 함수
-  String formatPhoneNumber(String? phoneNumber) {
-    if (phoneNumber == null || phoneNumber.isEmpty) {
-      return '정보 없음';
+//전화번호 사이에 하이픈 넣는 함수
+String formatPhoneNumber(String? phoneNumber) {
+  if (phoneNumber == null || phoneNumber.isEmpty) {
+    return '정보 없음';
   }
 
   // 하이픈이 이미 있는 경우, 원본 번호를 반환
@@ -669,99 +674,97 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
   // 다른 형식의 번호는 원본 반환
   return phoneNumber;
 }
-  
-  
-  
-  class UserInfoContainer extends StatelessWidget {
-    final String title;
-    final String content;
 
-    const UserInfoContainer({
-      Key? key,
-      required this.title,
-      required this.content,
-    }) : super(key: key);
+class UserInfoContainer extends StatelessWidget {
+  final String title;
+  final String content;
 
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        child: Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 30),
-              child: Text(title),
-            ),
-            Container(
-              width: 300,
-              height: 35,
-              margin: const EdgeInsets.only(left: 15),
-              decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 241, 241, 241),
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                      color: const Color.fromARGB(255, 214, 214, 214))),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    content,
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 134, 134, 134)),
-                    textAlign: TextAlign.left,
-                  ),
+  const UserInfoContainer({
+    Key? key,
+    required this.title,
+    required this.content,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 30),
+            child: Text(title),
+          ),
+          Container(
+            width: 300,
+            height: 35,
+            margin: const EdgeInsets.only(left: 15),
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 241, 241, 241),
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                    color: const Color.fromARGB(255, 214, 214, 214))),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  content,
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 134, 134, 134)),
+                  textAlign: TextAlign.left,
                 ),
               ),
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
+}
 
-  class DottedLineSeparator extends StatelessWidget {
-    const DottedLineSeparator({Key? key}) : super(key: key);
+class DottedLineSeparator extends StatelessWidget {
+  const DottedLineSeparator({Key? key}) : super(key: key);
 
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        margin: const EdgeInsets.only(top: 10, bottom: 10),
-        child: const Text(
-            '............................................................................................',
-            style: TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
-      );
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 10, bottom: 10),
+      child: const Text(
+          '............................................................................................',
+          style: TextStyle(color: Color.fromARGB(255, 173, 173, 173))),
+    );
   }
+}
 
-  class CustomElevatedButton extends StatelessWidget {
-    final String text;
-    final Color color;
-    final VoidCallback onPressed;
+class CustomElevatedButton extends StatelessWidget {
+  final String text;
+  final Color color;
+  final VoidCallback onPressed;
 
-    const CustomElevatedButton({
-      Key? key,
-      required this.text,
-      required this.color,
-      required this.onPressed,
-    }) : super(key: key);
+  const CustomElevatedButton({
+    Key? key,
+    required this.text,
+    required this.color,
+    required this.onPressed,
+  }) : super(key: key);
 
-    @override
-    Widget build(BuildContext context) {
-      return ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(color),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(color),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.white),
-        ),
-      );
-    }
+      ),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.white),
+      ),
+    );
   }
+}
