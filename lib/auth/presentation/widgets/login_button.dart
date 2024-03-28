@@ -72,7 +72,7 @@ class LoginButton extends ConsumerWidget {
       ),
       child: const Text(
         '로그인',
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
