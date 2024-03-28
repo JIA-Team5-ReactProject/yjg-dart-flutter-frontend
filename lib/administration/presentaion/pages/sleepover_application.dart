@@ -224,6 +224,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     );
   }
 
+  //외박/외출 신청하는 POST API 함수
   Future<void> _submitApplication() async {
     final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
     if (_startDate == null ||
@@ -240,16 +241,14 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
       var response = await http.post(
         apiUrl,
         body: jsonEncode({
-          // JSON으로 인코딩
           'start_date': DateFormat('yyyy-MM-dd').format(_startDate!),
           'end_date': DateFormat('yyyy-MM-dd').format(_endDate!),
           'content': _reasonController.text,
           'type': type,
         }),
         headers: {
-          //아래 토큰 $token으로 바꿔줘야함
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json', // JSON 컨텐트 타입
+          'Content-Type': 'application/json', // JSON 컨텐츠 타입
         },
       );
 
@@ -258,7 +257,10 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
             '시작일: ${DateFormat('yyyy-MM-dd').format(_startDate!)}\n'
             '종료일: ${DateFormat('yyyy-MM-dd').format(_endDate!)}';
         _showSuccessDialog('성공', successMessage);
+      } else if (response.statusCode == 409) {
+        _showDialog('예약 중복', '해당 날짜에 이미 예약이 존재합니다.');
       } else {
+        print('외출/외박 신청 실패: ${response.statusCode}');
         _showDialog('실패', '외출/외박 신청에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (e) {
