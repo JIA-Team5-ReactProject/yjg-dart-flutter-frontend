@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:yjg/auth/data/models/admin_service.dart';
-import 'package:yjg/auth/data/models/token_response.dart';
+import 'package:yjg/auth/data/models/user.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
@@ -34,14 +33,14 @@ class LoginDataSource {
       body: body,
     );
 
-    Tokengenerated tokenGenerated =
-        Tokengenerated.fromJson(json.decode(response.body));
+    Usergenerated userGenerated =
+        Usergenerated.fromJson(json.decode(response.body));
 
     if (response.statusCode == 200) {
-      String? token = tokenGenerated.accessToken; // 토큰값 추출
-      String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
-      String refreshToken = tokenGenerated.refreshToken!;
-      String studentNum = tokenGenerated.user!.studentId!;
+      String? token = userGenerated.accessToken; // 토큰값 추출
+      String studentName = userGenerated.user!.name!; // 사용자 이름 추출
+      String refreshToken = userGenerated.refreshToken!;
+      String studentNum = userGenerated.user!.studentId!;
 
       debugPrint('액세스 토큰: $token');
       debugPrint('리프레시 토큰: $refreshToken');
@@ -76,7 +75,7 @@ class LoginDataSource {
         body: body);
 
     if (response.statusCode == 200) {
-      final result = Admingenerated.fromJson(jsonDecode(response.body));
+      final result = Usergenerated.fromJson(jsonDecode(response.body));
       String? token = result.accessToken; // 토큰값 추출
       String? refreshToken = result.refreshToken; // 리프레시 토큰값 추출
 

@@ -16,12 +16,10 @@ class UrgentDataSource {
 // * 최근 공지사항
   Future<http.Response> getUrgentApi() async {
     final token = await storage.read(key: 'auth_token');
-     String url = '$apiURL/api/notice/recent/urgent';
-
+    String url = '$apiURL/api/notice/recent/urgent';
 
     Uri uri = Uri.parse(url);
 
-    debugPrint('uri: $uri');
     final response = await http.get(
       uri,
       headers: <String, String>{
@@ -29,7 +27,6 @@ class UrgentDataSource {
         'Authorization': 'Bearer $token',
       },
     );
-    debugPrint('response: ${jsonDecode(utf8.decode(response.bodyBytes))} ${response.statusCode}');
 
     if (response.statusCode == 200) {
       return response;

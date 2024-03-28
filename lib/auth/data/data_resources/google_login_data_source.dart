@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:yjg/auth/data/models/token_response.dart';
+import 'package:yjg/auth/data/models/user.dart';
 import 'package:yjg/auth/domain/usecases/domain_validation_usecase.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/main.dart';
@@ -63,6 +63,8 @@ class GoogleLoginDataSource {
         'os_type': deviceInfo ?? 'unknown',
       });
 
+      debugPrint('body: $body');
+
       final response = await http.post(
         Uri.parse('$apiURL/api/user/google-login'),
         headers: <String, String>{
@@ -71,7 +73,10 @@ class GoogleLoginDataSource {
         body: body,
       );
 
-      final result = Tokengenerated.fromJson(jsonDecode(response.body));
+
+      debugPrint('결과: ${jsonDecode(utf8.decode(response.bodyBytes)) }');
+      debugPrint('status code: ${response.statusCode}');
+      final result = Usergenerated.fromJson(jsonDecode(response.body));
       int? approved = result.user?.approved;
 
       if (response.statusCode == 403 || approved == 0) {
