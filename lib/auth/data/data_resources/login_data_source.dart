@@ -42,7 +42,10 @@ class LoginDataSource {
       String studentName = tokenGenerated.user!.name!; // 사용자 이름 추출
       String refreshToken = tokenGenerated.refreshToken!;
       String studentNum = tokenGenerated.user!.studentId!;
-      
+
+      debugPrint('액세스 토큰: $token');
+      debugPrint('리프레시 토큰: $refreshToken');
+
       if (token != null) {
         await storage.write(key: 'auth_token', value: token); // 토큰 저장
         await storage.write(key: 'refresh_token', value: refreshToken);
@@ -119,10 +122,9 @@ class LoginDataSource {
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       final accessToken = responseData['refresh_token'];
-      debugPrint('리프레시 토큰 교환 완료, 액세스 토큰 교체: $accessToken');
-
       // 토큰 교체
       storage.write(key: 'auth_token', value: accessToken);
+      debugPrint('리프레시 토큰 교환 완료, 액세스 토큰 교체: $accessToken');
     }
   }
 }

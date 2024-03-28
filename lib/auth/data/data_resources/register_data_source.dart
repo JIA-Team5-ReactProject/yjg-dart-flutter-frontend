@@ -25,6 +25,7 @@ class RegisterDataSource {
       Uri.parse('$apiURL/api/user'),
       headers: <String, String>{
         'Content-Type': 'application/json',
+        
       },
       body: body,
       // state 값을 json 형태로 변환
@@ -61,10 +62,10 @@ class RegisterDataSource {
         // state 값을 json 형태로 변환
         body: body);
 
-    debugPrint('추가 정보 입력 결과: ${response.body}, ${jsonDecode(utf8.decode(response.bodyBytes))}');
 
     // status code가 200이 아닐 경우
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      debugPrint('추가 정보 입력 실패: ${response.statusCode},  ${jsonDecode(utf8.decode(response.bodyBytes))}');
       throw Exception('추가 정보 입력 실패: ${response.statusCode}');
     } else {
       UserDataSource().patchApproveAPI(token!);

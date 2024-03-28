@@ -11,14 +11,12 @@ class DetailUseCase {
 
   Future<void> execute({
     required String studentId,
-    required String name,
     required String phoneNumber,
     required BuildContext context,
   }) async {
     // User 상태 업데이트
     ref.read(userProvider.notifier).additionalInfoFormUpdate(
       studentId: studentId,
-      name: name,
       phoneNumber: phoneNumber,
     );
 
