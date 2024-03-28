@@ -31,7 +31,7 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
   String _selectedRoom = '';
   List<String> _selectedTimes = [];
   List<String> _reservedTimes = [];
-  List<String> _meetingRooms = []; //받아온 회의실 목록을 저장해주는 API
+  List<Map<String, dynamic>> _meetingRooms = []; //받아온 회의실 목록을 저장해주는 API
 
   String? _minSelectableTime; // 사용자가 선택할 수 있는 최소 시간을 저장하는 변수
   String? _maxSelectableTime; // 사용자가 선택할 수 있는 최대 시간을 저장하는 변수
@@ -78,8 +78,12 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final rooms = List<String>.from(
-          data['meeting_rooms'].map((room) => room['room_number']));
+      final rooms = List<Map<String, dynamic>>.from(
+        data['meeting_rooms'].map((room) => {
+              'room_number': room['room_number'],
+              'open': room['open'], // "open" 값을 추가로 저장합니다.
+            }),
+      );
 
       setState(() {
         _meetingRooms = rooms;
@@ -355,26 +359,28 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
                 child: Text('회의실 선택', style: TextStyle(fontSize: 20)),
               ),
               SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _meetingRooms.map((roomNumber) {
-                    // 여기에서 roomNumber 뒤에 "호"를 추가합니다.
-                    String roomNumberWithSuffix = roomNumber + '호';
-                    return MeetingRoomCard(
-                      roomNumber: roomNumberWithSuffix, // "호"를 추가한 문자열을 사용합니다.
-                      roomAvailable: true,
-                      onTap: () {
-                        setState(() {
-                          _selectedRoom =
-                              roomNumber; // 상태 업데이트에는 "호"가 없는 원래 번호를 사용합니다.
-                          fetchReservedTimes(roomNumber, _selectedDay!);
-                        });
-                      },
-                      isSelected: _selectedRoom == roomNumber,
-                    );
-                  }).toList(),
-                ),
-              ),
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _meetingRooms.map((room) {
+                      // "room" 맵에서 "room_number"와 "open" 값을 추출
+                      String roomNumberWithSuffix = room['room_number'] + '호';
+                      bool roomAvailable =
+                          room['open'] == 1; // "open" 값에 따라 bool 값을 설정
+
+                      return MeetingRoomCard(
+                        roomNumber: roomNumberWithSuffix,
+                        roomAvailable: roomAvailable,
+                        onTap: () {
+                          setState(() {
+                            _selectedRoom = room['room_number'];
+                            fetchReservedTimes(
+                                room['room_number'], _selectedDay!);
+                          });
+                        },
+                        isSelected: _selectedRoom == room['room_number'],
+                      );
+                    }).toList(),
+                  )),
             ],
             if (_selectedRoom.isNotEmpty) ...[
               Padding(
