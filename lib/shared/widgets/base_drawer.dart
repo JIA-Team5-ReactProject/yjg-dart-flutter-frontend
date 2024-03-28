@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:dotted_line/dotted_line.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:yjg/shared/service/auth_service.dart';
+import 'package:yjg/shared/service/logout_service.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class BaseDrawer extends ConsumerStatefulWidget {
@@ -31,10 +31,10 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
   }
 
   // AuthService 인스턴스 생성
-  final authService = AuthService();
+  final logoutService = LogoutService();
 
   Future<void> checkUserState() async {
-    if (!(await authService.isLoggedIn())) {
+    if (!(await logoutService.isLoggedIn())) {
       debugPrint('토큰 미존재. 로그인 페이지로 이동');
       Navigator.pushNamed(context, '/login_student');
     } else {
@@ -258,7 +258,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () => authService.logout(
+            onTap: () => logoutService.logout(
                 context, ref), // onTap 이벤트를 직접 logout 함수 호출로 변경
           ),
           SizedBox(

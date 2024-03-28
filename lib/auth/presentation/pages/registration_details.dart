@@ -8,7 +8,6 @@ import "package:yjg/shared/theme/theme.dart";
 class RegistrationDetails extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController studentIdController = TextEditingController();
 
@@ -46,15 +45,6 @@ class RegistrationDetails extends ConsumerWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 16),
-                      child: AuthTextFormField(
-                        controller: nameController,
-                        labelText: "이름",
-                        validatorText: "이름을 입력해 주세요.",
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: phoneNumberController,
@@ -86,7 +76,6 @@ class RegistrationDetails extends ConsumerWidget {
                                     .replaceAll(RegExp(r'[^\d]'), '');
 
                             await detailUseCase.execute(
-                              name: nameController.text,
                               phoneNumber: phoneNumber,
                               studentId: studentIdController.text,
                               context: context,

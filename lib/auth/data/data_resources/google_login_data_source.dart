@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -46,53 +47,58 @@ class GoogleLoginDataSource {
         await _postGoogleLoginAPI(ref);
       }
     } catch (error) {
-      debugPrint('Google 로그인 시 오류 발생: $error');
+      debugPrint('signInWithGoogle 오류 발생: $error');
     }
   }
 
   // 구글로 로그인 후 토큰을 교환하는 함수
-  Future<http.Response> _postGoogleLoginAPI(WidgetRef ref) async {
-    final loginState = ref.read(userProvider.notifier);
-    final deviceInfo = await _storage.read(key: 'deviceType');
-    final body = jsonEncode(<String, String>{
-      'email': loginState.email,
-      'displayName': loginState.displayName,
-      'id_token': loginState.idToken,
-      'os_type': deviceInfo ?? 'unknown',
-    });
+  Future<void> _postGoogleLoginAPI(WidgetRef ref) async {
+    try {
+      final loginState = ref.read(userProvider.notifier);
+      final deviceInfo = await _storage.read(key: 'deviceType');
+      final body = jsonEncode(<String, String>{
+        'email': loginState.email,
+        'displayName': loginState.displayName,
+        'id_token': loginState.idToken,
+        'os_type': deviceInfo ?? 'unknown',
+      });
 
-    final response = await http.post(Uri.parse('$apiURL/api/user/google-login'),
+      final response = await http.post(
+        Uri.parse('$apiURL/api/user/google-login'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
-        body: body);
+        body: body,
+      );
 
-    // 모델 클래스로 변환
-    final result = Tokengenerated.fromJson(jsonDecode(response.body));
-    int? approved = result.user?.approved;
+      final result = Tokengenerated.fromJson(jsonDecode(response.body));
+      int? approved = result.user?.approved;
 
-    // 승인이 되지 않은 경우
-    if (approved == 0) {
-      navigatorKey.currentState!.pushNamed('/registration_detail');
-    } else {
-      // 승인이 된 경우
-      final jsonData = json.decode(response.body);
-      Tokengenerated result = Tokengenerated.fromJson(jsonData);
+      if (response.statusCode == 403 || approved == 0) {
+        navigatorKey.currentState!.pushNamed('/registration_detail');
+      }
+
+      if (response.statusCode != 200) {
+        throw HttpException(
+            'Failed to post Google login. Status code: ${response.statusCode}');
+      }
 
       String? token = result.accessToken;
       String? refreshToken = result.refreshToken;
       String? studentNum = result.user?.studentId;
+      String? name = result.user?.name;
 
-      // 토큰이 존재하는 경우
       if (token != null) {
-        await _saveTokens(
-            token, refreshToken, studentNum, loginState.displayName);
-        return response;
+        await _saveTokens(token, refreshToken, studentNum, name!);
+        debugPrint('token: $token, refreshToken: $refreshToken');
       } else {
         debugPrint('토큰이 없습니다.');
+        throw Exception('토큰이 없습니다.');
       }
+    } catch (e) {
+      debugPrint('_postGoogleLoginAPI 오류 발생: $e');
+      rethrow;
     }
-    throw Exception('토큰 처리에 실패했습니다.');
   }
 
   // 토큰을 저장하는 함수
@@ -116,4 +122,9 @@ class GoogleLoginDataSource {
 
   // 로그아웃하는 함수
   static Future<void> logout() => _googleSignIn.signOut();
+}
+
+void printLongString(String text) {
+  final pattern = RegExp('.{1,1000}'); // 800글자 단위로 분할
+  pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }

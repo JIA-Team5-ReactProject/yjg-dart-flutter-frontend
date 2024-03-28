@@ -20,7 +20,8 @@ class StudentLogin extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: width * 0.3, bottom: height * 0.02),
+                padding:
+                    EdgeInsets.only(top: width * 0.3, bottom: height * 0.02),
                 child: Image(
                   image: AssetImage('assets/img/yju_tiger_logo.png'),
                   width: width * 0.2,
@@ -34,15 +35,33 @@ class StudentLogin extends StatelessWidget {
               ),
               InternationalAdminLoginForm(studentOrAdmin: true),
               Padding(
-                padding: EdgeInsets.only(top: height * 0.001, bottom: height * 0.003),
-                child: TextButton(
-                  onPressed: () {
+                padding:
+                    EdgeInsets.only(top: height * 0.001, bottom: height * 0.02),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/registration_international');
+                  },
+                  child: Text(
+                    "계정이 없을 경우",
+                    style: TextStyle(
+                      color: Palette.mainColor,
+                      fontSize: fontSize * 0.035,
+                      letterSpacing: -0.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.003),
+                child: InkWell(
+                  onTap: () {
                     Navigator.pushNamed(context, '/login_admin');
                   },
                   child: Text(
                     "관리자 로그인으로 이동",
                     style: TextStyle(
-                      color: Palette.mainColor,
+                      color: Palette.stateColor4,
                       fontSize: fontSize * 0.035,
                       letterSpacing: -0.5,
                       fontWeight: FontWeight.w600,
@@ -53,8 +72,8 @@ class StudentLogin extends StatelessWidget {
 
               // 선
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: width * 0.3, vertical: height * 0.02),
+                padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.3, vertical: height * 0.02),
                 child: Divider(
                   color: Palette.stateColor4.withOpacity(0.3),
                   thickness: 1.0,

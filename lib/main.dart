@@ -1,43 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:yjg/administration/presentaion/pages/admin_main.dart';
-import 'package:yjg/administration/presentaion/pages/as_application.dart';
-import 'package:yjg/administration/presentaion/pages/as_page.dart';
-import 'package:yjg/administration/presentaion/pages/meeting_room_app.dart';
-import 'package:yjg/administration/presentaion/pages/meeting_room_main.dart';
-import 'package:yjg/administration/presentaion/pages/sleepover.dart';
-import 'package:yjg/administration/presentaion/pages/sleepover_application.dart';
-import 'package:yjg/as(admin)/presentation/pages/as_detail.dart';
-import 'package:yjg/as(admin)/presentation/pages/admin_as_main.dart';
-import 'package:yjg/auth/presentation/pages/international_registration.dart';
-import 'package:yjg/auth/presentation/pages/student_login.dart';
-import 'package:yjg/auth/presentation/pages/admin_login.dart';
-import 'package:yjg/auth/presentation/pages/registration_details.dart';
-import 'package:yjg/auth/presentation/pages/update_user.dart';
-import 'package:yjg/bus/presentaion/pages/bus_main.dart';
-import 'package:yjg/bus/presentaion/pages/bus_qr.dart';
-import 'package:yjg/bus/presentaion/pages/bus_schedule.dart';
-import 'package:yjg/administration/presentaion/pages/notice.dart';
-import 'package:yjg/restaurant/presentaion/pages/meal_application.dart';
-import 'package:yjg/restaurant/presentaion/pages/meal_qr.dart';
-import 'package:yjg/restaurant/presentaion/pages/menu_list.dart';
-import 'package:yjg/restaurant/presentaion/pages/restaurant_main.dart';
-import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
-import 'package:yjg/restaurant/presentaion/pages/weekend_meal.dart';
-import 'package:yjg/salon/presentaion/pages/admin/admin_salon_booking.dart';
-import 'package:yjg/salon/presentaion/pages/admin/admin_salon_main.dart';
-import 'package:yjg/salon/presentaion/pages/admin/admin_salon_price_list.dart';
-import 'package:yjg/salon/presentaion/pages/salon_booking_step_one.dart';
-import 'package:yjg/salon/presentaion/pages/salon_booking_step_two.dart';
-import 'package:yjg/salon/presentaion/pages/salon_main.dart';
-import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
-import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
-import 'package:yjg/setting/setting_page.dart';
+import 'package:yjg/routes/app_routes.dart';
+import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/service/device_info.dart';
-import 'package:yjg/shared/service/token_decoder.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,44 +15,13 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  final storage = FlutterSecureStorage();
   await dotenv.load(fileName: ".env");
 
   await getDeviceInfo();
 
-  String initialRoute = '/login_student';
-
-  final token = await storage.read(key: 'auth_token');
-  final autoLoginStr = await storage.read(key: 'auto_login') ?? 'false';
-  final refreshToken = await storage.read(key: 'refresh_token');
-  debugPrint('token: $token');
-  debugPrint('refreshToken: $refreshToken');
-  String? userType = await storage.read(key: 'userType');
-
-  if (token != null) {
-    bool hasExpired = JwtDecoder.isExpired(token);
-    tokenDecoder(token, autoLoginStr, hasExpired);
-
-    // 자동로그인이 true이고, 토큰이 만료되지 않았을 경우
-    if (autoLoginStr == 'true' && hasExpired == false) {
-      switch (userType) {
-        case 'student':
-          initialRoute = '/dashboard_main'; // 학생 대시보드로 이동
-          break;
-        case 'admin':
-          initialRoute = '/as_admin'; // AS 관리자 페이지로 이동
-          break;
-        case 'salon':
-          initialRoute = '/admin_salon_main'; // 미용실 관리자 페이지로 이동
-          break;
-        default:
-          // 사용자 유형이 지정되지 않았거나 잘못된 경우, 로그인 페이지로 이동
-          initialRoute = '/login_student';
-          break;
-      }
-    }
-  }
-
+  // 초기 라우터 설정
+  final initialRoute = await AuthService().getInitialRoute();
+  debugPrint('initialRoute: $initialRoute');
   // 스플래시 스크린 제거
   FlutterNativeSplash.remove();
 
@@ -94,10 +29,23 @@ void main() async {
     ProviderScope(
       child: MyApp(
         navigatorKey: navigatorKey,
-        initialRoute: initialRoute,
+        initialRoute: initialRoute!,
       ),
     ),
   );
+}
+
+String getInitialRouteBasedOnUserType(String? userType) {
+  switch (userType) {
+    case 'student':
+      return '/dashboard_main'; // 학생 대시보드로 이동
+    case 'admin':
+      return '/as_admin'; // AS 관리자 페이지로 이동
+    case 'salon':
+      return '/admin_salon_main'; // 미용실 관리자 페이지로 이동
+    default:
+      return '/login_student'; // 사용자 유형이 지정되지 않았거나 잘못된 경우, 로그인 페이지로 이동
+  }
 }
 
 class MyApp extends ConsumerWidget {
@@ -130,59 +78,7 @@ class MyApp extends ConsumerWidget {
       initialRoute: initialRoute,
 
       //라우트 설정
-      routes: {
-        // 최초 실행
-        '/dashboard_main': (context) => DashboardMain(),
-
-        // Auth 관련
-        '/login_student': (context) => StudentLogin(),
-        '/login_admin': (context) => AdminLogin(),
-        '/registration_detail': (context) => RegistrationDetails(),
-        '/registration_international': (context) =>
-            InternationalRegisteration(),
-        '/update_user': (context) => UpdateUser(),
-
-        // 식수 관련
-        '/restaurant_main': (context) => RestaurantMain(),
-        '/menu_list': (context) => MenuList(),
-        '/weekend_meal': (context) => WeekendMeal(),
-        '/meal_application': (context) => MealApplication(),
-        '/meal_qr': (context) => MealQr(),
-
-        // 미용실 관련
-        '/salon_main': (context) => SalonMain(),
-        '/salon_price_list': (context) => SalonPriceList(),
-        '/salon_booking_step_one': (context) => SalonBookingStepOne(),
-        '/salon_booking_step_two': (context) => SalonBookingStepTwo(),
-        '/salon_my_book': (context) => SalonMyBook(),
-
-        // 미용실 관련(관리자)
-        '/admin_salon_main': (context) => AdminSalonMain(),
-        '/admin_salon_price_list': (context) => AdminSalonPricelist(),
-        '/admin_salon_booking': (context) => AdminSalonBooking(),
-
-        // 버스 관련
-        '/bus_main': (context) => BusMain(),
-        '/bus_qr': (context) => BusQr(),
-        '/bus_schedule': (context) => BusSchedule(),
-
-        //행정 관련
-        '/admin_main': (context) => AdminMain(),
-        '/notice': (context) => Notice(),
-        '/as_page': (context) => AsPage(),
-        '/as_application': (context) => AsApplication(),
-        '/sleepover': (context) => Sleepover(),
-        '/sleepover_application': (context) => SleepoverApplication(),
-        '/meeting_room_app': (context) => MeetingRoomApp(),
-        '/meeting_room_main': (context) => MeetingRoomMain(),
-
-        // AS 관련(관리자)
-        '/as_admin': (context) => AsMain(),
-        '/as_detail': (context) => AsDetail(),
-
-        // 설정
-        '/setting': (context) => SettingPage(),
-      },
+      routes: AppRoutes.routes,
     );
   }
 }

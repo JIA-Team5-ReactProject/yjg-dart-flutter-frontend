@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
-import 'package:yjg/shared/service/auth_service.dart';
+import 'package:yjg/shared/service/logout_service.dart';
 
 class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const BaseAppBar({
@@ -45,7 +45,7 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
           centerTitle: true,
           leading: isAdmin
               ? IconButton(
-                  onPressed: () {AuthService().logout(context, ref);}, 
+                  onPressed: () {LogoutService().logout(context, ref);}, 
                   icon: const Icon(
                     Icons.logout_outlined,
                     color: Colors.white,

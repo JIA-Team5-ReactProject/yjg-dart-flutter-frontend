@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:yjg/shared/service/auth_service.dart';
+import 'package:yjg/shared/service/logout_service.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -80,7 +80,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
                 onPressed: ((context) {
-                  AuthService().logout(context, ref);
+                  LogoutService().logout(context, ref);
                 }),
               ),
               SettingsTile.navigation(
