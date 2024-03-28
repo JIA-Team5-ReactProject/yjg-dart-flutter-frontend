@@ -31,7 +31,7 @@ class User extends ChangeNotifier {
     notifyListeners(); // User 객체가 변경되었음을 알림
   }
 
-  // 회원가입, 로그인 폼 업데이트
+  // 회원가입 폼 업데이트
   void registerFormUpdate({
     String? email,
     String? password,
@@ -61,6 +61,17 @@ class User extends ChangeNotifier {
     if (phoneNumber != null) this.phoneNumber = phoneNumber;
     if (newPassword != null) this.newPassword = newPassword;
     if (password != null) this.password = password;
+    notifyListeners(); // User 객체가 변경되었음을 알림
+  }
+
+  // 비밀번호 찾기
+  void resetPasswordUpdate({
+    String? email,
+    String? name,
+  }) {
+    if (email != null) this.email = email;
+    if (name != null) this.name = name;
+
     notifyListeners(); // User 객체가 변경되었음을 알림
   }
 
