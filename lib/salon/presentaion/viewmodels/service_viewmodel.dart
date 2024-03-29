@@ -15,10 +15,13 @@ final servicesProvider = FutureProvider.autoDispose
   if (selectedGender.isNotEmpty && selectedCategoryId != null) {
     // API body에 들어갈 두 값이 빈 값이 아닐 경우
     final dataSource = PriceDataSource(); // PriceDataSource 생성
-    String rawData = await dataSource.getServiceListAPI(
+
+    // getServiceListAPI 호출 결과가 Map<String, dynamic>이므로 직접 사용
+    final Map<String, dynamic> response = await dataSource.getServiceListAPI(
         selectedGender, selectedCategoryId); // API 호출
-    final serviceData =
-        Servicegenerated.fromJson(jsonDecode(rawData)); // Dart 객체로 변환
+
+    final serviceData = Servicegenerated.fromJson(response); // Dart 객체로 변환
+
     return serviceData.services ?? []; // 서비스 목록이 null일 경우 빈 리스트를 반환
   }
   return []; // 선택 성별, id 유효하지 않음 -> 빈 리스트 반환
