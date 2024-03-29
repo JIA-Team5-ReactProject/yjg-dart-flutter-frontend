@@ -25,7 +25,7 @@ class CommentUseCases {
         return CommentResult(isSuccess: true, message: '댓글이 성공적으로 생성되었습니다.');
       } else {
         return CommentResult(
-            isSuccess: false, message: '댓글 생성 실패: ${response.body}');
+            isSuccess: false, message: '댓글 생성 실패: ${response.data}');
       }
     } catch (e) {
       return CommentResult(isSuccess: false, message: '댓글 생성 중 에러 발생: $e');
@@ -43,7 +43,7 @@ class CommentUseCases {
         return CommentResult(isSuccess: true, message: '댓글이 성공적으로 업데이트되었습니다.');
       } else {
         return CommentResult(
-            isSuccess: false, message: '댓글 수정 실패: ${response.body}');
+            isSuccess: false, message: '댓글 수정 실패: ${response.data}');
       }
     } catch (e) {
       return CommentResult(isSuccess: false, message: '댓글 수정 중 에러 발생: $e');
@@ -60,7 +60,7 @@ class CommentUseCases {
         return CommentResult(isSuccess: true, message: '댓글이 성공적으로 삭제되었습니다.');
       } else {
         return CommentResult(
-            isSuccess: false, message: '댓글 삭제 실패: ${response.body}');
+            isSuccess: false, message: '댓글 삭제 실패: ${response.data}');
       }
     } catch (e) {
       return CommentResult(isSuccess: false, message: '댓글 삭제 중 에러 발생: $e');

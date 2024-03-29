@@ -18,7 +18,7 @@ class CommentViewModel
     try {
       final dataSource = AsCommentDataSource();
       final response = await dataSource.getCommentAPI(serviceId);
-      final data = json.decode(response.body);
+      final data = json.decode(response.data);
       final List<dynamic> commentsJson = data['after_service_comments'];
       // 'after_service_comments' 키의 값을 List<AfterServiceComment>로 변환
       final List<AfterServiceComment> comments = commentsJson

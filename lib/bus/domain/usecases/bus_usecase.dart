@@ -10,7 +10,7 @@ class BusScheduleUseCase {
 
   Future<Schedules> getBusSchedules(int weekend, int semester, String route) async {
     final response = await _busDataSource.getBusDataAPI(weekend, semester, route);
-    final schedulesData = jsonDecode(utf8.decode(response.bodyBytes));
+    final schedulesData = response.data;
     return Schedules.fromJson(schedulesData);
   }
 }

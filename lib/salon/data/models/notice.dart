@@ -23,7 +23,7 @@ class Noticegenerated {
 
 class Notices {
   int? id;
-  int? adminId;
+  int? userId;
   String? title;
   String? content;
   String? tag;
@@ -34,7 +34,7 @@ class Notices {
 
   Notices(
       {this.id,
-      this.adminId,
+      this.userId,
       this.title,
       this.content,
       this.tag,
@@ -45,7 +45,7 @@ class Notices {
 
   Notices.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    adminId = json['admin_id'];
+    userId = json['user_id'];
     title = json['title'];
     content = json['content'];
     tag = json['tag'];
@@ -60,7 +60,7 @@ class Notices {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['admin_id'] = adminId;
+    data['user_id'] = userId;
     data['title'] = title;
     data['content'] = content;
     data['tag'] = tag;

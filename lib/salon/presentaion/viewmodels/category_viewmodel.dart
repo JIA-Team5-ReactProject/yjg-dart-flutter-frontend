@@ -14,7 +14,7 @@ final categoryListProvider =
   if (response.statusCode == 200) {
     // response.body를 JSON 형태로 디코드, CategoryGenerated 인스턴스 변환, categoryGenerated에 저장
     final categoryGenerated =
-        Categorygenerated.fromJson(json.decode(response.body));
+        Categorygenerated.fromJson(response.data);
 
     // Key: 카테고리 id, Value: 카테고리 이름
     Map<int, String> categoryMap = {};
@@ -43,5 +43,3 @@ final categoryProvider =
     StateNotifierProvider<CategoryNotifier, Map<int, String>>((ref) {
   return CategoryNotifier();
 });
-
-
