@@ -1,104 +1,68 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/service/interceptor.dart';
 
 class AsCommentDataSource {
-  String getApiUrl() {
-    // 상수 파일에서 가져온 apiURL 사용
-    return apiURL;
-  }
-
+  static final Dio dio = Dio(); // Dio 인스턴스 생성
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
-// * 댓글 로드
-  Future<http.Response> getCommentAPI(int serviceId) async {
-    final token = await storage.read(key: 'auth_token');
+    AsCommentDataSource() {
+    dio.interceptors.add(DioInterceptor(dio)); // 수정된 생성자를 사용
+  }
+
+  // * 댓글 로드
+  Future<Response> getCommentAPI(int serviceId) async {
     String url = '$apiURL/api/after-service/${serviceId.toString()}/comment';
 
-    final response = await http.get(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    try {
+      // dio 인스턴스를 사용하여 get 요청
+      final response = await dio.get(url);
+      debugPrint('댓글 로드 결과: ${response.statusCode}, ${response.data}');
 
-    debugPrint('댓글 로드 결과: ${response.statusCode}, ${response.body}');
-    if (response.statusCode == 200) {
       return response;
-    } else {
+    } catch (e) {
       throw Exception('댓글 로드에 실패했습니다.');
     }
   }
 
-
 // * 댓글 등록
-  Future<http.Response> postCommentAPI(int serviceId, String comment) async {
-    final token = await storage.read(key: 'auth_token');
+  Future<Response> postCommentAPI(int serviceId, String comment) async {
     String url = '$apiURL/api/after-service/${serviceId.toString()}/comment';
-    final body = jsonEncode({
-      'comment' : comment,
-    });
 
-    debugPrint('댓글 등록 body: $body');
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: body);
-
-    debugPrint('댓글 등록 결과: ${response.statusCode}, ${response.body}');
-    if (response.statusCode == 201) {
+    try {
+      final response = await dio.post(url, data: {'comment': comment});
+      debugPrint('댓글 등록 결과: ${response.statusCode}, ${response.data}');
       return response;
-    } else {
+    } catch (e) {
       throw Exception('댓글 작성에 실패했습니다.');
     }
   }
 
   // * 댓글 수정
-  Future<http.Response> patchCommentAPI(
-      int commentId, String comment) async {
-    final token = await storage.read(key: 'auth_token');
+  Future<Response> patchCommentAPI(int commentId, String comment) async {
     String url = '$apiURL/api/after-service/comment/${commentId.toString()}';
 
-    final body =
-        jsonEncode({'comment': comment});
-
-
-
-    final response = await http.patch(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: body);
-
-    if (response.statusCode == 200) {
+    try {
+      final response = await dio.patch(url, data: {'comment': comment});
+      debugPrint('댓글 수정 결과: ${response.statusCode}, ${response.data}');
       return response;
-    } else {
+    } catch (e) {
       throw Exception('댓글 수정에 실패했습니다.');
     }
   }
 
   // * 댓글 삭제
-  Future<http.Response> deleteCommentAPI(int commentId) async {
-    final token = await storage.read(key: 'auth_token');
-    String baseUrl = '$apiURL/api/after-service/comment/${commentId.toString()}';
+  Future<Response> deleteCommentAPI(int commentId) async {
+    String url = '$apiURL/api/after-service/comment/${commentId.toString()}';
 
-    final response = await http.delete(
-      Uri.parse(baseUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    try {
+      final response = await dio.delete(url);
 
-    debugPrint('댓글 삭제 결과: ${response.statusCode}, ');
-
-    if (response.statusCode == 200) {
+      debugPrint('댓글 삭제 결과: ${response.statusCode}, ');
       return response;
-    } else {
+    } catch (e) {
       throw Exception('댓글 삭제에 실패했습니다.');
     }
   }
