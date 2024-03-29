@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/as(admin)/data/data_sources/as_comment_data_source.dart';
@@ -18,7 +17,7 @@ class CommentViewModel
     try {
       final dataSource = AsCommentDataSource();
       final response = await dataSource.getCommentAPI(serviceId);
-      final data = json.decode(response.data);
+      final data = response.data;
       final List<dynamic> commentsJson = data['after_service_comments'];
       // 'after_service_comments' 키의 값을 List<AfterServiceComment>로 변환
       final List<AfterServiceComment> comments = commentsJson
