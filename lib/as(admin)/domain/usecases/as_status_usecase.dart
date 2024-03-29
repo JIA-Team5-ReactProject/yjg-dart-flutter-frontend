@@ -24,7 +24,7 @@ class StatusUseCases {
         return StatusResult(isSuccess: true, message: '상태가 성공적으로 변경되었습니다.');
       } else {
         return StatusResult(
-            isSuccess: false, message: '상태 변경 실패: ${response.body}');
+            isSuccess: false, message: '상태 변경 실패: ${response.data}');
       }
     } catch (e) {
       return StatusResult(isSuccess: false, message: '상태 변경 중 에러 발생: $e');
