@@ -5,7 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/administration/presentaion/widgets/std_as_floating_button.dart';
 import 'package:yjg/as(admin)/presentation/widgets/admin_as_floating_button.dart';
-import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -40,10 +39,10 @@ class _AsDetailState extends ConsumerState<AsDetail> {
 
   // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
   Future<void> _checkIfAdmin() async {
-    bool? isAdminValue = ref.watch(isAdminProvider);
+    String? isAdminValue = await storage.read(key: 'isAdmin');
 
     setState(() {
-      isAdminValue == true ? isAdmin = true : isAdmin = false;
+      isAdmin = isAdminValue == 'true';
       debugPrint('관리자여부: $isAdmin');
     });
   }

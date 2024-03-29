@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/service/logout_service.dart';
 
 class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -13,10 +13,11 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final storage = FlutterSecureStorage();
 
     Future<bool> getIsAdmin() async {
-      final isAdmin = ref.watch(isAdminProvider);
-      return isAdmin!;
+      final isAdmin = await storage.read(key: 'isAdmin');
+      return isAdmin == 'true';
     }
 
     Widget titleWidget = title != null
@@ -45,7 +46,9 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
           centerTitle: true,
           leading: isAdmin
               ? IconButton(
-                  onPressed: () {LogoutService().logout(context, ref);}, 
+                  onPressed: () {
+                    LogoutService().logout(context, ref);
+                  },
                   icon: const Icon(
                     Icons.logout_outlined,
                     color: Colors.white,

@@ -18,19 +18,25 @@ class DioInterceptor extends Interceptor {
 
   @override
   // 요청 전송 전에 요청을 가로채고 처리
+  @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    // 인증 토큰을 가져옴
-    final token = await getToken();
-
-    // 토큰이 있을 경우 헤더에 추가
-    if (token != null) {
-      options.headers.addAll({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token",
-      });
+    if (options.data is FormData) {
+      // 폼 데이터 요청인 경우
+      options.headers["Content-Type"] = "multipart/form-data";
+    } else {
+      // JSON 요청인 경우 (기본)
+      options.headers["Content-Type"] = "application/json";
     }
-    // 요청을 계속 진행
+
+    // 인증 토큰이 필요한 경우 헤더에 추가
+    if (options.extra["noAuth"] != true) {
+      final token = await getToken();
+      if (token != null) {
+        options.headers["Authorization"] = "Bearer $token";
+      }
+    }
+
     return super.onRequest(options, handler);
   }
 

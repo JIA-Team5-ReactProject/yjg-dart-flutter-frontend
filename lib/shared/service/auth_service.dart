@@ -13,7 +13,9 @@ class AuthService {
     final refreshToken = await storage.read(key: 'refresh_token');
     final userType = await storage.read(key: 'userType');
 
-    debugPrint('autoLoginStr: $autoLoginStr');
+    debugPrint('액세스 토큰: $token');
+    debugPrint('리프레시 토큰: $refreshToken');
+
     debugPrint('userType: $userType');
 
     if (autoLoginStr != 'true' || (token == null && refreshToken == null)) {
@@ -24,12 +26,16 @@ class AuthService {
       debugPrint('token is expired');
       await LoginDataSource().getRefreshTokenAPI();
       final newToken = await storage.read(key: 'auth_token');
-      return newToken != null && !JwtDecoder.isExpired(newToken)
-          ? AppRoutes.getInitialRouteBasedOnUserType(userType)
-          : '/login_student';
+      debugPrint(
+          'newToken 유효성 여부: ${JwtDecoder.isExpired(newToken ?? 'null')}');
+      if (newToken != null && !JwtDecoder.isExpired(newToken)) {
+        final initRoute = AppRoutes.getInitialRouteBasedOnUserType(userType);
+        debugPrint('initRoute: $initRoute');
+        return initRoute;
+      }
+      return '/login_student';
     }
 
     return AppRoutes.getInitialRouteBasedOnUserType(userType);
   }
 }
-

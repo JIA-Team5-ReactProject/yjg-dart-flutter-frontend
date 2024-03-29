@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:yjg/as(admin)/data/data_sources/as_comment_data_source.dart';
 import 'package:yjg/as(admin)/data/models/as_comment.dart';
@@ -7,7 +8,6 @@ import 'package:yjg/as(admin)/domain/entities/comment.dart';
 import 'package:yjg/as(admin)/domain/usecases/as_comment_usecase.dart';
 import 'package:yjg/as(admin)/presentation/viewmodels/comment_viewmodel.dart';
 import 'package:yjg/as(admin)/presentation/widgets/as_updating_comment_modal.dart';
-import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/shared/theme/theme.dart';
 
 class AsCommentBox extends ConsumerStatefulWidget {
@@ -21,16 +21,29 @@ class AsCommentBox extends ConsumerStatefulWidget {
 
 class _AsCommentBoxState extends ConsumerState<AsCommentBox> {
   final commentUseCases = CommentUseCases(AsCommentDataSource());
+  bool? isAdmin;
+
+  static final storage = FlutterSecureStorage(); // 정원이가 말해준 코드(토큰)
 
   @override
-  void initState() {
-    super.initState();
-    // initState에서 댓글 데이터를 불러옴
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _checkIfAdmin();
     Future.microtask(
       () => ref
           .read(commentViewModelProvider.notifier)
           .fetchComments(widget.serviceId),
     );
+  }
+
+  // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
+  Future<void> _checkIfAdmin() async {
+    String? isAdminValue = await storage.read(key: 'isAdmin');
+
+    setState(() {
+      isAdmin = isAdminValue == 'true';
+      debugPrint('관리자여부: $isAdmin');
+    });
   }
 
   @override
@@ -50,14 +63,13 @@ class _AsCommentBoxState extends ConsumerState<AsCommentBox> {
                   .map((comment) => buildCommentItem(context, comment))
                   .toList(),
             ),
-      loading: () => Center(child: CircularProgressIndicator(color: Palette.stateColor4)),
+      loading: () =>
+          Center(child: CircularProgressIndicator(color: Palette.stateColor4)),
       error: (error, _) => Text('댓글을 불러오는데 실패했습니다.'),
     );
   }
 
   Widget buildCommentItem(BuildContext context, AfterServiceComment comment) {
-    bool? isAdminValue = ref.watch(isAdminProvider);
-
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: SizedBox(
@@ -95,8 +107,8 @@ class _AsCommentBoxState extends ConsumerState<AsCommentBox> {
                             color: Palette.textColor.withOpacity(0.5)),
                       ),
                     Spacer(),
-                    if (isAdminValue!) buildEditButton(context, comment, ref),
-                    if (isAdminValue) buildDeleteButton(context, comment, ref),
+                    if (isAdmin!) buildEditButton(context, comment, ref),
+                    if (isAdmin!) buildDeleteButton(context, comment, ref),
                   ],
                 ),
               ),
