@@ -30,26 +30,6 @@ final adminPrivilegesProvider = StateNotifierProvider<AdminPrivilegesNotifier, S
   return AdminPrivilegesNotifier();
 });
 
-
-
-// isAdmin 상태를 관리하는 프로바이더
-class IsAdminNotifier extends StateNotifier<bool> {
-  IsAdminNotifier() : super(false); // 초기값은 false
-
-  void checkAdmin(User user) {
-    // 권한 리스트를 순회하면서 admin 권한이 있는지 확인
-    for (final privilege in user.privileges ?? []) {
-      if (privilege.privilege == 'admin') {
-        state = true; // 관리자 권한 발견
-        return;
-      }
-    }
-    state = false; // 관리자 권한이 없음
-  }
-}
-
-final isAdminProvider = StateNotifierProvider<IsAdminNotifier, bool>((ref) {
-  return IsAdminNotifier();
-});
+final isAdminProvider = StateProvider<bool?>((ref) => null);
 
 

@@ -22,6 +22,7 @@ void main() async {
   // 초기 라우터 설정
   final initialRoute = await AuthService().getInitialRoute();
   debugPrint('initialRoute: $initialRoute');
+
   // 스플래시 스크린 제거
   FlutterNativeSplash.remove();
 

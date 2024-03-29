@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/as(admin)/data/data_sources/as_data_source.dart';
@@ -25,7 +23,7 @@ class AsDataNotifier extends StateNotifier<AsyncValue<AfterServiceResponse>> {
     try {
       final page = ref.read(currentPageProvider);
       final response = await AsDataSource().getAsDataAPI(status, page);
-      final data = AfterServiceResponse.fromJson(jsonDecode(response.body));
+      final data = AfterServiceResponse.fromJson(response.data);
       state = AsyncValue.data(data);
     } catch (e, s) {
       debugPrint('fetchAsData error: $e, stack trace: $s'); // 오류와 스택 트레이스 출력
