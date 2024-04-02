@@ -107,7 +107,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     }
   }
 
-//주말식수 신청 인원 불러오는 GET API 함수
+  //주말식수 신청 인원 불러오는 GET API 함수
   Future<void> _fetchWeekendApplicationCounts() async {
     try {
       final token = await storage.read(key: 'auth_token'); // 토큰 가져오기
@@ -143,6 +143,106 @@ class _RestaurantMainState extends State<RestaurantMain> {
     } catch (e) {
       print('오류 발생: $e');
     }
+  }
+
+  //주말 식수 신청 가능 기간 받아오는 GET API
+  Future<bool> fetchWeekendApplyState() async {
+    final token = await storage.read(key: 'auth_token');
+    if (token != null) {
+      final response = await http.get(
+        Uri.parse('$apiURL/api/restaurant/apply/state/check/weekend'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['weekend'] == 1; // 1이면 true, 아니면 false
+      } else {
+        throw Exception('Failed to fetch weekend apply state');
+      }
+    } else {
+      throw Exception('Token not found');
+    }
+  }
+
+  //학기 식수 신청 가능 기간 받아오는 GET API
+  Future<bool> fetchSemesterApplyState() async {
+    final token = await storage.read(key: 'auth_token');
+    if (token != null) {
+      final response = await http.get(
+        Uri.parse('$apiURL/api/restaurant/apply/state/check/semester'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['semester'] == true; // 1이면 true, 아니면 false
+      } else {
+        throw Exception('Failed to fetch weekend apply state');
+      }
+    } else {
+      throw Exception('Token not found');
+    }
+  }
+
+  // API 값에 따라 주말 식수버튼 클릭 가능하게 하는 버튼
+  Widget conditionalMoveButton() {
+    return FutureBuilder<bool>(
+      future: fetchWeekendApplyState(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // 로딩 인디케이터
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}'); // 에러 처리
+        } else {
+          // API로부터 받은 값과 요일을 기준으로 버튼 활성화 결정
+          final isButtonActive = snapshot.data == true;
+
+          return Opacity(
+            opacity: isButtonActive ? 1.0 : 0.5,
+            child: IgnorePointer(
+              ignoring: !isButtonActive,
+              child: MoveButton(
+                icon: Icons.calendar_month_outlined,
+                text1: '주말 식수',
+                text2: '월~수 신청가능',
+                route: '/weekend_meal',
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  // API 값에 따라 주말 식수버튼 클릭 가능하게 하는 버튼
+  Widget semesterMoveButton() {
+    return FutureBuilder<bool>(
+      future: fetchSemesterApplyState(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // 로딩 인디케이터
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}'); // 에러 처리
+        } else {
+          // API로부터 받은 값을 기준으로 버튼 활성화 결정
+          final isButtonActive = snapshot.data == true;
+
+          return Opacity(
+            opacity: isButtonActive ? 1.0 : 0.5,
+            child: IgnorePointer(
+              ignoring: !isButtonActive,
+              child: MoveButton(
+                icon: Icons.calendar_month_outlined,
+                text1: '학기 식수',
+                text2: '학기 식수 신청',
+                route: '/meal_application',
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -195,11 +295,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                     text2: '식사 시 QR 찍기',
                     route: '/meal_qr'),
                 conditionalMoveButton(),
-                MoveButton(
-                    icon: Icons.assignment_turned_in_outlined,
-                    text1: '식수 신청',
-                    text2: '식사 신청',
-                    route: '/meal_application'),
+                semesterMoveButton(),
               ],
             ),
 
@@ -271,28 +367,6 @@ Widget mealCard(String meal, List<String> menu) {
           const SizedBox(height: 5),
           Column(children: menu.map((item) => Text(item)).toList()),
         ],
-      ),
-    ),
-  );
-}
-
-// 월~수만 주말 식수버튼 클릭 가능하게 하는 버튼
-Widget conditionalMoveButton() {
-  final now = DateTime.now();
-  final currentDay = now.weekday; // 1: 월요일, 2: 화요일, ..., 7: 일요일
-
-  // 월요일, 화요일, 수요일에만 버튼 활성화
-  final isButtonActive = currentDay >= 1 && currentDay <= 4;
-
-  return Opacity(
-    opacity: isButtonActive ? 1.0 : 0.5, // 비활성화 시 투명도 조절로 비활성화 효과
-    child: IgnorePointer(
-      ignoring: !isButtonActive, // isButtonActive가 false이면 클릭 무시
-      child: MoveButton(
-        icon: Icons.calendar_month_outlined,
-        text1: '주말 식수',
-        text2: '월~수 신청가능',
-        route: '/weekend_meal',
       ),
     ),
   );

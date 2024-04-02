@@ -26,6 +26,7 @@ class MealApplication extends ConsumerStatefulWidget {
 }
 
 class _MealApplicationState extends ConsumerState<MealApplication> {
+
   // 선택된 식사 유형 ID를 추적하는 변수 (버튼에서 선택 된 유형을 말하는 거임)
   String? selectedMealTypeId;
 
@@ -160,13 +161,15 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
             applicationId = applicationData[0]['id']; // 신청 ID를 저장
             
             selectedMealTypeId =
-                applicationData[0]['semester_meal_type']?.first['meal_type'];
+                applicationData[0]['semester_meal_type']?['meal_type'];
             deposit = applicationData[0]['payment'] == 1;
           } else {
             selectedMealTypeId = null;
             applicationId = null; // 신청이 없을 경우 null로 설정
           }
         });
+
+
       } else {
         print('Server returned ${response.statusCode}');
       }
@@ -199,7 +202,6 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     }
   }
 
-  //
   //계좌 번호 데이터를 불러오는 GET API 함수
   Future<void> fetchAccountData() async {
     final token = await storage.read(key: 'auth_token');
@@ -409,6 +411,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
               customElevatedButton('신청', Color.fromARGB(255, 29, 127, 159),
                   () async {
                 if (selectedMealTypeId != null) {
+                  meal_application(context);
                   await submitMealApplication(selectedMealTypeId!); // 알파벳을 전달
                 } else {
                   non_select(context); // 사용자에게 식사 유형을 선택하라는 메시지를 보여줌
@@ -549,6 +552,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     }
   }
 
+  //상단 정보 컨테이너
   List<Widget> topSection() {
     return [
       SizedBox(
@@ -609,6 +613,44 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
             },
             icon: const Icon(Icons.cancel_outlined),
           )
+        ],
+      ),
+    );
+  }
+
+  //신청 시 ALERT창
+  Future<dynamic> meal_application(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Icon(
+          Icons.campaign,
+          size: 50,
+          color: Color.fromARGB(255, 29, 127, 159),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SizedBox(height: 25),
+            Text(
+              '신청이 완료 되었습니다.',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            SizedBox(height: 10),
+            SizedBox(height: 25),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              
+              // 유저 데이터 불러오는 함수 다시 호출해서 화면 업데이트
+              await fetchUserInfo();
+            },
+            child: Text('확인'),
+          ),
         ],
       ),
     );
@@ -675,6 +717,7 @@ String formatPhoneNumber(String? phoneNumber) {
   return phoneNumber;
 }
 
+//유저 정보 컨테이너
 class UserInfoContainer extends StatelessWidget {
   final String title;
   final String content;
@@ -723,6 +766,7 @@ class UserInfoContainer extends StatelessWidget {
   }
 }
 
+//점선 컨테이너
 class DottedLineSeparator extends StatelessWidget {
   const DottedLineSeparator({Key? key}) : super(key: key);
 
@@ -737,6 +781,7 @@ class DottedLineSeparator extends StatelessWidget {
   }
 }
 
+//엘리베이터 버튼
 class CustomElevatedButton extends StatelessWidget {
   final String text;
   final Color color;
