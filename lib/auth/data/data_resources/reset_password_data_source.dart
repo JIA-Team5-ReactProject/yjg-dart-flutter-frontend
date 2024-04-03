@@ -18,7 +18,7 @@ class ResetPasswordDataSource {
   // * 이메일 전송
   Future<Response> postResetPasswordAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
-    String url = '$apiURL/api/user/reset-password';
+    String url = '$apiURL/reset-password';
     final data = {
       'email': loginState.email,
       'name': loginState.name,

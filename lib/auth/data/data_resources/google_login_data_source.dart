@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +67,7 @@ class GoogleLoginDataSource {
           data: data, options: Options(extra: {"noAuth": true}));
 
       final result = Usergenerated.fromJson(response.data);
-      debugPrint('통신 ㅋ결과: ${response.data} ${response.statusCode}');
+      debugPrint('통신 결과: ${response.data} ${response.statusCode}');
 
       String? token = result.accessToken;
       String? refreshToken = result.refreshToken;

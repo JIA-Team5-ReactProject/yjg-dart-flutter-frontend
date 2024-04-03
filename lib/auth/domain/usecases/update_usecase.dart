@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:yjg/auth/data/data_resources/register_data_source.dart';
+import 'package:yjg/auth/data/data_resources/user_data_source.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
@@ -15,17 +15,16 @@ class UpdateUserInfoUseCase {
     String? phoneNumber,
     String? password,
     String? newPassword,
-    
     required BuildContext context,
   }) async {
     // User 상태 업데이트
     ref.read(userProvider.notifier).additionalInfoFormUpdate(
-      studentId: studentId,
-      name: name,
-      phoneNumber: phoneNumber,
-      password: password,
-      newPassword: newPassword,
-    );
+          studentId: studentId,
+          name: name,
+          phoneNumber: phoneNumber,
+          password: password,
+          newPassword: newPassword,
+        );
 
     // SecureStorage에서 토큰 가져오기
     final storage = FlutterSecureStorage();
@@ -43,7 +42,7 @@ class UpdateUserInfoUseCase {
 
     // 업데이트 API 호출
     try {
-      final dataSource = RegisterDataSource(); // DataSource 인스턴스 생성
+      final dataSource = UserDataSource(); // DataSource 인스턴스 생성
       final response = await dataSource.patchAdditionalInfoAPI(ref);
 
       if (response.statusCode == 200) {
@@ -53,7 +52,8 @@ class UpdateUserInfoUseCase {
               backgroundColor: Palette.mainColor),
         );
         // 성공 시 메인 페이지로 이동(이전 페이지로 못 가게 막아버림)
-        Navigator.pushNamedAndRemoveUntil(context, '/dashboard_main', (Route<dynamic> route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/dashboard_main', (Route<dynamic> route) => false);
       } else {
         throw Exception('서버 에러: ${response.statusCode}');
       }
