@@ -145,16 +145,16 @@ class _AsCommentBoxState extends ConsumerState<AsCommentBox> {
         final confirmDelete = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('댓글 삭제'),
+            title: Text('댓글 삭제', style: TextStyle(color: Palette.textColor, fontSize: 16.0, fontWeight: FontWeight.w600)),
             content: Text('이 댓글을 삭제하시겠습니까?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('취소'),
+                child: Text('취소', style: TextStyle(color: Palette.stateColor4, fontWeight: FontWeight.w600)),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('삭제'),
+                child: Text('삭제', style: TextStyle(color: Palette.stateColor3, fontWeight: FontWeight.w600)),
               ),
             ],
           ),

@@ -121,6 +121,7 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                                 route: '/salon_price_list'),
                           ],
                         ),
+                        SizedBox(height: 10.0,),
                         // 공지사항
                         Container(
                           margin: const EdgeInsets.symmetric(

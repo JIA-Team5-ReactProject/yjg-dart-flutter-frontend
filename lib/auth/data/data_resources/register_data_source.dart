@@ -63,6 +63,8 @@ class RegisterDataSource {
         body: body);
 
 
+    debugPrint('추가 정보 입력 결과: ${response.body} ${response.statusCode}');
+
     // status code가 200이 아닐 경우
     if (response.statusCode != 200 && response.statusCode != 201) {
       debugPrint('추가 정보 입력 실패: ${response.statusCode},  ${jsonDecode(utf8.decode(response.bodyBytes))}');

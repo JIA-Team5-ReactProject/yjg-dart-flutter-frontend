@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/domain/usecases/register_usecase.dart";
 import "package:yjg/auth/domain/usecases/update_usecase.dart";
+import "package:yjg/auth/presentation/viewmodels/user_viewmodel.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
 import "package:yjg/shared/theme/theme.dart";
 import "package:yjg/shared/widgets/base_appbar.dart";
@@ -11,14 +12,20 @@ import "package:yjg/shared/widgets/bottom_navigation_bar.dart";
 class UpdateUser extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController studentIdController = TextEditingController();
-  TextEditingController newPasswordController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider);
+
+    TextEditingController nameController =
+        TextEditingController(text: user.name);
+    TextEditingController phoneNumberController =
+        TextEditingController(text: user.phoneNumber);
+    TextEditingController studentIdController =
+        TextEditingController(text: user.studentId);
+
+    TextEditingController newPasswordController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       appBar: BaseAppBar(
         title: '개인정보 수정',
@@ -42,10 +49,10 @@ class UpdateUser extends ConsumerWidget {
               child: const Text(
                 '빈칸 없이 모든 정보를 입력해 주세요.',
                 style: TextStyle(
-                    fontSize: 15.0,
-                    color: Palette.textColor,
-                    letterSpacing: -0.5,
-                    ),
+                  fontSize: 15.0,
+                  color: Palette.textColor,
+                  letterSpacing: -0.5,
+                ),
               ),
             ),
 

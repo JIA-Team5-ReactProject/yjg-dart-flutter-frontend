@@ -20,6 +20,29 @@ class Noticegenerated {
     return data;
   }
 }
+class NoticeImage {
+  final String image;
+  final String createdAt;
+  final String updatedAt;
+
+  NoticeImage({required this.image, required this.createdAt, required this.updatedAt});
+
+  factory NoticeImage.fromJson(Map<String, dynamic> json) {
+    return NoticeImage(
+      image: json['image'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'image': image,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
+  }
+}
 
 class Notices {
   int? id;
@@ -30,18 +53,19 @@ class Notices {
   int? urgent;
   String? createdAt;
   String? updatedAt;
-  List<String>? noticeImages;
+  List<NoticeImage>? noticeImages;
 
-  Notices(
-      {this.id,
-      this.userId,
-      this.title,
-      this.content,
-      this.tag,
-      this.urgent,
-      this.createdAt,
-      this.updatedAt,
-      this.noticeImages});
+  Notices({
+    this.id,
+    this.userId,
+    this.title,
+    this.content,
+    this.tag,
+    this.urgent,
+    this.createdAt,
+    this.updatedAt,
+    this.noticeImages,
+  });
 
   Notices.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -53,7 +77,9 @@ class Notices {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['notice_images'] != null) {
-      noticeImages = List<String>.from(json['notice_images']);
+      noticeImages = (json['notice_images'] as List)
+          .map((v) => NoticeImage.fromJson(v))
+          .toList();
     }
   }
 
@@ -68,7 +94,7 @@ class Notices {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     if (noticeImages != null) {
-      data['notice_images'] = noticeImages!;
+      data['notice_images'] = noticeImages!.map((v) => v.toJson()).toList();
     }
     return data;
   }
