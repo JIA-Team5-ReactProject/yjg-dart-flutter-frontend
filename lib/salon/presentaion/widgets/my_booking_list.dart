@@ -55,7 +55,7 @@ class MyBookingList extends ConsumerWidget {
                     padding: const EdgeInsets.only(
                         left: 20.0, top: 30.0, bottom: 10.0),
                     child: Text(
-                      "${getStatusText(status)}된 건(${reservationsForStatus.length})", // 상태명을 한글로 변환하는 함수 사용
+                      "${getStatusText(status)}된 내역이 ${reservationsForStatus.length}건 있습니다.", // 상태명을 한글로 변환하는 함수 사용
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
