@@ -116,24 +116,61 @@ void editServiceModal(
                             fontWeight: FontWeight.bold),
                       ),
                       onPressed: () async {
-                        ServiceResult result = await serviceUseCases
-                            .deleteService(int.parse(serviceId));
-                        if (result.isSuccess) {
-                          // 서비스 리스트 상태를 업데이트하기 위해 프로바이더를 사용
-                          ref.refresh(servicesProvider(uniqueKey));
+                        // 삭제 확인 다이얼로그 표시
+                        final confirmDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            return AlertDialog(
+                              title: Text('서비스 삭제',
+                                  style: TextStyle(
+                                      color: Palette.textColor,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600)),
+                              content: Text('이 서비스를 삭제하시겠습니까?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(dialogContext)
+                                        .pop(false); // 다이얼로그를 닫고 false 반환
+                                  },
+                                  child: Text('취소',
+                                      style: TextStyle(
+                                          color: Palette.stateColor4,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(dialogContext)
+                                        .pop(true); // 다이얼로그를 닫고 true 반환
+                                  },
+                                  child: Text('삭제',
+                                      style: TextStyle(
+                                          color: Palette.stateColor3,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                              ],
+                            );
+                          },
+                        );
 
-                          // 스낵바를 표시하여 사용자에게 결과 알림
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        // 삭제를 확인했다면, 삭제 로직 실행
+                        if (confirmDelete == true) {
+                          ServiceResult result = await serviceUseCases
+                              .deleteService(int.parse(serviceId));
+                          if (result.isSuccess) {
+                            ref.refresh(servicesProvider(uniqueKey));
+                            Navigator.pop(context); // 모달 닫기
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(result.message),
-                              backgroundColor: Palette.mainColor));
-
-                          // 모달창 닫기
-                          Navigator.pop(context);
-                        } else {
-                          // 삭제 실패 시 스낵바를 표시하여 사용자에게 알림
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Palette.mainColor,
+                            ));
+                          } else {
+                            // 실패 알림
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(result.message),
-                              backgroundColor: Colors.red));
+                              backgroundColor: Colors.red,
+                            ));
+                          }
                         }
                       },
                     ),

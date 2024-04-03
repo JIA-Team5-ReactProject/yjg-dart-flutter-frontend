@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:yjg/shared/constants/api_url.dart';
@@ -25,7 +22,6 @@ class MyBookingDataSource {
       },
     );
 
-    debugPrint('예약 목록: ${jsonDecode(utf8.decode(response.bodyBytes))}, ${response.statusCode}');
     if (response.statusCode == 200) {
       // 예약이 있는 경우
 

@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'package:yjg/auth/data/models/user.dart';
 import 'package:yjg/auth/domain/usecases/domain_validation_usecase.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
@@ -18,6 +17,7 @@ class GoogleLoginDataSource {
     ],
   );
 
+  static final Dio dio = Dio();
   static final _storage = FlutterSecureStorage();
 
   // 구글로 로그인하는 함수
@@ -56,27 +56,22 @@ class GoogleLoginDataSource {
     try {
       final loginState = ref.read(userProvider.notifier);
       final deviceInfo = await _storage.read(key: 'deviceType');
-      final body = jsonEncode(<String, String>{
+      String url = '$apiURL/api/user/google-login';
+      final data = {
         'email': loginState.email,
         'displayName': loginState.displayName,
         'id_token': loginState.idToken,
         'os_type': deviceInfo ?? 'unknown',
-      });
+      };
 
-      debugPrint('body: $body');
+      debugPrint('data: $data');
 
-      final response = await http.post(
-        Uri.parse('$apiURL/api/user/google-login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: body,
+      final response = await dio.post(
+        url, data: data, options: Options(extra: {"noAuth": true})
       );
 
-
-      debugPrint('결과: ${jsonDecode(utf8.decode(response.bodyBytes)) }');
-      debugPrint('status code: ${response.statusCode}');
-      final result = Usergenerated.fromJson(jsonDecode(response.body));
+      debugPrint('response: ${response.data}');
+      final result = Usergenerated.fromJson(response.data);
       int? approved = result.user?.approved;
 
       if (response.statusCode == 403 || approved == 0) {
@@ -85,7 +80,7 @@ class GoogleLoginDataSource {
 
       if (response.statusCode != 200) {
         throw HttpException(
-            'Failed to post Google login. Status code: ${response.statusCode}');
+            '구글 로그인 실패, 상태 코드: ${response.statusCode}');
       }
 
       String? token = result.accessToken;

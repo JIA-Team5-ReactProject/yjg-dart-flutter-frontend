@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,54 +10,49 @@ import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 
 class LoginDataSource {
-  String getApiUrl() {
-    // 상수 파일에서 가져온 apiURL 사용
-    return apiURL;
-  }
-
+  static final Dio dio = Dio();
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
-  // * 외국인 유학생 로그인
-  Future<String> postStudentLoginAPI(WidgetRef ref) async {
+  // 스토리지 모듈
+  Future<void> _saveToStorage(Map<String, String> data) async {
+    for (var key in data.keys) {
+      await storage.write(key: key, value: data[key]);
+    }
+  }
+
+  // 외국인 유학생 로그인
+  Future<Map<String, dynamic>> postStudentLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
     final url = '$apiURL/api/user/login';
-    final body = jsonEncode(<String, String>{
+    final data = {
       'email': loginState.email,
       'password': loginState.password,
-    });
+    };
 
-    final response = await http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: body,
-    );
+    try {
+      final response = await dio.post(url, data: data, options: Options(extra: {"noAuth": true}));
+      Usergenerated userGenerated = Usergenerated.fromJson(response.data);
 
-    Usergenerated userGenerated =
-        Usergenerated.fromJson(json.decode(response.body));
+      // 사용자 기본 정보 업데이트
+      ref.read(userProvider.notifier).additionalInfoFormUpdate(
+            name: userGenerated.user!.name!,
+            phoneNumber: userGenerated.user!.phoneNumber!,
+            studentId: userGenerated.user!.studentId!,
+          );
 
-    if (response.statusCode == 200) {
-      String? token = userGenerated.accessToken; // 토큰값 추출
-      String studentName = userGenerated.user!.name!; // 사용자 이름 추출
-      String refreshToken = userGenerated.refreshToken!;
-      String studentNum = userGenerated.user!.studentId!;
+      // 스토리지에 토큰과 사용자 정보 저장
+      await _saveToStorage({
+        'auth_token': userGenerated.accessToken!,
+        'refresh_token': userGenerated.refreshToken!,
+        'name': userGenerated.user!.name!,
+        'student_num': userGenerated.user!.studentId!,
+      });
 
-      debugPrint('액세스 토큰: $token');
-      debugPrint('리프레시 토큰: $refreshToken');
-
-      if (token != null) {
-        await storage.write(key: 'auth_token', value: token); // 토큰 저장
-        await storage.write(key: 'refresh_token', value: refreshToken);
-        await storage.write(key: 'name', value: studentName); // 사용자 이름 저장
-        await storage.write(key: 'student_num', value: studentNum);
-      } else {
-        throw Exception('토큰이 없습니다.');
-      }
-    } else {
-      throw Exception('로그인 실패: ${response.statusCode}');
+      return response.data;
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('로그인에 실패했습니다.');
     }
-    return utf8.decode(response.bodyBytes);
   }
 
 // * 관리자 로그인
