@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/data/data_sources/my_booking_data_source.dart';
@@ -10,10 +9,8 @@ final reservationsProvider = FutureProvider<List<Reservations>>((ref) async {
   final dataSource = ref.watch(myBookingDataSourceProvider);
   final response = await dataSource.getReservationAPI();
   if (response.statusCode == 200) {
-    final List<dynamic> jsonResponse =
-        jsonDecode(utf8.decode(response.bodyBytes))['reservations'];
+    final List<dynamic> jsonResponse = response.data['reservations'];
 
-    debugPrint('예약 목록: $jsonResponse');
     return jsonResponse.map((json) => Reservations.fromJson(json)).toList();
   } else {
     debugPrint('예약 목록 불러오기 실패: ${response.statusCode}');
