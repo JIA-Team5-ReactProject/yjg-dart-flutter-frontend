@@ -75,16 +75,16 @@ class GoogleLoginDataSource {
       String? name = result.user?.name;
       int? approved = result.user?.approved;
 
+      if (token != null) {
+        await _saveTokens(token, refreshToken, studentNum, name!);
+      } else {
+        debugPrint('토큰이 없습니다.');
+        throw Exception('토큰이 없습니다.');
+      }
+
       if (approved == 0) {
         navigatorKey.currentState!.pushNamed('/registration_detail');
       } else if (approved == 1) {
-        if (token != null) {
-          await _saveTokens(token, refreshToken, studentNum, name!);
-        } else {
-          debugPrint('토큰이 없습니다.');
-          throw Exception('토큰이 없습니다.');
-        }
-
         // 로그인 성공 시 메인 대시보드로 이동
         navigatorKey.currentState!.pushNamed('/dashboard_main');
       }
