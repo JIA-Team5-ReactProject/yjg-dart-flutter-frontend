@@ -80,7 +80,7 @@ class RegistrationDetails extends ConsumerWidget {
                               studentId: studentIdController.text,
                               context: context,
                             );
-
+                            
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

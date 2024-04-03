@@ -43,3 +43,15 @@ final adminIdProvider = StateNotifierProvider<AdminIdNotifier, int>((ref) {
   return AdminIdNotifier();
 });
 
+// 현재 라우터 상태 업데이트를 위한 CurrentRouteProvider
+class CurrentRouteNotifier extends StateNotifier<String?> {
+  CurrentRouteNotifier() : super(null);
+
+  void setCurrentRoute(String currentRoute) {
+    state = currentRoute;
+  }
+}
+
+final currentRouteProvider = StateNotifierProvider<CurrentRouteNotifier, String?>((ref) {
+  return CurrentRouteNotifier();
+});

@@ -13,32 +13,47 @@ class UserDataSource {
     dio.interceptors.add(DioInterceptor(dio));
   }
 
-
   // 추가 정보 입력
   Future<Response> patchAdditionalInfoAPI(WidgetRef ref) async {
     // state 값 가져오기
     final detailRegisterState = ref.read(userProvider.notifier);
+    final currentRoute = ref.read(currentRouteProvider.notifier);
     String url = '$apiURL/api/user';
 
-    final data = {
-      "student_id": detailRegisterState.studentId,
-      "name": detailRegisterState.name,
-      "phone_number": detailRegisterState.phoneNumber,
-      "password": detailRegisterState.password,
-      "new_password": detailRegisterState.newPassword,
-    };
+    final Map<String, dynamic> data;
+    currentRoute.toString() == '/login_student'
+        ? data = {
+            "student_id": detailRegisterState.studentId,
+            "phone_number": detailRegisterState.phoneNumber,
+          }
+        : data = {
+            "student_id": detailRegisterState.studentId,
+            "phone_number": detailRegisterState.phoneNumber,
+            "name": detailRegisterState.name,
+            "current_password": detailRegisterState.password,
+            "new_password": detailRegisterState.newPassword,
+          };
+
+    debugPrint('추가 정보 입력: $data');
 
     try {
       final response = await dio.patch(url, data: data);
 
       debugPrint('추가 정보 입력 결과: ${response.data} ${response.statusCode}');
+
+      // approve 변경
+      patchApproveAPI();
       return response;
-    } catch (e) {
-      debugPrint('통신 결과: $e');
+    } on DioException catch (e) {
+      debugPrint('서버 오류 메시지: ${e.response?.data}');
+      debugPrint('서버 상태 코드: ${e.response?.statusCode}');
       throw Exception('추가 정보 입력에 실패했습니다.');
+    } catch (e) {
+      // 다른 모든 예외를 캐치
+      debugPrint('예상치 못한 오류: $e');
+      throw Exception('알 수 없는 오류가 발생했습니다.');
     }
   }
-
 
   // approve 변경
   Future<Response> patchApproveAPI() async {
@@ -51,9 +66,14 @@ class UserDataSource {
 
       debugPrint('patchApproveAPI 호출 성공');
       return response;
+    } on DioException catch (e) {
+      debugPrint('서버 오류 메시지: ${e.response?.data}');
+      debugPrint('서버 상태 코드: ${e.response?.statusCode}');
+      throw Exception('추가 정보 입력에 실패했습니다.');
     } catch (e) {
-      debugPrint('통신 결과: $e');
-      throw Exception('approve 변경에 실패했습니다.');
+      // 다른 모든 예외를 캐치
+      debugPrint('예상치 못한 오류: $e');
+      throw Exception('알 수 없는 오류가 발생했습니다.');
     }
   }
 }
