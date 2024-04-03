@@ -1,43 +1,46 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/verify_code_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/service/interceptor.dart';
 
 class ResetPasswordDataSource {
-  // 비밀번호 찾기 메일
+  static final Dio dio = Dio();
+  static final storage = FlutterSecureStorage();
 
-  Future<http.Response> postResetPasswordAPI(WidgetRef ref) async {
-    final loginState = ref.read(userProvider.notifier);
-
-    final body = jsonEncode(<String, String>{
-      'email': loginState.email,
-      'name': loginState.name,
-    });
-
-    // 통신
-    final response = await http.post(
-      Uri.parse('$apiURL/api/user/reset-password'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: body,
-      // state 값을 json 형태로 변환
-    );
-
-    debugPrint('결과: ${jsonDecode(utf8.decode(response.bodyBytes))}');
-
-    if (response.statusCode != 200) {
-      debugPrint('실패: ${response.statusCode}');
-    }
-    return response;
+  ResetPasswordDataSource() {
+    dio.interceptors.add(DioInterceptor(dio));
   }
 
-  // 인증번호 검증
-  Future<http.Response> postResetPasswordMailVerifyAPI(
-      WidgetRef ref) async {
+  // * 이메일 전송
+  Future<Response> postResetPasswordAPI(WidgetRef ref) async {
+    final loginState = ref.read(userProvider.notifier);
+    String url = '$apiURL/api/user/reset-password';
+    final data = {
+      'email': loginState.email,
+      'name': loginState.name,
+    };
+
+    try {
+      final response = await dio.post(
+        url,
+        data: data,
+        options: Options(extra: {"noAuth": true}),
+      );
+
+      debugPrint('결과: ${response.data} ${response.statusCode}');
+      return response;
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('비밀번호 재설정에 실패했습니다.');
+    }
+  }
+
+  // * 인증번호 검증
+  Future<Response> postResetPasswordMailVerifyAPI(WidgetRef ref) async {
     final verifyCode = ref.watch(verifyCodeProvider.notifier).state;
     final loginState = ref.watch(userProvider.notifier);
 
@@ -48,23 +51,41 @@ class ResetPasswordDataSource {
       'email': loginState.email,
     };
 
-    Uri uri = Uri.parse(url).replace(queryParameters: queryParams);
-    debugPrint('uri: $uri');
+    try {
+      final response = await dio.get(
+        url,
+        queryParameters: queryParams,
+        options: Options(extra: {"noAuth": true}),
+      );
 
-    final response = await http.get(
-      uri,
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-    );
+      final token = response.data['email_token'];
+      await storage.write(key: 'auth_token', value: token);
 
-    debugPrint('결과: ${jsonDecode(utf8.decode(response.bodyBytes))}');
-
-    // status code가 200이 아닐 경우
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      debugPrint('실패: ${response.statusCode}');
+      return response;
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('인증번호 검증에 실패했습니다.');
     }
+  }
 
-    return response;
+  // * 비밀번호 재설정
+  Future<Response> patchNewPasswordAPI(WidgetRef ref) async {
+    final loginState = ref.read(userProvider.notifier);
+    String url = '$apiURL/api/user/password';
+    final data = {
+      'password': loginState.newPassword,
+    };
+
+    try {
+      final response = await dio.patch(
+        url,
+        data: data,
+      );
+      debugPrint('결과: ${response.data} ${response.statusCode}');
+      return response;
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('비밀번호 재설정에 실패했습니다.');
+    }
   }
 }
