@@ -25,7 +25,7 @@ class ServiceUseCases {
       if (response.statusCode == 200) {
         return ServiceResult(isSuccess: true, message: '서비스가 성공적으로 생성되었습니다.');
       } else {
-        return ServiceResult(isSuccess: false, message: '서비스 생성 실패: ${response.body}');
+        return ServiceResult(isSuccess: false, message: '서비스 생성 실패: ${response.data}');
       }
     } catch (e) {
       return ServiceResult(isSuccess: false, message: '서비스 생성 중 에러 발생: $e');
@@ -44,7 +44,7 @@ class ServiceUseCases {
       if (response.statusCode == 200) {
         return ServiceResult(isSuccess: true, message: '서비스가 성공적으로 업데이트되었습니다.');
       } else {
-        return ServiceResult(isSuccess: false, message: '서비스 수정 실패: ${response.body}');
+        return ServiceResult(isSuccess: false, message: '서비스 수정 실패: ${response.data}');
       }
     } catch (e) {
       return ServiceResult(isSuccess: false, message: '서비스 수정 중 에러 발생: $e');
@@ -58,7 +58,7 @@ class ServiceUseCases {
       if (response.statusCode == 200) {
         return ServiceResult(isSuccess: true, message: '서비스가 성공적으로 삭제되었습니다.');
       } else {
-        return ServiceResult(isSuccess: false, message: '서비스 삭제 실패: ${response.body}');
+        return ServiceResult(isSuccess: false, message: '서비스 삭제 실패: ${response.data}');
       }
     } catch (e) {
       return ServiceResult(isSuccess: false, message: '서비스 삭제 중 에러 발생: $e');
