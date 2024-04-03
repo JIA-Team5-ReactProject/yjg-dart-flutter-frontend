@@ -190,9 +190,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return FutureBuilder<bool>(
       future: fetchWeekendApplyState(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // 로딩 인디케이터
-        } else if (snapshot.hasError) {
+        if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // 에러 처리
         } else {
           // API로부터 받은 값과 요일을 기준으로 버튼 활성화 결정
@@ -220,9 +218,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return FutureBuilder<bool>(
       future: fetchSemesterApplyState(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // 로딩 인디케이터
-        } else if (snapshot.hasError) {
+        if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // 에러 처리
         } else {
           // API로부터 받은 값을 기준으로 버튼 활성화 결정
