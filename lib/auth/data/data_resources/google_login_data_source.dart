@@ -53,51 +53,44 @@ class GoogleLoginDataSource {
 
   // 구글로 로그인 후 토큰을 교환하는 함수
   Future<void> _postGoogleLoginAPI(WidgetRef ref) async {
+    final loginState = ref.read(userProvider.notifier);
+    final deviceInfo = await _storage.read(key: 'deviceType');
+    String url = '$apiURL/api/user/google-login';
+    final data = {
+      'email': loginState.email,
+      'displayName': loginState.displayName,
+      'id_token': loginState.idToken,
+      'os_type': deviceInfo ?? 'unknown',
+    };
+
     try {
-      final loginState = ref.read(userProvider.notifier);
-      final deviceInfo = await _storage.read(key: 'deviceType');
-      String url = '$apiURL/api/user/google-login';
-      final data = {
-        'email': loginState.email,
-        'displayName': loginState.displayName,
-        'id_token': loginState.idToken,
-        'os_type': deviceInfo ?? 'unknown',
-      };
+      final response = await dio.post(url,
+          data: data, options: Options(extra: {"noAuth": true}));
 
-      debugPrint('data: $data');
-
-      final response = await dio.post(
-        url, data: data, options: Options(extra: {"noAuth": true})
-      );
-
-      debugPrint('response: ${response.data}');
       final result = Usergenerated.fromJson(response.data);
-      int? approved = result.user?.approved;
-
-      if (response.statusCode == 403 || approved == 0) {
-        navigatorKey.currentState!.pushNamed('/registration_detail');
-      }
-
-      if (response.statusCode != 200) {
-        throw HttpException(
-            '구글 로그인 실패, 상태 코드: ${response.statusCode}');
-      }
+      debugPrint('통신 ㅋ결과: ${response.data} ${response.statusCode}');
 
       String? token = result.accessToken;
       String? refreshToken = result.refreshToken;
       String? studentNum = result.user?.studentId;
       String? name = result.user?.name;
+      int? approved = result.user?.approved;
 
-      if (token != null) {
-        await _saveTokens(token, refreshToken, studentNum, name!);
-        debugPrint('token: $token, refreshToken: $refreshToken');
-      } else {
-        debugPrint('토큰이 없습니다.');
-        throw Exception('토큰이 없습니다.');
+      if (approved == 0) {
+        navigatorKey.currentState!.pushNamed('/registration_detail');
+      } else if (approved == 1) {
+        if (token != null) {
+          await _saveTokens(token, refreshToken, studentNum, name!);
+        } else {
+          debugPrint('토큰이 없습니다.');
+          throw Exception('토큰이 없습니다.');
+        }
+
+        // 로그인 성공 시 메인 대시보드로 이동
+        navigatorKey.currentState!.pushNamed('/dashboard_main');
       }
     } catch (e) {
-      debugPrint('_postGoogleLoginAPI 오류 발생: $e');
-      rethrow;
+      debugPrint('비HTTP 에러 발생: $e');
     }
   }
 
@@ -122,9 +115,4 @@ class GoogleLoginDataSource {
 
   // 로그아웃하는 함수
   static Future<void> logout() => _googleSignIn.signOut();
-}
-
-void printLongString(String text) {
-  final pattern = RegExp('.{1,1000}'); // 800글자 단위로 분할
-  pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }

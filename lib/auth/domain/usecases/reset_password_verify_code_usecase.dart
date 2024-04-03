@@ -12,7 +12,6 @@ class ResetPasswordVerifyCodeUseCase {
   Future<void> execute({
     required String verifyCode,
     required BuildContext context,
-
   }) async {
     ref.read(verifyCodeProvider.notifier).setVerifyCode(verifyCode);
 
@@ -22,16 +21,15 @@ class ResetPasswordVerifyCodeUseCase {
       await dataSource.postResetPasswordMailVerifyAPI(ref);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('인증에 성공했습니다. 비밀번호를 재설정해 주세요.'),
-          backgroundColor: Palette.mainColor
-        ),
+            content: Text('인증에 성공했습니다. 비밀번호를 재설정해 주세요.'),
+            backgroundColor: Palette.mainColor),
       );
-
+      Navigator.pushNamed(context, '/new_password');
     } catch (e) {
       // 회원가입 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('유저 정보가 존재하지 않습니다. 다시 한 번 확인해 주세요.'),
+          content: Text('인증번호가 올바르지 않습니다. 다시 한 번 확인해 주세요.'),
           backgroundColor: Colors.red,
         ),
       );

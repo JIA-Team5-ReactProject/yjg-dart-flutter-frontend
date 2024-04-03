@@ -44,7 +44,7 @@ class User extends ChangeNotifier {
     if (name != null) this.name = name;
     if (phoneNumber != null) this.phoneNumber = phoneNumber;
     if (studentId != null) this.studentId = studentId;
- 
+
     notifyListeners(); // User 객체가 변경되었음을 알림
   }
 
@@ -84,6 +84,15 @@ class User extends ChangeNotifier {
     if (email != null) this.email = email;
     if (displayName != null) this.displayName = displayName;
     if (idToken != null) this.idToken = idToken;
+
+    notifyListeners(); // User 객체가 변경되었음을 알림
+  }
+
+  // 비밀번호 재설정 폼 업데이트
+  void resetPasswordFormUpdate({
+    String? newPassword,
+  }) {
+    if (newPassword != null) this.newPassword = newPassword;
 
     notifyListeners(); // User 객체가 변경되었음을 알림
   }

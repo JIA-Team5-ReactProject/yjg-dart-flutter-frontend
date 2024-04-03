@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/dashboard/data/data_sources/urgent_data_source.dart';
-import 'dart:convert';
-
 import 'package:yjg/dashboard/data/models/urgent.dart';
 
 
@@ -10,10 +7,10 @@ import 'package:yjg/dashboard/data/models/urgent.dart';
 Future<Notice> fetchUrgentNotice() async {
   final response = await UrgentDataSource().getUrgentApi();
   if (response.statusCode == 200) {
-    final data = jsonDecode(utf8.decode(response.bodyBytes));
+    final data = response.data;
     return Notice.fromJson(data);
   } else {
-    throw Exception('Failed to load notice');
+    throw Exception('공지사항을 불러오지 못했습니다.');
   }
 }
 
