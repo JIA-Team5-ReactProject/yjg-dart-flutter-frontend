@@ -75,6 +75,13 @@ class GoogleLoginDataSource {
       String? name = result.user?.name;
       int? approved = result.user?.approved;
 
+      // 사용자 기본 정보 업데이트
+      ref.read(userProvider.notifier).additionalInfoFormUpdate(
+            name: result.user!.name!,
+            phoneNumber: result.user!.phoneNumber!,
+            studentId: result.user!.studentId!,
+          );
+
       if (token != null) {
         await _saveTokens(token, refreshToken, studentNum, name!);
       } else {

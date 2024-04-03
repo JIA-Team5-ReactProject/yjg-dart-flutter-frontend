@@ -17,22 +17,24 @@ class UserDataSource {
   Future<Response> patchAdditionalInfoAPI(WidgetRef ref) async {
     // state 값 가져오기
     final detailRegisterState = ref.read(userProvider.notifier);
-    final currentRoute = ref.read(currentRouteProvider.notifier);
     String url = '$apiURL/api/user';
 
-    final Map<String, dynamic> data;
-    currentRoute.toString() == '/login_student'
-        ? data = {
-            "student_id": detailRegisterState.studentId,
-            "phone_number": detailRegisterState.phoneNumber,
-          }
-        : data = {
-            "student_id": detailRegisterState.studentId,
-            "phone_number": detailRegisterState.phoneNumber,
-            "name": detailRegisterState.name,
-            "current_password": detailRegisterState.password,
-            "new_password": detailRegisterState.newPassword,
-          };
+    Map<String, dynamic> data = {}
+      ..addAll(detailRegisterState.studentId.isNotEmpty == true
+          ? {"student_id": detailRegisterState.studentId}
+          : {})
+      ..addAll(detailRegisterState.phoneNumber.isNotEmpty == true
+          ? {"phone_number": detailRegisterState.phoneNumber}
+          : {})
+      ..addAll(detailRegisterState.name.isNotEmpty == true
+          ? {"name": detailRegisterState.name}
+          : {})
+      ..addAll(detailRegisterState.password.isNotEmpty == true
+          ? {"current_password": detailRegisterState.password}
+          : {})
+      ..addAll(detailRegisterState.newPassword.isNotEmpty == true
+          ? {"new_password": detailRegisterState.newPassword}
+          : {});
 
     debugPrint('추가 정보 입력: $data');
 
