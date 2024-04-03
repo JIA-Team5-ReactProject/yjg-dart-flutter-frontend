@@ -137,6 +137,12 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
       // 신청 후 상태를 다시 가져와서 화면을 업데이트
       await fetchApplicationStatus();
       print('$mealType유형 전송 성공');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('학기 식수 신청이 완료되었습니다.'),
+          backgroundColor: Palette.mainColor,
+        ),
+      );
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
@@ -411,7 +417,6 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
               customElevatedButton('신청', Color.fromARGB(255, 29, 127, 159),
                   () async {
                 if (selectedMealTypeId != null) {
-                  meal_application(context);
                   await submitMealApplication(selectedMealTypeId!); // 알파벳을 전달
                 } else {
                   non_select(context); // 사용자에게 식사 유형을 선택하라는 메시지를 보여줌

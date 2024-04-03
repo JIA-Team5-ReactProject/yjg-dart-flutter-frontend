@@ -74,7 +74,7 @@ class _WeekendMealState extends State<WeekendMeal> {
 
   // 식수 유형 POST로 보내는 API 함수
   Future<void> sendApplication() async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+    final token = await storage.read(key: 'auth_token');
 
     final uri = Uri.parse('$apiURL/api/restaurant/weekend');
     final headers = {
@@ -92,16 +92,30 @@ class _WeekendMealState extends State<WeekendMeal> {
       final response = await http.post(uri, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        // 성공적으로 요청을 보냈을 때의 처리
-        print('Application sent successfully');
+        // API 호출 성공
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('주말 식수 신청이 완료되었습니다.'),
+          backgroundColor: Palette.mainColor,
+        ),
+      );
+
+        // UI 업데이트를 위해 setState 호출
+        setState(() {
+          mealWeekend = 1;
+          mealWeekendDeposit = 1;
+        });
+
+        // 추가적으로 유저 데이터를 다시 불러와서 상태를 업데이트할 수 있습니다.
+        fetchUserData();
       } else {
-        // 요청 실패 시의 처리
-        print('Failed to send application');
-        print(response.statusCode);
-        print(response.body);
+        // API 호출 실패
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('신청에 실패하였습니다. 다시 시도해 주세요.')));
       }
     } catch (e) {
-      print('Error sending application: $e');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('오류가 발생했습니다: $e')));
     }
   }
 
@@ -192,6 +206,23 @@ class _WeekendMealState extends State<WeekendMeal> {
     if (response.statusCode == 200) {
       // 요청 성공 시 처리
       print('삭제성공');
+
+      // 신청 취소 후 UI 및 변수 초기화
+      setState(() {
+        // 선택 항목들을 초기화합니다.
+        sat = -1;
+        sun = -1;
+        mealType = '';
+        refund = -1;
+        _refundOption = null; // 환불 옵션 초기화
+
+        // 신청 여부와 결제 여부도 초기화
+        mealWeekend = 0;
+        mealWeekendDeposit = -1;
+      });
+
+      // 사용자 데이터를 다시 불러오고 UI 업데이트
+      fetchUserData();
     } else {
       // 요청 실패 시 처리
       print('삭제 실패');
@@ -359,57 +390,58 @@ class _WeekendMealState extends State<WeekendMeal> {
                 runSpacing: 8.0, // 버튼 사이의 세로 간격
                 children: mealTypes.map((type) {
                   bool isSelected = mealType == type['meal_type'];
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: isSelected
-                          ? const Color.fromARGB(255, 255, 255, 255)
-                          : Color.fromARGB(
-                              255, 255, 255, 255), // 선택된 버튼은 파란색, 그 외는 흰색
-                      onPrimary: isSelected
-                          ? Colors.white
-                          : Colors.black, // 선택된 버튼의 텍스트 색상은 흰색, 그 외는 검은색
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(
+                  return SizedBox(
+                    width: 150, // 버튼의 너비를 고정
+                    height: 80, // 버튼의 높이를 고정
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: isSelected
+                            ? const Color.fromARGB(255, 255, 255, 255)
+                            : Color.fromARGB(255, 255, 255, 255),
+                        onPrimary: isSelected ? Colors.white : Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(
                             color: isSelected
                                 ? const Color.fromARGB(255, 0, 0, 0)
-                                : Color.fromARGB(255, 255, 255,
-                                    255)), // 선택된 버튼은 파란색 테두리, 그 외는 기본 색상
+                                : Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        mealType = type['meal_type'];
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "${type['meal_type']}유형\n",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: Palette.mainColor),
-                            ),
-                            TextSpan(
-                              text: "${type['content']}\n",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 12,
-                                  color: Colors.black),
-                            ),
-                            TextSpan(
-                              text: "${type['price']}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Color.fromARGB(255, 214, 80, 70)),
-                            ),
-                          ],
+                      onPressed: () {
+                        setState(() {
+                          mealType = type['meal_type'];
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "${type['meal_type']}유형\n",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Palette.mainColor),
+                              ),
+                              TextSpan(
+                                text: "${type['content']}\n",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12,
+                                    color: Colors.black),
+                              ),
+                              TextSpan(
+                                text: "${type['price']}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    color: Color.fromARGB(255, 214, 80, 70)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -547,8 +579,8 @@ class _WeekendMealState extends State<WeekendMeal> {
                         refund == -1) {
                       nonSelect(context);
                     } else {
-                      weekendApplication(context);
                       sendApplication(); // API 호출 함수
+                      fetchUserData();
                       setState(() {});
                     }
                   },
@@ -1105,44 +1137,6 @@ class _WeekendMealState extends State<WeekendMeal> {
     }
   }
 
-  // 신청 alert
-  Future<dynamic> weekendApplication(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Icon(
-          Icons.campaign,
-          size: 50,
-          color: Color.fromARGB(255, 29, 127, 159),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(height: 25),
-            Text(
-              '신청이 완료 되었습니다.',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            SizedBox(height: 10),
-            SizedBox(height: 25),
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              
-              // 유저 데이터 불러오는 함수 다시 호출해서 화면 업데이트
-              await fetchUserData();
-            },
-            child: Text('확인'),
-          ),
-        ],
-      ),
-    );
-  }
-
   //취소 alert
   Future<dynamic> mealCancel(BuildContext context) {
     return showDialog(
@@ -1168,17 +1162,24 @@ class _WeekendMealState extends State<WeekendMeal> {
         ),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              Navigator.popAndPushNamed(context, '/restaurant_main');
-              deleteApplication(applicationId);
+            onPressed: () async {
+              // 신청 취소 처리
+              await deleteApplication(applicationId);
+
+              // 사용자 데이터를 다시 불러온 후 UI 업데이트
+              await fetchUserData();
               setState(() {
-                mealType = '';
+                // UI 업데이트를 위한 코드. 필요에 따라 여기서 변수를 업데이트하세요.
               });
+
+              // 알림 창 닫기
+              Navigator.pop(context);
             },
             child: Text('예'),
           ),
           ElevatedButton(
             onPressed: () {
+              // 알림 창 닫기
               Navigator.pop(context);
             },
             child: Text('아니오'),
