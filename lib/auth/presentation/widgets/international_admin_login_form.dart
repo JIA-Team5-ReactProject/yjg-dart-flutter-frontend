@@ -50,24 +50,23 @@ class _InternationalAdminLoginForm extends State<InternationalAdminLoginForm> {
               children: [
                 AutoLoginCheckBox(),
                 Spacer(),
-                if (widget.studentOrAdmin == true)
-                  Padding(
-                    padding: const EdgeInsets.only(),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/reset_password');
-                      },
-                      child: Text(
-                        "비밀번호 찾기",
-                        style: TextStyle(
-                          color: Palette.mainColor,
-                          fontSize: fontSize * 0.035,
-                          letterSpacing: -0.5,
-                          fontWeight: FontWeight.w600,
-                        ),
+                Padding(
+                  padding: const EdgeInsets.only(),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/reset_password');
+                    },
+                    child: Text(
+                      "비밀번호 찾기",
+                      style: TextStyle(
+                        color: Palette.mainColor,
+                        fontSize: fontSize * 0.035,
+                        letterSpacing: -0.5,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+                ),
               ],
             ),
             Padding(

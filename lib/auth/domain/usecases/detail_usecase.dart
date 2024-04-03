@@ -37,7 +37,7 @@ class DetailUseCase {
     // 추가 정보 입력 API 호출
     try {
       final dataSource = RegisterDataSource(); // DataSource 인스턴스 생성
-      final response = await dataSource.patchAdditionalInfoAPI(ref, token);
+      final response = await dataSource.patchAdditionalInfoAPI(ref);
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(

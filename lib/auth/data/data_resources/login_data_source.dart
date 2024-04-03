@@ -8,11 +8,15 @@ import 'package:yjg/auth/data/models/user.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/service/interceptor.dart';
 
 class LoginDataSource {
   static final Dio dio = Dio();
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
+  LoginDataSource() {
+      dio.interceptors.add(DioInterceptor(dio)); // 수정된 생성자를 사용
+  }
   // 스토리지 모듈
   Future<void> _saveToStorage(Map<String, String> data) async {
     for (var key in data.keys) {
@@ -47,6 +51,9 @@ class LoginDataSource {
         'name': userGenerated.user!.name!,
         'student_num': userGenerated.user!.studentId!,
       });
+
+      debugPrint('토큰 저장: ${userGenerated.accessToken}');
+      debugPrint('리프레시 토큰 저장: ${userGenerated.refreshToken}');
 
       return response.data;
     } catch (e) {

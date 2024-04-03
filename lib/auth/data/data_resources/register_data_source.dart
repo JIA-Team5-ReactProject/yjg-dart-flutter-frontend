@@ -1,96 +1,81 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
-import 'package:yjg/auth/data/data_resources/user_data_source.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/service/interceptor.dart';
 
 class RegisterDataSource {
-  // 일반 회원가입
-  Future<http.Response> postRegisterAPI(WidgetRef ref) async {
+  static final Dio dio = Dio();
+
+  RegisterDataSource() {
+    dio.interceptors.add(DioInterceptor(dio));
+  }
+
+  Future<Response> postRegisterAPI(WidgetRef ref) async {
     // state 값 가져오기
     final registerState = ref.read(userProvider.notifier);
+    String url = '$apiURL/api/user';
 
-    final body = jsonEncode(<String, String>{
+    final data = {
       'email': registerState.email,
       'password': registerState.password,
       'name': registerState.name,
       'phone_number': registerState.phoneNumber,
       'student_id': registerState.studentId,
-    });
+    };
 
-    // 통신
-    final response = await http.post(
-      Uri.parse('$apiURL/api/user'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        
-      },
-      body: body,
-      // state 값을 json 형태로 변환
-    );
+    try {
+      final response = await dio.post(url,
+          data: data, options: Options(extra: {"noAuth": true}));
 
-    debugPrint('결과: ${response.body}');
-    // status code가 200이 아닐 경우
-    if (response.statusCode != 201) {
-      throw Exception('회원가입 실패: ${response.statusCode}');
+      debugPrint('결과: ${response.data}');
+      return response;
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('회원가입에 실패했습니다.');
     }
-    return response;
   }
 
   // 추가 정보 입력
-  Future<http.Response> patchAdditionalInfoAPI(
-      WidgetRef ref, String token) async {
+  Future<Response> patchAdditionalInfoAPI(WidgetRef ref) async {
     // state 값 가져오기
     final detailRegisterState = ref.read(userProvider.notifier);
-    debugPrint('토큰: $token');
+    String url = '$apiURL/api/user';
 
-    final body = jsonEncode(<String, dynamic>{
+    final data = {
       "student_id": detailRegisterState.studentId,
       "name": detailRegisterState.name,
       "phone_number": detailRegisterState.phoneNumber,
       "password": detailRegisterState.password,
       "new_password": detailRegisterState.newPassword,
-    });
+    };
 
-    final response = await http.patch(Uri.parse('$apiURL/api/user'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        // state 값을 json 형태로 변환
-        body: body);
+    try {
+      final response = await dio.patch(url, data: data);
 
-
-    debugPrint('추가 정보 입력 결과: ${response.body} ${response.statusCode}');
-
-    // status code가 200이 아닐 경우
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      debugPrint('추가 정보 입력 실패: ${response.statusCode},  ${jsonDecode(utf8.decode(response.bodyBytes))}');
-      throw Exception('추가 정보 입력 실패: ${response.statusCode}');
-    } else {
-      UserDataSource().patchApproveAPI(token!);
+      debugPrint('추가 정보 입력 결과: ${response.data} ${response.statusCode}');
+      return response;
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('추가 정보 입력에 실패했습니다.');
     }
-
-    return response;
   }
 
   // 이메일 중복 검사 API 호출
   Future<bool> checkEmailDuplicate(String email) async {
     try {
-      final uri = Uri.parse('$apiURL/api/user/verify-email/$email');
-
-      final response = await http.get(uri);
+      final url = '$apiURL/api/user/verify-email/$email';
+      final response =
+          await dio.get(url, options: Options(extra: {"noAuth": true}));
 
       if (response.statusCode == 200) {
-        debugPrint(response.body);
         return false;
       } else {
         return true;
       }
     } catch (e) {
-      throw Exception("이메일 중복 검사 중 오류 발생: $e");
+        return true;
     }
   }
 }
