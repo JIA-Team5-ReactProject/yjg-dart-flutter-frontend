@@ -54,9 +54,6 @@ class SalonPriceList extends ConsumerWidget {
                     FilterGroupButton(dataType: '성별', uniqueKey: uniqueKey)
                   ],
                 ),
-                SizedBox(
-                  height: 13.0,
-                ),
                 Row(
                   children: [
                     Text(
