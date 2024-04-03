@@ -268,7 +268,7 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                           : Text(asDetail['afterService']['content']),
                     ),
                     Text(
-                      "첨부파일(${asDetail['afterService']['after_service_images'].length})",
+                      "첨부파일",
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.w600),
                     ),
@@ -280,7 +280,7 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                         : AsImageView(imageUrls: imageUrls),
                     const SizedBox(height: 50.0),
                     Text(
-                      "댓글(${asDetail['afterService']['after_service_comments'].length})",
+                      "댓글목록",
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
