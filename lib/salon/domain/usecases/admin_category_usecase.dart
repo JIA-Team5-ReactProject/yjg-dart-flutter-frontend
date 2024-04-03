@@ -23,7 +23,7 @@ class CategoryUseCases {
         return CategoryResult(isSuccess: true, message: '서비스가 성공적으로 생성되었습니다.');
       } else {
         return CategoryResult(
-            isSuccess: false, message: '서비스 생성 실패: ${response.body}');
+            isSuccess: false, message: '서비스 생성 실패: ${response.data}');
       }
     } catch (e) {
       return CategoryResult(isSuccess: false, message: '서비스 생성 중 에러 발생: $e');
@@ -42,7 +42,7 @@ class CategoryUseCases {
             isSuccess: true, message: '카테고리 성공적으로 업데이트되었습니다.');
       } else {
         return CategoryResult(
-            isSuccess: false, message: '카테고리 수정 실패: ${response.body}');
+            isSuccess: false, message: '카테고리 수정 실패: ${response.data}');
       }
     } catch (e) {
       return CategoryResult(isSuccess: false, message: '카테고리 수정 중 에러 발생: $e');
@@ -59,7 +59,7 @@ class CategoryUseCases {
         return CategoryResult(isSuccess: true, message: '카테고리가 성공적으로 삭제되었습니다.');
       } else {
         return CategoryResult(
-            isSuccess: false, message: '카테고리 삭제 실패: ${response.body}');
+            isSuccess: false, message: '카테고리 삭제 실패: ${response.data}');
       }
     } catch (e) {
       return CategoryResult(isSuccess: false, message: '카테고리 삭제 중 에러 발생: $e');
