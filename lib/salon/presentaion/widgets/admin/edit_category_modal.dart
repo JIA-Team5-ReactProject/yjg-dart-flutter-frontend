@@ -63,35 +63,71 @@ void editCategoryModal(
                             fontWeight: FontWeight.bold),
                       ),
                       onPressed: () async {
-                        SalonCategory deleteCategory = SalonCategory(
-                          categoryId: salonCategoryId,
+                        // 삭제 확인 다이얼로그 표시
+                        final confirmDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            return AlertDialog(
+                              title: Text('카테고리 삭제',
+                                  style: TextStyle(
+                                      color: Palette.textColor,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600)),
+                              content: Text('이 카테고리를 삭제하시겠습니까?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(dialogContext).pop(false),
+                                  child: Text('취소',
+                                      style: TextStyle(
+                                          color: Palette.stateColor4,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(dialogContext).pop(true),
+                                  child: Text('삭제',
+                                      style: TextStyle(
+                                          color: Palette.stateColor3,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                              ],
+                            );
+                          },
                         );
 
-                        CategoryResult result = await categoryUseCases
-                            .deleteCategory(deleteCategory);
-
-                        if (result.isSuccess) {
-                          // 성공 시 서비스 리스트 상태 업데이트
-                          ref.refresh(categoryListProvider);
-
-                          // 성공 알림 표시
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(result.message),
-                              backgroundColor: Palette.mainColor,
-                            ),
+                        // 사용자가 삭제를 확인했다면, 삭제 로직 실행
+                        if (confirmDelete == true) {
+                          SalonCategory deleteCategory = SalonCategory(
+                            categoryId: salonCategoryId,
                           );
 
-                          // 모달 창 닫기
-                          Navigator.pop(context);
-                        } else {
-                          // 실패 시 실패 알림 표시
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(result.message),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
+                          CategoryResult result = await categoryUseCases
+                              .deleteCategory(deleteCategory);
+
+                          if (result.isSuccess) {
+                            // 성공 시 서비스 리스트 상태 업데이트
+                            ref.refresh(categoryListProvider);
+
+                            // 모달 창 닫기
+                            Navigator.pop(context);
+
+                            // 성공 알림 표시
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(result.message),
+                                backgroundColor: Palette.mainColor,
+                              ),
+                            );
+                          } else {
+                            // 실패 시 실패 알림 표시
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(result.message),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         }
                       },
                     ),
