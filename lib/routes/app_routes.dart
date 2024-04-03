@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/auth/presentation/pages/new_password_update.dart';
 import 'package:yjg/auth/presentation/pages/student_login.dart';
 import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
@@ -48,6 +49,7 @@ class AppRoutes {
     '/update_user': (context) => UpdateUser(),
     '/reset_password': (context) => ResetPassword(),
     '/mail_verification_code': (context) => MailVerficationCode(),
+    '/new_password': (context) => newPasswordUpdate(),
 
     // 식수 관련
     '/restaurant_main': (context) => RestaurantMain(),
