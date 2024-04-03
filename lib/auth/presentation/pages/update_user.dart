@@ -118,30 +118,20 @@ class UpdateUser extends ConsumerWidget {
                         width: double.infinity, // 버튼을 부모의 가로 길이만큼 확장
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              final updateUserInfoUseCase =
-                                  UpdateUserInfoUseCase(ref: ref);
+                            final updateUserInfoUseCase =
+                                UpdateUserInfoUseCase(ref: ref);
 
-                              String phoneNumber = phoneNumberController.text
-                                  .replaceAll(RegExp(r'[^\d]'), '');
+                            String phoneNumber = phoneNumberController.text
+                                .replaceAll(RegExp(r'[^\d]'), '');
 
-                              await updateUserInfoUseCase.execute(
-                                name: nameController.text,
-                                phoneNumber: phoneNumber,
-                                studentId: studentIdController.text,
-                                newPassword: newPasswordController.text,
-                                password: passwordController.text,
-                                context: context,
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
+                            await updateUserInfoUseCase.execute(
+                              name: nameController.text,
+                              phoneNumber: phoneNumber,
+                              studentId: studentIdController.text,
+                              newPassword: newPasswordController.text,
+                              password: passwordController.text,
+                              context: context,
+                            );
                           },
                           style: ButtonStyle(
                             backgroundColor:
