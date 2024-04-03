@@ -58,7 +58,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // loadAndSetStudentName(ref); // 로그인 이름 설정
 
     return MaterialApp(
       //외박 신청 달력 언어 설정
