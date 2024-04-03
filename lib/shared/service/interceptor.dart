@@ -48,18 +48,19 @@ class DioInterceptor extends Interceptor {
   }
 
   @override
-  // 에러 처리 메서드
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // 401 Unauthorized 에러가 발생했을 경우
-    if (err.response?.statusCode == 401) {
+    // 401 Unauthorized 에러가 발생했을 경우, noAuth 옵션이 false인 경우만 처리
+    if (err.response?.statusCode == 401 &&
+        err.requestOptions.extra["noAuth"] != true) {
       // 새 토큰을 얻기 위해 getRefreshTokenAPI 호출
       await LoginDataSource().getRefreshTokenAPI();
       // 갱신된 토큰을 사용하여 요청 재시도
       final token = await getToken(); // 갱신된 토큰 가져오기
       handler.resolve(await _retry(err.requestOptions, token));
+    } else {
+      // noAuth가 true이거나 다른 에러인 경우 기존 에러 처리 로직을 그대로 진행
+      handler.next(err);
     }
-    // 에러 처리를 계속 진행
-    handler.next(err);
   }
 
   // 새 토큰을 사용하여 요청 재시도
