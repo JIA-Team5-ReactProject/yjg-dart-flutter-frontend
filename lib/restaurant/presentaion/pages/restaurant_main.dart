@@ -156,7 +156,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return data['weekend'] == 1; // 1이면 true, 아니면 false
+        return data['weekend'] = true; // true면 true, 아니면 false
       } else {
         throw Exception('Failed to fetch weekend apply state');
       }
@@ -176,7 +176,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return data['semester'] == true; // 1이면 true, 아니면 false
+        return data['semester'] = true; // 1이면 true, 아니면 false
       } else {
         throw Exception('Failed to fetch weekend apply state');
       }
@@ -215,7 +215,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     );
   }
 
-  // API 값에 따라 주말 식수버튼 클릭 가능하게 하는 버튼
+  // API 값에 따라 학기 식수버튼 클릭 가능하게 하는 버튼
   Widget semesterMoveButton() {
     return FutureBuilder<bool>(
       future: fetchSemesterApplyState(),
