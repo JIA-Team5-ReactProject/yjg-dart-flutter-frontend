@@ -16,6 +16,10 @@ class LoginUseCase {
     required String password,
     required BuildContext context,
   }) async {
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+    bool? isAdmin = ref.watch(isAdminProvider);
+    await storage.write(key: 'isAdmin', value: isAdmin.toString());
+
     // 로그인 폼 업데이트
     ref.read(userProvider.notifier).registerFormUpdate(
           email: email,
@@ -23,9 +27,8 @@ class LoginUseCase {
         );
 
     // 로그인 상태 업데이트
-     // false: Student, true: Admin
+    // false: Student, true: Admin
     String adminPrivilege = ref.watch(adminPrivilegesProvider);
-    bool? isAdmin = ref.watch(isAdminProvider);
 
     try {
       if (isAdmin == false) {
