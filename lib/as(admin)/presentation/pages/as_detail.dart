@@ -277,6 +277,7 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.w600),
                     ),
+                    SizedBox(height: 10.0,),
                     asDetail['afterService']['after_service_images'].length == 0
                         ? Padding(
                             padding: const EdgeInsets.all(10.0),
