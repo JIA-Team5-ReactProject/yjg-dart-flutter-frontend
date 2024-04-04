@@ -65,7 +65,6 @@ class _AsApplicationState extends State<AsApplication> {
       print('성공적으로 전송됨');
       print(respStr);
       return true; // 성공 시 true 반환
-      
     } else {
       print('전송 실패: ${response.reasonPhrase}');
       print("이거이거이거: $day");
@@ -212,8 +211,8 @@ class _AsApplicationState extends State<AsApplication> {
                   ),
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(color: Colors.black),
-                  weekendStyle: TextStyle(color: Colors.red),
+                  weekdayStyle: TextStyle(color: Colors.black,fontSize: 13),
+                  weekendStyle: TextStyle(color: Colors.red,fontSize: 13),
                 ),
               ),
             ),
@@ -331,13 +330,17 @@ class _AsApplicationState extends State<AsApplication> {
 
                 bool success = await sendData();
                 if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('AS 요청이 성공적으로 전송되었습니다.')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('AS 요청이 성공적으로 전송되었습니다.'),
+                    backgroundColor: Palette.mainColor,
+                  ));
                   Navigator.pop(context, true);
                   Navigator.popAndPushNamed(context, '/as_page');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('AS 요청 전송에 실패했습니다.')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('AS 요청 전송에 실패했습니다.'),
+                    backgroundColor: Palette.mainColor,
+                  ));
                 }
               },
               child: Text(
