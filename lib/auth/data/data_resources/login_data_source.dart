@@ -123,7 +123,7 @@ class LoginDataSource {
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      final accessToken = responseData['refresh_token'];
+      final accessToken = responseData['access_token'];
       // 토큰 교체
       storage.write(key: 'auth_token', value: accessToken);
       debugPrint('리프레시 토큰 교환 완료, 액세스 토큰 교체: $accessToken');
