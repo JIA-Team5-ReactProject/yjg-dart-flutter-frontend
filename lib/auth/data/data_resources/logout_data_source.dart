@@ -15,15 +15,7 @@ class LogoutDataSource {
 
   // 로그아웃
   Future<void> postLogoutAPI(WidgetRef ref) async {
-    bool? isAdmin = await storage.read(key: 'isAdmin') == 'ture'
-        ? true
-        : false; // false: Student, true: Admin
-    debugPrint('isAdmin: $isAdmin');
-    final String url;
-    isAdmin == true
-        ? url = '$apiURL/api/admin/logout'
-        : url = '$apiURL/api/user/logout';
-
+    final String url = '$apiURL/api/logout';
     try {
       await dio.post(url);
 
