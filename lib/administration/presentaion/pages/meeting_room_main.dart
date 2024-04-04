@@ -165,6 +165,11 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
                       "현재 예약된 회의실이 없습니다.",
                       style: TextStyle(color: Colors.grey),
                     ));
+                    return Center(
+                        child: Text(
+                      "현재 예약된 회의실이 없습니다.",
+                      style: TextStyle(color: Colors.grey),
+                    ));
                   }
                 }
               },
@@ -178,22 +183,57 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
   //예약 정보 확인 alert
   void showReservationDialog(
       BuildContext context, Map<String, dynamic> reservation) {
-    final startTime = DateFormat.Hm().format(DateTime.parse(
-        "2000-01-01 ${reservation['reservation_s_time']}")); // '2000-01-01'은 임의의 날짜입니다.
+    final startTime = DateFormat.Hm().format(
+        DateTime.parse("2000-01-01 ${reservation['reservation_s_time']}"));
+    Color textColor; // 텍스트 색상을 저장할 변수
+    String statusText; // 텍스트 내용을 저장할 변수
+
+    // status 값에 따라 텍스트 색상과 내용 설정
+    if (reservation['status'] == 1) {
+      textColor = Colors.blue; // 파란색 설정
+      statusText = '예약 승인'; // 승인된 예약
+    } else {
+      textColor = Colors.red; // 빨간색 설정
+      statusText = '예약 거절'; // 거절된 예약
+    }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("예약 정보"),
+          title: Text(statusText,
+              style: TextStyle(color: textColor)), // 여기서 색상과 내용을 적용
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text("회의실: B동 ${reservation['meeting_room_number']}"),
-              Text("예약 날짜: ${reservation['reservation_date']}"),
-              Text(
-                  "예약 시간: $startTime ~ ${reservation['reservation_e_time'].split(':')[0]}:59"),
+              Text(" B동 ${reservation['meeting_room_number']}호",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              SizedBox(height: 20,),
+              Container(
+                width: 350,
+                padding: EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Color.fromARGB(255, 162, 162, 162),
+                      width: 1, // 여기에서 테두리의 두께를 설정
+                    ),
+                  ),
+                ),
+                child: 
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      " ${reservation['reservation_date']}",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(width: 20,),
+                    Text(
+                        "$startTime ~ ${reservation['reservation_e_time'].split(':')[0]}:59",style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+              ),
             ],
           ),
           actions: <Widget>[
