@@ -37,31 +37,6 @@ class RegisterDataSource {
     }
   }
 
-  // 추가 정보 입력
-  Future<Response> patchAdditionalInfoAPI(WidgetRef ref) async {
-    // state 값 가져오기
-    final detailRegisterState = ref.read(userProvider.notifier);
-    String url = '$apiURL/api/user';
-
-    final data = {
-      "student_id": detailRegisterState.studentId,
-      "name": detailRegisterState.name,
-      "phone_number": detailRegisterState.phoneNumber,
-      "password": detailRegisterState.password,
-      "new_password": detailRegisterState.newPassword,
-    };
-
-    try {
-      final response = await dio.patch(url, data: data);
-
-      debugPrint('추가 정보 입력 결과: ${response.data} ${response.statusCode}');
-      return response;
-    } catch (e) {
-      debugPrint('통신 결과: $e');
-      throw Exception('추가 정보 입력에 실패했습니다.');
-    }
-  }
-
   // 이메일 중복 검사 API 호출
   Future<bool> checkEmailDuplicate(String email) async {
     try {

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +67,7 @@ class GoogleLoginDataSource {
           data: data, options: Options(extra: {"noAuth": true}));
 
       final result = Usergenerated.fromJson(response.data);
-      debugPrint('통신 ㅋ결과: ${response.data} ${response.statusCode}');
+      debugPrint('통신 결과: ${response.data} ${response.statusCode}');
 
       String? token = result.accessToken;
       String? refreshToken = result.refreshToken;
@@ -76,16 +75,23 @@ class GoogleLoginDataSource {
       String? name = result.user?.name;
       int? approved = result.user?.approved;
 
+      // 사용자 기본 정보 업데이트
+      ref.read(userProvider.notifier).additionalInfoFormUpdate(
+            name: result.user!.name!,
+            phoneNumber: result.user!.phoneNumber!,
+            studentId: result.user!.studentId!,
+          );
+
+      if (token != null) {
+        await _saveTokens(token, refreshToken, studentNum, name!);
+      } else {
+        debugPrint('토큰이 없습니다.');
+        throw Exception('토큰이 없습니다.');
+      }
+
       if (approved == 0) {
         navigatorKey.currentState!.pushNamed('/registration_detail');
       } else if (approved == 1) {
-        if (token != null) {
-          await _saveTokens(token, refreshToken, studentNum, name!);
-        } else {
-          debugPrint('토큰이 없습니다.');
-          throw Exception('토큰이 없습니다.');
-        }
-
         // 로그인 성공 시 메인 대시보드로 이동
         navigatorKey.currentState!.pushNamed('/dashboard_main');
       }

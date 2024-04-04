@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/data/data_resources/google_login_data_source.dart';
+import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class GoogleLoginButton extends ConsumerWidget {
@@ -8,6 +9,9 @@ class GoogleLoginButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 현재 라우터 주소를 가져오기 위한 변수
+    String? currentRouteName = ModalRoute.of(context)?.settings.name;
+
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
@@ -17,6 +21,10 @@ class GoogleLoginButton extends ConsumerWidget {
       height: height * 0.05,
       child: OutlinedButton(
         onPressed: () async {
+          ref
+              .read(currentRouteProvider.notifier)
+              .setCurrentRoute(currentRouteName!);
+
           try {
             await GoogleLoginDataSource().signInWithGoogle(ref, context);
           } catch (error) {
@@ -52,7 +60,10 @@ class GoogleLoginButton extends ConsumerWidget {
               padding: EdgeInsets.only(right: 20.0),
               child: Text(
                 '구글 아이디로 로그인하기',
-                style: TextStyle(color: Palette.textColor, fontSize: fontSize * 0.035, letterSpacing: -0.5),
+                style: TextStyle(
+                    color: Palette.textColor,
+                    fontSize: fontSize * 0.035,
+                    letterSpacing: -0.5),
               ),
             ),
           ],

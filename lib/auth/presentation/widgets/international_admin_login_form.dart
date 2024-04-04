@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
 import "package:yjg/auth/presentation/widgets/auto_login_check_box.dart";
 import "package:yjg/auth/presentation/widgets/login_button.dart";
 import "package:yjg/shared/theme/palette.dart";
 
-class InternationalAdminLoginForm extends StatefulWidget {
+class InternationalAdminLoginForm extends ConsumerStatefulWidget {
   const InternationalAdminLoginForm({super.key, this.studentOrAdmin});
   final bool? studentOrAdmin; // 관리자 로그인일 경우 회원가입 안 보이게 하기 위한 변수
 
@@ -12,7 +13,8 @@ class InternationalAdminLoginForm extends StatefulWidget {
   _InternationalAdminLoginForm createState() => _InternationalAdminLoginForm();
 }
 
-class _InternationalAdminLoginForm extends State<InternationalAdminLoginForm> {
+class _InternationalAdminLoginForm
+    extends ConsumerState<InternationalAdminLoginForm> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();

@@ -21,7 +21,7 @@ class AdminMain extends StatefulWidget {
 }
 
 class _AdminMainState extends State<AdminMain> {
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  static final storage = FlutterSecureStorage(); 
 
   //예약 AS get 함수
   Future<Map<String, dynamic>?> fetchLatestASRequest() async {
