@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:http/http.dart' as http;
@@ -43,31 +45,6 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     );
   }
 
-  //외박/외출 필드 입력 완료 후 함수
-  void _showSuccessDialog(String title, String content) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop(); // 성공 메시지 대화상자 닫기
-                Navigator.of(context).pop(); // 외박/외출 신청 페이지 닫기
-                Navigator.of(context)
-                    .pushReplacementNamed('/sleepover'); // '/sleepover' 경로로 이동
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,17 +67,22 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
             _datePickerButton('외출/외박 시작 날짜를 선택하세요', _startDate,
                 (DateTime date) {
               setState(() => _startDate = date);
-            }),
+            }, true), // 시작 날짜를 선택하는 경우이므로 isStartDate는 true입니다.
+
             SizedBox(height: 8),
+
             _datePickerButton('외출/외박 종료 날짜를 선택하세요', _endDate, (DateTime date) {
               setState(() => _endDate = date);
-            }),
+            }, false), // 종료 날짜를 선택하는 경우이므로 isStartDate는 false입니다.
             SizedBox(height: 30),
-            Text('사유',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
+            Container(
+              margin: EdgeInsets.only(left: 35, bottom: 10),
+              child: Text('사유',
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
             SizedBox(height: 8),
             _reasonInput(),
             SizedBox(height: 20),
@@ -118,65 +100,136 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   }
 
   //날짜 선택 함수
-  Widget _datePickerButton(
-      String hint, DateTime? selectedDate, ValueChanged<DateTime> onSelected) {
-    return OutlinedButton(
-      onPressed: () async {
-        DateTime firstDate = DateTime.now(); // 선택 가능한 첫 번째 날짜, 기본값은 오늘
-        DateTime lastDate = DateTime.now()
-            .add(Duration(days: 30)); // 선택 가능한 마지막 날짜, 기본값은 오늘부터 30일 후
+  Widget _datePickerButton(String hint, DateTime? selectedDate,
+      ValueChanged<DateTime> onSelected, bool isStartDate) {
+    double screenWidth = MediaQuery.of(context).size.width; // 화면의 가로 길이를 얻습니다.
+    double buttonWidth =
+        screenWidth * 0.8; // 예를 들어, 화면 가로 길이의 80%를 버튼의 가로 길이로 설정합니다.
 
-        if (hint.contains('시작')) {
-          // 시작 날짜 선택기
-          if (_endDate != null) {
-            // 종료 날짜가 이미 선택되어 있다면, 선택 가능한 마지막 날짜를 종료 날짜로 설정
-            lastDate = _endDate!;
-          }
-        } else {
-          // 종료 날짜 선택기
-          // 종료 날짜 선택기의 경우 firstDate와 lastDate의 기본값 사용
-        }
-
-        final DateTime? pickedDate = await showDatePicker(
-          context: context,
-          initialDate: selectedDate ?? DateTime.now(),
-          firstDate: firstDate,
-          lastDate: lastDate,
-          locale: const Locale('ko', 'KR'),
-        );
-        if (pickedDate != null) {
-          onSelected(pickedDate);
-        }
-      },
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(color: _primaryColor),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.calendar_today, color: _primaryColor),
-          SizedBox(width: 10),
-          Text(
-            selectedDate != null
-                ? DateFormat('yyyy-MM-dd').format(selectedDate)
-                : hint,
-            style: TextStyle(color: _primaryColor),
+    // Center 위젯을 사용하여 버튼을 가운데 정렬합니다.
+    return Center(
+      child: Container(
+        width: buttonWidth, // 버튼의 가로 길이를 설정합니다.
+        child: OutlinedButton(
+          onPressed: () =>
+              _showCustomCalendarDialog(selectedDate, onSelected, isStartDate),
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: _primaryColor),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0)),
           ),
-        ],
+          child: Row(
+            mainAxisAlignment:
+                MainAxisAlignment.center, // 아이콘과 텍스트가 중앙에 위치하도록 합니다.
+            children: [
+              Icon(Icons.calendar_today, color: _primaryColor),
+              SizedBox(width: 10),
+              Text(
+                selectedDate != null
+                    ? DateFormat('yyyy-MM-dd').format(selectedDate)
+                    : hint,
+                style: TextStyle(color: _primaryColor),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
+  void _showCustomCalendarDialog(DateTime? selectedDate,
+      ValueChanged<DateTime> onSelected, bool isStartDate) {
+    DateTime firstDay = DateTime.now();
+    DateTime lastDay = DateTime.now().add(Duration(days: 30));
+    DateTime focusedDay = selectedDate ?? DateTime.now();
+
+    if (isStartDate && _endDate != null) {
+      lastDay = _endDate!;
+      if (selectedDate != null && selectedDate.isAfter(lastDay)) {
+        focusedDay = _endDate!; // focusedDay가 lastDay 이후가 아닌지 확인
+      }
+    } else if (!isStartDate && _startDate != null) {
+      firstDay = _startDate!;
+      if (selectedDate != null && selectedDate.isBefore(firstDay)) {
+        focusedDay = _startDate!; // focusedDay가 firstDay 이전이 아닌지 확인
+      }
+    }
+
+    //focusedDay가 firstDay 이전이나 lastDay 이후가 아닌지 확인
+    if (focusedDay.isBefore(firstDay)) {
+      focusedDay = firstDay;
+    } else if (focusedDay.isAfter(lastDay)) {
+      focusedDay = lastDay;
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Container(
+          width: double.maxFinite,
+          height: 350,
+          child: TableCalendar(
+            locale: 'ko_KR',
+            firstDay: firstDay,
+            lastDay: lastDay,
+            focusedDay: focusedDay,
+            calendarFormat: CalendarFormat.month,
+            selectedDayPredicate: (day) => isSameDay(selectedDate, day),
+            onDaySelected: (selectedDay, focusedDay) {
+              onSelected(selectedDay);
+              Navigator.of(context).pop(); // 대화상자 닫기
+            },
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true, // 제목 가운데 정렬
+              formatButtonShowsNext: false,
+            ),
+            calendarStyle: CalendarStyle(
+              outsideDaysVisible: false, // 현재 달의 날짜만 표시
+              selectedDecoration: BoxDecoration(
+                // 선택된 날짜 스타일
+                color: Palette.mainColor, // 선택된 날짜의 배경 색상
+                shape: BoxShape.circle, // 원형 표시
+              ),
+              todayDecoration: BoxDecoration(
+                // 오늘 날짜 스타일
+                color: const Color.fromARGB(255, 128, 128, 128)
+                    .withOpacity(0.5), // 오늘 날짜의 배경 색상 (투명도 포함)
+                shape: BoxShape.circle, // 원형 표시
+              ),
+            ),
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(color: Colors.black, fontSize: 13),
+              weekendStyle: TextStyle(color: Colors.red, fontSize: 13),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool isSameDay(DateTime? a, DateTime? b) {
+    if (a == null || b == null) return false;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
   Widget _reasonInput() {
-    return TextField(
-      controller: _reasonController,
-      maxLines: 10,
-      decoration: InputDecoration(
-        hintText: '사유를 입력하세요',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(color: _primaryColor),
+    double screenWidth = MediaQuery.of(context).size.width; // 화면의 가로 길이를 얻음
+    double textFieldWidth =
+        screenWidth * 0.8; // 화면 가로 길이의 90%를 입력 필드의 가로 길이로 설정
+    return Center(
+      child: Container(
+        width: textFieldWidth, // 입력 필드의 가로 길이를 설정
+        child: TextField(
+          controller: _reasonController,
+          maxLines: 10,
+          decoration: InputDecoration(
+            hintText: '사유를 입력하세요',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide(color: _primaryColor),
+            ),
+          ),
         ),
       ),
     );
@@ -253,10 +306,16 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        String successMessage = '외출/외박 신청이 완료되었습니다.\n\n'
-            '시작일: ${DateFormat('yyyy-MM-dd').format(_startDate!)}\n'
-            '종료일: ${DateFormat('yyyy-MM-dd').format(_endDate!)}';
-        _showSuccessDialog('성공', successMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('외박 신청이 완료되었습니다.'),
+            backgroundColor: Palette.mainColor,
+          ),
+        );
+        Navigator.of(context).pop(); // 성공 메시지 대화상자 닫기
+        Navigator.of(context).pop(); // 외박/외출 신청 페이지 닫기
+        Navigator.of(context)
+            .pushReplacementNamed('/sleepover'); // '/sleepover' 경로로 이동
       } else if (response.statusCode == 409) {
         _showDialog('예약 중복', '해당 날짜에 이미 예약이 존재합니다.');
       } else {

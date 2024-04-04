@@ -17,7 +17,6 @@ class Sleepover extends StatefulWidget {
 }
 
 class _SleepoverState extends State<Sleepover> {
-  
   static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
   Future<List<dynamic>>? _sleepoverApplications;
 
@@ -33,15 +32,13 @@ class _SleepoverState extends State<Sleepover> {
     });
   }
 
-
   Future<List<dynamic>> fetchSleepoverApplications() async {
-
     final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
 
     final response = await http.get(
       Uri.parse('$apiURL/api/absence/user'),
       headers: {
-        "Content-Type": "application/json",//아래 토큰 $token으로 바꿔줘야함(로그인 연동)
+        "Content-Type": "application/json", //아래 토큰 $token으로 바꿔줘야함(로그인 연동)
         "Authorization": "Bearer $token"
       },
     );
@@ -62,6 +59,9 @@ class _SleepoverState extends State<Sleepover> {
 
   @override
   Widget build(BuildContext context) {
+
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '외박/외출'),
@@ -78,8 +78,10 @@ class _SleepoverState extends State<Sleepover> {
                   height: 60,
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 244, 244, 244)),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(255, 244, 244, 244)),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -112,54 +114,61 @@ class _SleepoverState extends State<Sleepover> {
 
           //선
           Container(
-            width: 380,
+            width: screenWidth * 0.9,
             margin: EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
               border:
                   Border(top: BorderSide(color: Color.fromARGB(255, 0, 0, 0))),
             ),
           ),
-          
+
           Expanded(
             child: FutureBuilder<List<dynamic>>(
               future: _sleepoverApplications,
-              builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<dynamic>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('현재 신청된 외박/외출이 없습니다.',style: TextStyle(color: Colors.grey),));
+                  return Center(
+                      child: Text(
+                    '현재 신청된 외박/외출이 없습니다.',
+                    style: TextStyle(color: Colors.grey),
+                  ));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
                       final application = snapshot.data![index];
                       return InkWell(
-                        onTap: () async {
-                          final result = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => SleepoverWidget(
+                          onTap: () async {
+                            final result = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => SleepoverWidget(
+                                id: application['id'],
+                                apply: application['status'],
+                                startDate: application['start_date'],
+                                lastDate: application['end_date'],
+                                content: application['content'],
+                              ),
+                            );
+
+                            if (result == true) {
+                              _loadSleepoverApplications();
+                            }
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: SleepoverWidget(
                               id: application['id'],
                               apply: application['status'],
                               startDate: application['start_date'],
                               lastDate: application['end_date'],
                               content: application['content'],
                             ),
-                          );
-
-                          if (result == true) {
-                            _loadSleepoverApplications();
-                          }
-                        },
-                        child: SleepoverWidget(
-                          id: application['id'],
-                          apply: application['status'],
-                          startDate: application['start_date'],
-                          lastDate: application['end_date'],
-                          content: application['content'],
-                        ),
-                      );
+                          ));
                     },
                   );
                 }
