@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:yjg/administration/presentaion/widgets/std_as_floating_button.dart';
 import 'package:yjg/as(admin)/presentation/widgets/admin_as_floating_button.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
@@ -113,9 +114,9 @@ class _AsDetailState extends ConsumerState<AsDetail> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // '예' 선택 시 true 반환
+                Navigator.of(context).pop(true);
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/as_page');
+                Navigator.popAndPushNamed(context, '/as_page');
               },
               child: Text('예'),
             ),
@@ -254,14 +255,18 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                                       border: OutlineInputBorder(),
                                       labelText: '내용 수정'),
                                 ),
+                                SizedBox(height: 15),
                                 ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(Palette.mainColor),
+                                  ),
                                   onPressed: () {
                                     updateAsDetail(
                                         asId,
                                         _contentController.text,
                                         _editedVisitDate ?? "");
                                   },
-                                  child: Text('수정 완료'),
+                                  child: Icon(Icons.task_alt,color: Colors.white,)
                                 ),
                               ],
                             )

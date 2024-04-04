@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/as_card.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
@@ -126,41 +127,62 @@ class _AsPageState extends State<AsPage> {
               ],
             ),
           ),
-
+          SizedBox(height: 10),
+          
           //신청 내역 글자
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('신청 내역', style: TextStyle(fontSize: 13)),
-                DropdownButton<String>(
-                  value: selectedFilter,
-                  items: [
-                    DropdownMenuItem(
-                      value: '모두보기',
-                      child:
-                          Text('모두 보기', style: TextStyle(color: Colors.black,fontSize: 11)),
-                    ),
-                    DropdownMenuItem(
-                      value: '처리전',
-                      child: Text('처리 전', style: TextStyle(color: Colors.black,fontSize: 11)),
-                    ),
-                    DropdownMenuItem(
-                      value: '처리완료',
-                      child:
-                          Text('처리 완료', style: TextStyle(color: Colors.black,fontSize: 11)),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      selectedFilter = value!;
-                    });
-                  },
+          Container(
+            margin: EdgeInsets.only(left: 250),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                popupMenuTheme: PopupMenuThemeData(
+                  color: Palette.mainColor,
                 ),
-              ],
+              ),
+              child: PopupMenuButton<String>(
+                onSelected: (String value) {
+                  setState(() {
+                    selectedFilter = value;
+                  });
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: '모두보기',
+                    child: Text('모두 보기', style: TextStyle(color: Colors.white)),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: '처리 전 ',
+                    child: Text('처리 전 ', style: TextStyle(color: Colors.white)),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: '처리완료',
+                    child: Text('처리 완료', style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Palette.mainColor, // 여기에서 선택 내역 컨테이너의 배경색을 설정합니다.
+                    borderRadius: BorderRadius.circular(4), // 모서리를 둥글게 설정합니다.
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        selectedFilter,
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
+
+          SizedBox(height: 10),
 
           //선
           Container(
