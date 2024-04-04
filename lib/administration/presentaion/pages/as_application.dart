@@ -1,13 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/theme/theme.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
+
+DateTime _focusedDay = DateTime.now();
+DateTime? _selectedDay;
 
 class AsApplication extends StatefulWidget {
   const AsApplication({super.key});
@@ -35,47 +40,17 @@ class _AsApplicationState extends State<AsApplication> {
     }
   }
 
-  // 날짜 선택 함수
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime now = DateTime.now();
-    DateTime firstDate = DateTime(now.year, now.month, now.day);
-    DateTime lastDate;
-
-    if (now.month == 12) {
-      // 현재가 12월인 경우, 다음 해의 1월의 마지막 날로 설정
-      lastDate = DateTime(now.year + 1, 2, 0);
-    } else {
-      // 그 외의 경우, 다음 달의 마지막 날로 설정
-      lastDate = DateTime(now.year, now.month + 2, 0);
-    }
-
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: firstDate,
-      lastDate: lastDate,
-    );
-
-    if (picked != null) {
-      setState(() {
-        day_controller.text = DateFormat('yyyy-MM-dd').format(picked);
-      });
-    }
-  }
-
-// API 연동 함수
-  Future<void> sendData() async {
-
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+  // 선택한 정보 보내주는 POST API 함수
+  Future<bool> sendData() async {
+    final token = await storage.read(key: 'auth_token'); // 토큰 불러오기
 
     var uri = Uri.parse('$apiURL/api/after-service');
     var request = http.MultipartRequest('POST', uri)
-      ..fields['title'] = title_controller.text
-      ..fields['content'] = input_controller.text
-      ..fields['visit_place'] = place_controller.text
-      ..fields['visit_date'] = day_controller.text
-      ..headers['Authorization'] = //아래에 토큰을 $token으로 바꿔줘야함
-          'Bearer $token';
+      ..fields['title'] = title
+      ..fields['content'] = input
+      ..fields['visit_place'] = place
+      ..fields['visit_date'] = day
+      ..headers['Authorization'] = 'Bearer $token';
 
     // 이미지 파일을 요청에 추가
     for (var image in _images) {
@@ -88,10 +63,14 @@ class _AsApplicationState extends State<AsApplication> {
     final respStr = await response.stream.bytesToString();
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('성공적으로 전송됨');
-      print(respStr); // 응답 본문을 출력하여 세부 정보 확인
+      print(respStr);
+      return true; // 성공 시 true 반환
+      
     } else {
       print('전송 실패: ${response.reasonPhrase}');
-      print(respStr); // 오류 응답 본문을 출력하여 문제 진단
+      print("이거이거이거: $day");
+      print(respStr);
+      return false; // 실패 시 false 반환
     }
   }
 
@@ -131,7 +110,7 @@ class _AsApplicationState extends State<AsApplication> {
             //제목
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 20, top: 20),
+              margin: EdgeInsets.only(left: 25, top: 20),
               child: Text(
                 '제목',
                 style: TextStyle(color: Colors.grey),
@@ -140,7 +119,7 @@ class _AsApplicationState extends State<AsApplication> {
 
             //제목 입력 칸
             Container(
-              width: 380,
+              width: MediaQuery.of(context).size.width * 0.9, // 화면 너비의 90%로 설정
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
@@ -170,48 +149,71 @@ class _AsApplicationState extends State<AsApplication> {
             //날짜
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 20, top: 20),
+              margin: EdgeInsets.only(left: 25, top: 20),
               child: Text(
                 '희망 처리일자',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
 
-            //날짜 선택 칸
-            InkWell(
-              onTap: () {
-                _selectDate(context); // 날짜 선택기를 호출
-              },
-              child: Container(
-                width: 380,
-                padding: EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 0.2,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromARGB(255, 226, 226, 226)
-                          .withOpacity(0.5), // 그림자 색상
-                      spreadRadius: 1, // 그림자 확산 반경
-                      blurRadius: 5, // 그림자 흐림 정도
-                      offset: Offset(2, 3), // 그림자 위치
-                    ),
-                  ],
+            // 날짜 선택 칸
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  width: 0.2, // 테두리 두께
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start, // 텍스트를 왼쪽으로 정렬
-                  children: [
-                    SizedBox(width: 16), // 텍스트와 컨테이너 왼쪽 가장자리 사이의 공간
-                    Text(
-                      day_controller.text.isEmpty
-                          ? '희망 처리일자를 선택해주세요'
-                          : day_controller.text,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                    ),
-                  ],
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromARGB(255, 226, 226, 226)
+                        .withOpacity(0.5), // 그림자 색상
+                    spreadRadius: 1, // 그림자 확산 반경
+                    blurRadius: 5, // 그림자 흐림 정도
+                    offset: Offset(2, 3), // 그림자 위치
+                  ),
+                ],
+              ),
+              margin: EdgeInsets.symmetric(horizontal: 20), // 좌우 여백
+              child: TableCalendar(
+                locale: 'ko_KR',
+                firstDay: DateTime.now(),
+                lastDay: DateTime.now().add(Duration(days: 30)),
+                focusedDay: _focusedDay,
+                calendarFormat: CalendarFormat.month,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                    day_controller.text =
+                        DateFormat('yyyy-MM-dd').format(selectedDay);
+                  });
+                },
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true, // 제목 가운데 정렬
+                  formatButtonShowsNext: false,
+                ),
+                calendarStyle: CalendarStyle(
+                  outsideDaysVisible: false, // 현재 달의 날짜만 표시
+                  selectedDecoration: BoxDecoration(
+                    // 선택된 날짜 스타일
+                    color: Palette.mainColor, // 선택된 날짜의 배경 색상
+                    shape: BoxShape.circle, // 원형 표시
+                  ),
+                  todayDecoration: BoxDecoration(
+                    // 오늘 날짜 스타일
+                    color: const Color.fromARGB(255, 128, 128, 128)
+                        .withOpacity(0.5), // 오늘 날짜의 배경 색상 (투명도 포함)
+                    shape: BoxShape.circle, // 원형 표시
+                  ),
+                ),
+                daysOfWeekStyle: DaysOfWeekStyle(
+                  weekdayStyle: TextStyle(color: Colors.black),
+                  weekendStyle: TextStyle(color: Colors.red),
                 ),
               ),
             ),
@@ -219,7 +221,7 @@ class _AsApplicationState extends State<AsApplication> {
             //장소
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 20, top: 20),
+              margin: EdgeInsets.only(left: 25, top: 20),
               child: Text(
                 '장소를 입력하세요',
                 style: TextStyle(color: Colors.grey),
@@ -228,7 +230,7 @@ class _AsApplicationState extends State<AsApplication> {
 
             //장소 입력 칸
             Container(
-              width: 380,
+              width: MediaQuery.of(context).size.width * 0.9, // 화면 너비의 90%로 설정
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
@@ -258,7 +260,7 @@ class _AsApplicationState extends State<AsApplication> {
             //내용
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 20, top: 20),
+              margin: EdgeInsets.only(left: 25, top: 20),
               child: Text(
                 '내용',
                 style: TextStyle(color: Colors.grey),
@@ -267,7 +269,7 @@ class _AsApplicationState extends State<AsApplication> {
 
             //내용 입력 칸
             Container(
-              width: 380,
+              width: MediaQuery.of(context).size.width * 0.9, // 화면 너비의 90%로 설정
               height: 200,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -315,14 +317,28 @@ class _AsApplicationState extends State<AsApplication> {
               style: ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(
                       const Color.fromARGB(255, 29, 127, 159))),
-              onPressed: () {
-                // 버튼을 눌렀을 때, 각 TextField의 텍스트를 가져와 변수에 저장
+              onPressed: () async {
                 title = title_controller.text;
                 day = day_controller.text;
                 input = input_controller.text;
                 place = place_controller.text;
-                sendData();
-                show();
+
+                setState(() {
+                  _selectedDay = null;
+                  _focusedDay = DateTime.now();
+                  day_controller.clear();
+                });
+
+                bool success = await sendData();
+                if (success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('AS 요청이 성공적으로 전송되었습니다.')));
+                  Navigator.pop(context, true);
+                  Navigator.popAndPushNamed(context, '/as_page');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('AS 요청 전송에 실패했습니다.')));
+                }
               },
               child: Text(
                 '요청하기',
@@ -384,57 +400,5 @@ class _AsApplicationState extends State<AsApplication> {
         ),
       ],
     );
-  }
-
-  //신청완료버튼 위젯
-  void show() {
-    if (title != '' && day != '' && place != '' && input != '') {
-      showDialog(
-        context: context,
-        barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('AS신청완료'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Text('제목: $title'),
-                  Text('날짜: $day'),
-                  Text('장소: $place'),
-                  Text('내용: $input'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              GestureDetector(
-                child: Text('확인'),
-                onTap: () {
-                  Navigator.pop(context); // 첫 번째 대화상자 닫기.
-                  Navigator.pop(context); // 두 번째 신청 페이지 닫기.
-                  Navigator.popAndPushNamed(context, '/as_page');
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('내용을 모두 입력해주세요'),
-            actions: <Widget>[
-              GestureDetector(
-                child: Text('확인'),
-                onTap: () {
-                  Navigator.pop(context, '/as_page');
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 }
