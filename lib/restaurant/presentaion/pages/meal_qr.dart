@@ -95,7 +95,7 @@ class _MealQrState extends State<MealQr> {
                 ),
 
                 //QR여기에 넣기
-                Container(
+                SizedBox(
                   width: 220,
                   height: 220,
                   child: Image.network(

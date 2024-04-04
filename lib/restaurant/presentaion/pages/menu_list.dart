@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/restaurant/data/data_sources/menu_data_source.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class MenuList extends StatefulWidget {
   @override
@@ -25,30 +23,17 @@ DateTime _lastDayOfMonth(DateTime date) {
 }
 
 class _MenuListState extends State<MenuList> {
-  List<String>? _selectedMenu;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  final _menuDataSource = MenuDataSource();
 
   final storage = FlutterSecureStorage(); //토큰 함수
 
-  //해당 날짜의 식단표를 불러오는 API 함수
+  // * 해당 날짜의 식단표를 불러오는 API 함수
   Future<void> fetchMenus(DateTime selectedDay) async {
-  final String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDay);
-  final String url = '$apiURL/api/restaurant/menu/get/d?date=$formattedDate';
-
-  String? token = await storage.read(key: 'auth_token');
-
-  try {
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body)['month_menus'];
+    try {
+      final response = await _menuDataSource.fetchSelectedDayMenus(selectedDay);
+      final data = response.data['month_menus'];
 
       if (data.isEmpty) {
         // API에서 가져온 리스트가 비어있을 경우 기본 메시지를 설정
@@ -88,13 +73,11 @@ class _MenuListState extends State<MenuList> {
           dinnerMenu = newDinnerMenu;
         });
       }
-    } else {
-      throw Exception('Failed to load menus');
+    } catch (e) {
+      debugPrint('Error: $e');
+      throw Exception('식단표를 불러오지 못했습니다.');
     }
-  } catch (e) {
-    print(e.toString());
   }
-}
 
   @override
   Widget build(BuildContext context) {

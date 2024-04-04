@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/restaurant/data/data_sources/meal_reservation_data_source.dart';
+import 'package:yjg/restaurant/data/data_sources/semester_meal_reservation_data_source.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
@@ -10,7 +9,6 @@ import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:http/http.dart' as http;
 
 // 신청 여부 확인 변수
 var application = false;
@@ -26,7 +24,6 @@ class MealApplication extends ConsumerStatefulWidget {
 }
 
 class _MealApplicationState extends ConsumerState<MealApplication> {
-
   // 선택된 식사 유형 ID를 추적하는 변수 (버튼에서 선택 된 유형을 말하는 거임)
   String? selectedMealTypeId;
 
@@ -49,7 +46,8 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     return CustomElevatedButton(text: text, color: color, onPressed: onPressed);
   }
 
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  final _semesterReservationDataSource = SemesterMealReservationDataSource();
+  final _reservationDataSource = MealReservationDataSource();
 
   // 사용자 정보를 저장할 변수
   Map<String, dynamic> userData = {};
@@ -71,161 +69,123 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
     fetchAccountData(); // 위젯 초기화 시 계좌번호 데이터를 가져오는 함수 호출
   }
 
-  // 사용자 정보를 가져오는 API 함수
+  // * 사용자 정보를 가져오는 API 함수
   Future<void> fetchUserInfo() async {
     try {
-      final token = await storage.read(key: 'auth_token');
-      final response = await http.get(
-        Uri.parse('$apiURL/api/restaurant/semester/show/user'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        setState(() {
-          userData = data['userData'];
-        });
-      } else {
-        print('Server returned ${response.statusCode}');
-      }
+      final response = await _semesterReservationDataSource.fetchUserInfo();
+      final data = response.data as Map<String, dynamic>;
+      setState(() {
+        userData = data['userData'];
+      });
     } catch (e) {
-      print('Error occurred: $e');
+      debugPrint('사용자 정보 불러오기 실패: $e');
     }
   }
 
-  // 식수 유형의 정보를 가져오는 API 함수
+  // * 식수 유형의 정보를 가져오는 API 함수
   Future<void> fetchMealTypes() async {
     try {
-      final token = await storage.read(key: 'auth_token');
-      final response = await http.get(
-        Uri.parse('$apiURL/api/restaurant/semester/meal-type/get'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        setState(() {
-          semesterMealTypes = data['semester_meal_type']; // 데이터 업데이트
-        });
-      } else {
-        print('Server returned ${response.statusCode}');
-      }
+      final response = await _semesterReservationDataSource.fetchMealTypes();
+      final data = response.data as Map<String, dynamic>;
+      setState(() {
+        semesterMealTypes = data['semester_meal_type']; // 데이터 업데이트
+      });
     } catch (e) {
-      print('Error occurred: $e');
+      debugPrint('식사 유형 불러오기 실패: $e');
     }
   }
 
-  // 식수 신청을 하는 API 함수
+  // * 식수 신청을 하는 API 함수
   Future<void> submitMealApplication(String mealType) async {
-    final token = await storage.read(key: 'auth_token');
-
-    final body = json.encode({
-      'meal_type': mealType,
-    });
-
-    var url = Uri.parse('$apiURL/api/restaurant/semester');
-    var response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: body,
-    );
-
-    if (response.statusCode == 200) {
+    try {
+      await _semesterReservationDataSource.submitMealApplication(mealType);
       // 신청 후 상태를 다시 가져와서 화면을 업데이트
       await fetchApplicationStatus();
-      print('$mealType유형 전송 성공');
+      debugPrint('$mealType 유형으로 신청 완료');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('학기 식수 신청이 완료되었습니다.'),
           backgroundColor: Palette.mainColor,
         ),
       );
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
+    } catch (e) {
+      debugPrint('식수 신청 실패: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('학기 식수 신청에 실패했습니다.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  // 식수 신청 상태를 가져오는 API 함수
+  // * 식수 신청 상태를 가져오는 API 함수
   Future<void> fetchApplicationStatus() async {
     try {
-      final token = await storage.read(key: 'auth_token');
-      final response = await http.get(
-        Uri.parse('$apiURL/api/restaurant/semester/show/user/after'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
+      final response =
+          await _semesterReservationDataSource.fetchApplicationStatus();
+      final data = response.data;
+      final List<dynamic> applicationData = data['userData']['data'];
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final List<dynamic> applicationData = data['userData']['data'];
+      setState(() {
+        application = applicationData.isNotEmpty;
+        if (applicationData.isNotEmpty) {
+          applicationId = applicationData[0]['id']; // 신청 ID를 저장
 
-        setState(() {
-          application = applicationData.isNotEmpty;
-          if (applicationData.isNotEmpty) {
-            applicationId = applicationData[0]['id']; // 신청 ID를 저장
-            
-            selectedMealTypeId =
-                applicationData[0]['semester_meal_type']?['meal_type'];
-            deposit = applicationData[0]['payment'] == 1;
-          } else {
-            selectedMealTypeId = null;
-            applicationId = null; // 신청이 없을 경우 null로 설정
-          }
-        });
-
-
-      } else {
-        print('Server returned ${response.statusCode}');
-      }
+          selectedMealTypeId =
+              applicationData[0]['semester_meal_type']?['meal_type'];
+          deposit = applicationData[0]['payment'] == 1;
+        } else {
+          selectedMealTypeId = null;
+          applicationId = null; // 신청이 없을 경우 null로 설정
+        }
+      });
     } catch (e) {
-      print('Error occurred: $e');
+      debugPrint('식수 신청 상태 불러오기 실패: $e');
     }
   }
 
   // 식수 신청을 취소하는 API 함수
   Future<void> cancelMealApplication() async {
     if (applicationId == null) {
-      print("No application to cancel");
-      return;
+      debugPrint("application id가 없습니다.");
     }
 
-    final token = await storage.read(key: 'auth_token');
-    final url =
-        Uri.parse('$apiURL/api/restaurant/semester/delete/$applicationId');
+    try {
+      await _semesterReservationDataSource
+          .cancelMealApplication(applicationId!);
 
-    final response = await http.delete(
-      url,
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
-      print("Application cancelled successfully");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('학기 식수 신청이 취소되었습니다.'),
+          backgroundColor: Palette.mainColor,
+        ),
+      );
       await fetchApplicationStatus(); // 상태를 다시 가져와 화면을 업데이트
-    } else {
-      print("Failed to cancel application with status: ${response.statusCode}");
+    } catch (e) {
+      debugPrint('식수 신청 취소 실패: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('학기 식수 신청 취소에 실패했습니다.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   //계좌 번호 데이터를 불러오는 GET API 함수
   Future<void> fetchAccountData() async {
-    final token = await storage.read(key: 'auth_token');
-
-    final uri = Uri.parse('$apiURL/api/restaurant/account/show');
-    final response =
-        await http.get(uri, headers: {'Authorization': 'Bearer $token'});
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body)['data'];
+    try {
+      final response = await _reservationDataSource.fetchAccountData();
+      final data = response.data['data'];
 
       setState(() {
         bankName = data['bank_name'];
         accountNumber = data['account'];
         accountHolder = data['name'];
       });
-    } else {
-      print('계좌 정보를 불러오는 데 실패했습니다.');
+    } catch (e) {
+      debugPrint('계좌 정보를 불러오는 데 실패했습니다.');
     }
   }
 
@@ -650,7 +610,7 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              
+
               // 유저 데이터 불러오는 함수 다시 호출해서 화면 업데이트
               await fetchUserInfo();
             },
