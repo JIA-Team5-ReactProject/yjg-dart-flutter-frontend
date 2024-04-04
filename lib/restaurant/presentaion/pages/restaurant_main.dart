@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/restaurant/data/data_sources/meal_reservation_data_source.dart';
+import 'package:yjg/restaurant/data/data_sources/menu_data_source.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 //현재 신청 인원
 int satPerson = 0;
@@ -26,6 +25,8 @@ class RestaurantMain extends StatefulWidget {
 }
 
 class _RestaurantMainState extends State<RestaurantMain> {
+  final _reservationDataSource = MealReservationDataSource();
+  final _menuDataSource = MenuDataSource();
   @override
   void initState() {
     super.initState();
@@ -35,160 +36,82 @@ class _RestaurantMainState extends State<RestaurantMain> {
 
   final storage = FlutterSecureStorage(); // 토큰 함수 (정원)
 
-  //오늘 식단표 불러오는 GET API 함수
+  // * 오늘 식단표 불러오는 GET API 호출
   Future<void> _fetchMenus() async {
     try {
-      final token = await storage.read(key: 'auth_token'); // 토큰 가져오기
-      if (token != null) {
-        final formattedDate = DateTime.now()
-            .toIso8601String()
-            .substring(0, 10); // 시간 제외하고 날짜만 가져옴
-        final response = await http.get(
-          Uri.parse('$apiURL/api/restaurant/menu/get/d?date=$formattedDate'),
-          headers: {
-            'Authorization': 'Bearer $token',
-          },
-        );
+      final response = await _menuDataSource.fetchMenus();
 
-        if (response.statusCode == 200) {
-          print('메뉴 가져오기 성공');
-          final data = json.decode(response.body)['month_menus'];
-          print('메뉴 데이터: $data');
-          print(DateTime.now().toString());
-          List<String> newBreakfastMenu = [];
-          List<String> newLunchMenu = [];
-          List<String> newDinnerMenu = [];
+      final data = response.data['month_menus'];
+      debugPrint('메뉴 데이터: $data');
+      debugPrint(DateTime.now().toString());
 
-          // 기존 데이터 초기화
-          breakfastMenu.clear();
-          lunchMenu.clear();
-          dinnerMenu.clear();
+      List<String> newBreakfastMenu = [];
+      List<String> newLunchMenu = [];
+      List<String> newDinnerMenu = [];
 
-          for (var item in data) {
-            final String mealTime = item['meal_time'];
-            final List<String> menuItems = (item['menu'] as String)
-                .split(' ')
-                .where((s) => s.isNotEmpty)
-                .toList();
-            switch (mealTime) {
-              case 'b':
-                newBreakfastMenu.addAll(menuItems);
-                break;
-              case 'l':
-                newLunchMenu.addAll(menuItems);
-                break;
-              case 'd':
-                newDinnerMenu.addAll(menuItems);
-                break;
-            }
-          }
+      // 기존 데이터 초기화
+      breakfastMenu.clear();
+      lunchMenu.clear();
+      dinnerMenu.clear();
 
-          setState(() {
-            breakfastMenu = newBreakfastMenu.isNotEmpty
-                ? newBreakfastMenu
-                : [' ', '등록 된', '메뉴가', '없습니다.'];
-            lunchMenu = newLunchMenu.isNotEmpty
-                ? newLunchMenu
-                : [' ', '등록 된', '메뉴가', '없습니다.'];
-            dinnerMenu = newDinnerMenu.isNotEmpty
-                ? newDinnerMenu
-                : [' ', '등록 된', '메뉴가', '없습니다.'];
-          }); // 데이터를 가져왔으므로 UI 갱신
-        } else {
-          print('메뉴 가져오기 실패');
-          throw Exception('Failed to load menus');
+      for (var item in data) {
+        final String mealTime = item['meal_time'];
+        final List<String> menuItems = (item['menu'] as String)
+            .split(' ')
+            .where((s) => s.isNotEmpty)
+            .toList();
+        switch (mealTime) {
+          case 'b':
+            newBreakfastMenu.addAll(menuItems);
+            break;
+          case 'l':
+            newLunchMenu.addAll(menuItems);
+            break;
+          case 'd':
+            newDinnerMenu.addAll(menuItems);
+            break;
         }
-      } else {
-        print('토큰 없음');
-        throw Exception('Token not found'); // 토큰이 없으면 예외 처리
       }
+
+      setState(() {
+        breakfastMenu = newBreakfastMenu.isNotEmpty
+            ? newBreakfastMenu
+            : [' ', '등록 된', '메뉴가', '없습니다.'];
+        lunchMenu = newLunchMenu.isNotEmpty
+            ? newLunchMenu
+            : [' ', '등록 된', '메뉴가', '없습니다.'];
+        dinnerMenu = newDinnerMenu.isNotEmpty
+            ? newDinnerMenu
+            : [' ', '등록 된', '메뉴가', '없습니다.'];
+      }); // 데이터를 가져왔으므로 UI 갱신
     } catch (e) {
-      print('오류 발생: $e');
+      debugPrint('오류 발생: $e');
     }
   }
 
-  //주말식수 신청 인원 불러오는 GET API 함수
+  // * 주말식수 신청 인원 불러오는 GET API 호출
   Future<void> _fetchWeekendApplicationCounts() async {
     try {
-      final token = await storage.read(key: 'auth_token'); // 토큰 가져오기
-      if (token != null) {
-        // 토요일 신청 인원 수 가져오기
-        final responseSat = await http.get(
-          Uri.parse('$apiURL/api/restaurant/weekend/show/sumApp?date=sat'),
-          headers: {'Authorization': 'Bearer $token'},
-        );
+      // 토요일 신청 인원 수 가져오기
+      final dataSat =
+          await _reservationDataSource.fetchSatApplicationCounts('sat');
+      // 일요일 신청 인원 수 가져오기
+      final dataSun =
+          await _reservationDataSource.fetchSatApplicationCounts('sun');
 
-        // 일요일 신청 인원 수 가져오기
-        final responseSun = await http.get(
-          Uri.parse('$apiURL/api/restaurant/weekend/show/sumApp?date=sun'),
-          headers: {'Authorization': 'Bearer $token'},
-        );
-
-        if (responseSat.statusCode == 200 && responseSun.statusCode == 200) {
-          final dataSat = json.decode(responseSat.body);
-          final dataSun = json.decode(responseSun.body);
-
-          setState(() {
-            satPerson = dataSat['satCount'];
-            sunPerson = dataSun['sunCount'];
-          });
-        } else {
-          print('주말 식수 신청 인원 수 가져오기 실패');
-          throw Exception('Failed to load weekend application counts');
-        }
-      } else {
-        print('토큰 없음');
-        throw Exception('Token not found');
-      }
+      setState(() {
+        satPerson = dataSat.data['satCount'];
+        sunPerson = dataSun.data['sunCount'];
+      });
     } catch (e) {
-      print('오류 발생: $e');
-    }
-  }
-
-  //주말 식수 신청 가능 기간 받아오는 GET API
-  Future<bool> fetchWeekendApplyState() async {
-    final token = await storage.read(key: 'auth_token');
-    if (token != null) {
-      final response = await http.get(
-        Uri.parse('$apiURL/api/restaurant/apply/state/check/weekend'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['weekend'] = true; // true면 true, 아니면 false
-      } else {
-        throw Exception('Failed to fetch weekend apply state');
-      }
-    } else {
-      throw Exception('Token not found');
-    }
-  }
-
-  //학기 식수 신청 가능 기간 받아오는 GET API
-  Future<bool> fetchSemesterApplyState() async {
-    final token = await storage.read(key: 'auth_token');
-    if (token != null) {
-      final response = await http.get(
-        Uri.parse('$apiURL/api/restaurant/apply/state/check/semester'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['semester'] = true; // 1이면 true, 아니면 false
-      } else {
-        throw Exception('Failed to fetch weekend apply state');
-      }
-    } else {
-      throw Exception('Token not found');
+      debugPrint('오류 발생: $e');
     }
   }
 
   // API 값에 따라 주말 식수버튼 클릭 가능하게 하는 버튼
   Widget conditionalMoveButton() {
     return FutureBuilder<bool>(
-      future: fetchWeekendApplyState(),
+      future: _reservationDataSource.fetchWeekendApplyState(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // 에러 처리
@@ -216,7 +139,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
   // API 값에 따라 학기 식수버튼 클릭 가능하게 하는 버튼
   Widget semesterMoveButton() {
     return FutureBuilder<bool>(
-      future: fetchSemesterApplyState(),
+      future: _reservationDataSource.fetchSemesterApplyState(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // 에러 처리
