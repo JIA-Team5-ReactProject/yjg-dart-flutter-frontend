@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/administration/data/data_sources/std_as_data_source.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/as_card.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class AsPage extends StatefulWidget {
   const AsPage({super.key});
@@ -18,11 +15,11 @@ class AsPage extends StatefulWidget {
 }
 
 class _AsPageState extends State<AsPage> {
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
   List<dynamic> asRequests = [];
   String selectedFilter = '모두보기';
   bool isLoading = true;
   String errorMessage = '';
+  final _stdAsDataSource = StdAsDataSource();
 
   @override
   void initState() {
@@ -30,7 +27,7 @@ class _AsPageState extends State<AsPage> {
     fetchASRequests();
   }
 
-  // API 통신 함수 (AS카드에 쓸 데이터 불러오기)
+  // * AS 카드 데이터를 불러오는 함수
   Future<void> fetchASRequests() async {
     setState(() {
       isLoading = true; // API 호출 시작 시 로딩 상태로 설정
@@ -38,24 +35,12 @@ class _AsPageState extends State<AsPage> {
     });
 
     try {
-      final token = await storage.read(key: 'auth_token');
-      final response = await http.get(
-        Uri.parse('$apiURL/api/after-service/user'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        setState(() {
-          asRequests = data['after_services'];
-          isLoading = false; // 로딩 상태 해제
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-          errorMessage = 'Failed to load AS requests';
-        });
-      }
+      final response = await _stdAsDataSource.fetchASRequests();
+      final data = response.data as Map<String, dynamic>;
+      setState(() {
+        asRequests = data['after_services'];
+        isLoading = false; // 로딩 상태 해제
+      });
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -64,7 +49,7 @@ class _AsPageState extends State<AsPage> {
     }
   }
 
-  //필터링 해서 API 함수 부르는 함수
+  // 필터링 해서 API 함수 부르는 함수
   List<dynamic> getFilteredRequests() {
     if (selectedFilter == '처리전') {
       return asRequests.where((req) => req['status'] == 0).toList();
@@ -128,7 +113,7 @@ class _AsPageState extends State<AsPage> {
             ),
           ),
           SizedBox(height: 10),
-          
+
           //신청 내역 글자
           Container(
             margin: EdgeInsets.only(left: 250),

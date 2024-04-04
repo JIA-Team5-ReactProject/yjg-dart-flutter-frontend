@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/administration/data/data_sources/meeting_room_data_source.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 import 'package:yjg/shared/widgets/meeting_room_card.dart';
@@ -19,63 +17,44 @@ class MeetingRoomMain extends StatefulWidget {
 }
 
 class _MeetingRoomMainState extends State<MeetingRoomMain> {
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  final _meetingRoomDataSource = MeetingRoomDataSource();
 
-  // API 통신 함수 (AS카드에 쓸 데이터 불러오기)
+  // * API 통신 함수 (회의실 카드에 쓸 데이터 불러오기)
   Future<List<dynamic>> fetchASRequests() async {
     try {
-      final token = await storage.read(key: 'auth_token');
-      final response = await http.get(
-        Uri.parse('$apiURL/api/meeting-room/reservation/user'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
+      final response = await _meetingRoomDataSource.fetchASRequests();
+      final data = response.data;
+      List<dynamic> reservations = data['meeting_room_reservations'];
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        List<dynamic> reservations = data['meeting_room_reservations'];
+      // 현재 날짜 (시간 정보 무시)
+      final today = DateTime.now();
+      final currentDate = DateTime(today.year, today.month, today.day);
 
-        // 현재 날짜 (시간 정보 무시)
-        final today = DateTime.now();
-        final currentDate = DateTime(today.year, today.month, today.day);
+      // 'reservation_date'만 사용하여 날짜 비교
+      reservations = reservations.where((reservation) {
+        final reservationDate = DateTime.parse(reservation['reservation_date']);
+        return reservationDate.isAfter(currentDate) ||
+            reservationDate.isAtSameMomentAs(currentDate);
+      }).toList();
 
-        // 'reservation_date'만 사용하여 날짜 비교
-        reservations = reservations.where((reservation) {
-          final reservationDate =
-              DateTime.parse(reservation['reservation_date']);
-          return reservationDate.isAfter(currentDate) ||
-              reservationDate.isAtSameMomentAs(currentDate);
-        }).toList();
-
-        return reservations;
-      } else {
-        throw Exception(
-            'Failed to fetch reservations. Status code: ${response.statusCode}');
-      }
+      return reservations;
     } catch (e) {
       throw Exception('Failed to fetch reservations. Error: $e');
     }
   }
 
-  //예약 삭제 API 통신 함수
+  // * 예약 삭제 API 통신 함수
   Future<void> deleteReservation(
       BuildContext context, int reservationId) async {
-    final token = await storage.read(key: 'auth_token');
-    final response = await http.delete(
-      Uri.parse('$apiURL/api/meeting-room/reservation/$reservationId'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
+    try {
+      await _meetingRoomDataSource.deleteReservation(reservationId);
       // 성공적으로 삭제되었을 때의 처리
       Navigator.of(context).pop(); // 삭제 확인 대화상자 닫기
       Navigator.of(context).pop(); // 예약 정보 대화상자 닫기
       Navigator.of(context).pop(); // 회의실 예약 메인페이지 닫기
       Navigator.pushNamed(context, '/meeting_room_main'); //회의실 예약 메인 다시 열기
-      
-    } else {
-      // 삭제 실패 처리
-      print(
-          'Failed to delete reservation. Status code: ${response.statusCode}');
+    } catch (e) {
+      throw Exception('예약 삭제에 실패했습니다.: $e');
     }
   }
 
@@ -181,7 +160,11 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
                     );
                   } else {
                     // 데이터가 없을 경우 사용자에게 알림
-                    return Center(child: Text("현재 예약된 회의실이 없습니다.",style: TextStyle(color: Colors.grey),));
+                    return Center(
+                        child: Text(
+                      "현재 예약된 회의실이 없습니다.",
+                      style: TextStyle(color: Colors.grey),
+                    ));
                   }
                 }
               },

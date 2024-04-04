@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/administration/data/data_sources/meeting_room_data_source.dart';
+import 'package:yjg/administration/data/data_sources/std_as_data_source.dart';
 import 'package:yjg/shared/widgets/custom_singlechildscrollview.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
@@ -11,7 +10,6 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
-import 'package:http/http.dart' as http;
 
 class AdminMain extends StatefulWidget {
   const AdminMain({super.key});
@@ -21,45 +19,45 @@ class AdminMain extends StatefulWidget {
 }
 
 class _AdminMainState extends State<AdminMain> {
-  static final storage = FlutterSecureStorage(); 
+  final _stdAsDataSource = StdAsDataSource();
+  final _meetingRoomDataSource = MeetingRoomDataSource();
 
-  //예약 AS get 함수
+  // * 예약 AS get 함수
   Future<Map<String, dynamic>?> fetchLatestASRequest() async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+    try {
+      final response = await _stdAsDataSource.fetchLatestASRequest();
 
-    final response = await http.get(
-      Uri.parse('$apiURL/api/after-service/user'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body)['after_services'];
-      if (data.isNotEmpty) {
+      final data = response.data;
+      List<dynamic> reservations = data['after_services'];
+      if (reservations.isNotEmpty) {
         // 'visit_date'를 기준으로 AS 요청을 정렬하고 가장 빠른 요청을 반환.
-        data.sort((a, b) => a['visit_date'].compareTo(b['visit_date']));
-        return data.first;
+        reservations.sort((a, b) => a['visit_date'].compareTo(b['visit_date']));
+        return reservations.first;
       }
+
+      return null;
+    } catch (e) {
+      debugPrint('Error: $e');
+      throw Exception('예약 AS를 불러오지 못했습니다.');
     }
-    return null;
   }
 
+  // * 최신 예약 정보 가져오기
   Future<Map<String, dynamic>?> fetchLatestReservation() async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+    try {
+      final response = await _meetingRoomDataSource.fetchLatestReservation();
 
-    final response = await http.get(
-      Uri.parse('$apiURL/api/meeting-room/reservation/user'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = response.data;
       List<dynamic> reservations = data['meeting_room_reservations'];
       if (reservations.isNotEmpty) {
         // 가장 최근의 예약 정보 반환
         return reservations.first;
       }
+      return null; // 예약 정보가 없는 경우
+    } catch (e) {
+      debugPrint('Error: $e');
+      throw Exception('최신 예약 정보를 불러오지 못했습니다.');
     }
-    return null; // 예약 정보가 없는 경우
   }
 
   @override
