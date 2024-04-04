@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -19,11 +20,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ],
       unselectedItemColor: Colors.grey,
       selectedItemColor: Palette.mainColor,
-      onTap: (int index) {
+      onTap: (int index) async {
         switch (index) {
           case 0:
-            // 현재 열려있는 창 다 닫고 홈(첫번째 페이지)으로 이동
-            Navigator.of(context).popUntil((route) => route.isFirst);
+            final initialRoute = await AuthService().getInitialRoute();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              initialRoute!,
+              (route) => false,
+            );
             break;
           case 1:
             Navigator.of(context).pushNamed('/setting');
