@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:yjg/administration/data/data_sources/sleepover_data_source.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
@@ -22,7 +24,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   final TextEditingController _reasonController = TextEditingController();
   final Color _primaryColor = Color.fromRGBO(0, 127, 160, 1);
   final Color _cancelColor = Colors.red; // 취소 버튼 색상
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  final _sleepoverDataSource = SleepoverDataSource();
 
   //외박/외출 필드 전부 안 채웠을 때 함수
   void _showDialog(String title, String content) {
@@ -279,7 +281,6 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
 
   //외박/외출 신청하는 POST API 함수
   Future<void> _submitApplication() async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
     if (_startDate == null ||
         _endDate == null ||
         _reasonController.text.isEmpty) {
@@ -291,21 +292,10 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     Uri apiUrl = Uri.parse('$apiURL/api/absence');
 
     try {
-      var response = await http.post(
-        apiUrl,
-        body: jsonEncode({
-          'start_date': DateFormat('yyyy-MM-dd').format(_startDate!),
-          'end_date': DateFormat('yyyy-MM-dd').format(_endDate!),
-          'content': _reasonController.text,
-          'type': type,
-        }),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json', // JSON 컨텐츠 타입
-        },
-      );
+      final response = await _sleepoverDataSource.submitApplication(
+          _startDate, _endDate, _reasonController, type);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (response.statusCode! >= 200 && response.statusCode! < 300) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('외박 신청이 완료되었습니다.'),
@@ -316,11 +306,11 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
         Navigator.of(context).pop(); // 외박/외출 신청 페이지 닫기
         Navigator.of(context)
             .pushReplacementNamed('/sleepover'); // '/sleepover' 경로로 이동
-      } else if (response.statusCode == 409) {
+      }
+    } on DioException catch (e) {
+      // 409 예외 처리
+      if (e.response?.statusCode == 409) {
         _showDialog('예약 중복', '해당 날짜에 이미 예약이 존재합니다.');
-      } else {
-        print('외출/외박 신청 실패: ${response.statusCode}');
-        _showDialog('실패', '외출/외박 신청에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (e) {
       // 예외 처리

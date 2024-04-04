@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/administration/data/data_sources/std_as_data_source.dart';
 import 'package:yjg/shared/theme/theme.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
 
 DateTime _focusedDay = DateTime.now();
@@ -25,8 +23,7 @@ class _AsApplicationState extends State<AsApplication> {
   List<XFile> _images = []; //이미지를 담을 변수 선언
 
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
-
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
+  final _stdAsDataSource = StdAsDataSource();
 
   //이미지를 가져오는 함수
   Future getImage(ImageSource imageSource) async {
@@ -40,56 +37,48 @@ class _AsApplicationState extends State<AsApplication> {
     }
   }
 
-  // 선택한 정보 보내주는 POST API 함수
+  // * AS 예약 POST API 함수
   Future<bool> sendData() async {
-    final token = await storage.read(key: 'auth_token'); // 토큰 불러오기
-
-    var uri = Uri.parse('$apiURL/api/after-service');
-    var request = http.MultipartRequest('POST', uri)
-      ..fields['title'] = title
-      ..fields['content'] = input
-      ..fields['visit_place'] = place
-      ..fields['visit_date'] = day
-      ..headers['Authorization'] = 'Bearer $token';
-
-    // 이미지 파일을 요청에 추가
-    for (var image in _images) {
-      request.files
-          .add(await http.MultipartFile.fromPath('images[]', image.path));
-    }
-
-    // 요청 전송 및 응답 처리
-    var response = await request.send();
-    final respStr = await response.stream.bytesToString();
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      print('성공적으로 전송됨');
-      print(respStr);
+    try {
+      await _stdAsDataSource.sendData(
+          title, input, place, day, _images); // 데이터 송신
+      // API 호출 성공
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('AS 요청이 성공적으로 전송되었습니다.'),
+          backgroundColor: Palette.mainColor,
+        ),
+      );
       return true; // 성공 시 true 반환
-    } else {
-      print('전송 실패: ${response.reasonPhrase}');
-      print("이거이거이거: $day");
-      print(respStr);
+    } catch (e) {
+      // API 호출 실패
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('AS 요청 전송에 실패했습니다.'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return false; // 실패 시 false 반환
     }
   }
 
   // 제목 텍스트 컨트롤러를 생성 (TextFiled의 내용 접근을 위해서)
-  final TextEditingController title_controller = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
   //제목 담는 변수
   String title = '';
 
   // 날짜 텍스트 컨트롤러를 생성 (TextFiled의 내용 접근을 위해서)
-  final TextEditingController day_controller = TextEditingController();
+  final TextEditingController dayController = TextEditingController();
   //날짜 담는 변수
   String day = '';
 
   //장소 텍스트 컨트롤러를 생성 (TextFiled의 내용 접근을 위해서)
-  final TextEditingController place_controller = TextEditingController();
+  final TextEditingController placeController = TextEditingController();
   //장소 담는 변수
   String place = '';
 
   // 내용 텍스트 컨트롤러를 생성 (TextFiled의 내용 접근을 위해서)
-  final TextEditingController input_controller = TextEditingController();
+  final TextEditingController inputController = TextEditingController();
   //내용 담는 변수
   String input = '';
 
@@ -136,7 +125,7 @@ class _AsApplicationState extends State<AsApplication> {
                 ],
               ),
               child: TextField(
-                controller: title_controller,
+                controller: titleController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: '제목을 입력하세요',
@@ -187,7 +176,7 @@ class _AsApplicationState extends State<AsApplication> {
                   setState(() {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
-                    day_controller.text =
+                    dayController.text =
                         DateFormat('yyyy-MM-dd').format(selectedDay);
                   });
                 },
@@ -247,7 +236,7 @@ class _AsApplicationState extends State<AsApplication> {
                 ],
               ),
               child: TextField(
-                controller: place_controller,
+                controller: placeController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'ex) B동 000호',
@@ -287,7 +276,7 @@ class _AsApplicationState extends State<AsApplication> {
                 ],
               ),
               child: TextField(
-                controller: input_controller,
+                controller: inputController,
                 maxLines: null,
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -317,31 +306,18 @@ class _AsApplicationState extends State<AsApplication> {
                   backgroundColor: MaterialStatePropertyAll(
                       const Color.fromARGB(255, 29, 127, 159))),
               onPressed: () async {
-                title = title_controller.text;
-                day = day_controller.text;
-                input = input_controller.text;
-                place = place_controller.text;
+                title = titleController.text;
+                day = dayController.text;
+                input = inputController.text;
+                place = placeController.text;
 
                 setState(() {
                   _selectedDay = null;
                   _focusedDay = DateTime.now();
-                  day_controller.clear();
+                  dayController.clear();
                 });
 
-                bool success = await sendData();
-                if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('AS 요청이 성공적으로 전송되었습니다.'),
-                    backgroundColor: Palette.mainColor,
-                  ));
-                  Navigator.pop(context, true);
-                  Navigator.popAndPushNamed(context, '/as_page');
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('AS 요청 전송에 실패했습니다.'),
-                    backgroundColor: Palette.mainColor,
-                  ));
-                }
+                await sendData();
               },
               child: Text(
                 '요청하기',

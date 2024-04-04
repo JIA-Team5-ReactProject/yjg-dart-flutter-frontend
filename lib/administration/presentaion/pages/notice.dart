@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:yjg/administration/data/data_sources/notice_data_source.dart';
 import 'package:yjg/administration/presentaion/pages/notice_detail_page.dart';
-import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -20,34 +17,24 @@ class _NoticeState extends State<Notice> {
   Future<List<dynamic>>? notices;
   int currentPage = 1;
   int? lastPage;
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
-
+  final _noticeDatasource = NoticeDataSource();
   @override
   void initState() {
     super.initState();
     fetchNotices(currentPage, "admin");
   }
 
-  // 공지사항 불러오는 GET API
+  // * 공지사항 불러오는 GET API
   Future<void> fetchNotices(int page, String tag) async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
-    final response = await http.get(
-      Uri.parse('$apiURL/api/notice?page=$page'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": //아래에 토큰을 $token으로 바꿔줘야함
-            "Bearer $token"
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+    try {
+      final response = await _noticeDatasource.fetchNotices(page, tag);
+      final data = response.data;
       setState(() {
         notices = Future.value(List<dynamic>.from(data['notices']['data']));
         lastPage = data['notices']['last_page'];
       });
-    } else {
-      print('Failed to load notices. Status Code: ${response.statusCode}');
+    } catch (e) {
+      throw Exception('공지사항 로드 실패: $e');
     }
   }
 
@@ -150,54 +137,54 @@ class _NoticeState extends State<Notice> {
   }
 
   Widget _buildNoticeCard(dynamic notice, bool isUrgent) {
-  final titleStyle = TextStyle(
-    color: isUrgent ? Colors.red : Colors.black,
-    fontWeight: FontWeight.bold,
-  );
-  final dateStyle = TextStyle(color: Colors.grey);
-  final dateFormat = DateFormat('yyyy-MM-dd');
+    final titleStyle = TextStyle(
+      color: isUrgent ? Colors.red : Colors.black,
+      fontWeight: FontWeight.bold,
+    );
+    final dateStyle = TextStyle(color: Colors.grey);
+    final dateFormat = DateFormat('yyyy-MM-dd');
 
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NoticeDetailPage(notice: notice),
-        ),
-      );
-    },
-    child: Center( 
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.85,// 카드의 가로 크기 설정
-        margin: const EdgeInsets.symmetric(vertical: 8), // 상하 여백 설정
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(notice['title'], style: titleStyle),
-              SizedBox(height: 5),
-              Text(dateFormat.format(DateTime.parse(notice['updated_at'])),
-                  style: dateStyle),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoticeDetailPage(notice: notice),
+          ),
+        );
+      },
+      child: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.85, // 카드의 가로 크기 설정
+          margin: const EdgeInsets.symmetric(vertical: 8), // 상하 여백 설정
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
             ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(notice['title'], style: titleStyle),
+                SizedBox(height: 5),
+                Text(dateFormat.format(DateTime.parse(notice['updated_at'])),
+                    style: dateStyle),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildSectionDivider() {
     return Container(

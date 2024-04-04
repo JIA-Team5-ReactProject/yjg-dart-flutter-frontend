@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/administration/data/data_sources/meeting_room_data_source.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
@@ -32,35 +29,23 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
   List<String> _selectedTimes = [];
   List<String> _reservedTimes = [];
   List<Map<String, dynamic>> _meetingRooms = []; //받아온 회의실 목록을 저장해주는 API
+  final _meetingRoomDataSource = MeetingRoomDataSource();
 
   String? _minSelectableTime; // 사용자가 선택할 수 있는 최소 시간을 저장하는 변수
   String? _maxSelectableTime; // 사용자가 선택할 수 있는 최대 시간을 저장하는 변수
 
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
-
-  //해당 회의실 마다의 예약 된 시간 목록을 받아오는 API
+  // * 해당 회의실 마다의 예약 된 시간 목록을 받아오는 API
   Future<void> fetchReservedTimes(String roomNumber, DateTime date) async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+    try {
+      final response =
+          await _meetingRoomDataSource.fetchReservedTimes(roomNumber, date);
 
-    final String dateString =
-        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-
-    final numericRoomNumber =
-        roomNumber.replaceAll(RegExp(r'[^0-9]'), ''); // 호실 번호에서 숫자 부분만 추출
-
-    final response = await http.get(
-      Uri.parse(
-          '$apiURL/api/meeting-room/check?date=$dateString&room_number=$numericRoomNumber'),
-      headers: {'Authorization': 'Bearer $token'}, // 요청 헤더에 토큰 추가
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final data = response.data;
       setState(() {
         _reservedTimes = List<String>.from(data['reservations']);
         _maxSelectableTime = null; // 새로운 호실을 선택할 때는 최대 선택 가능 시간을 리셋합니다.
       });
-    } else {
+    } catch (e) {
       setState(() {
         _reservedTimes = [];
         _maxSelectableTime = null;
@@ -68,16 +53,11 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
     }
   }
 
-  //회의실의 목록을 받아오는 API
+  // * 회의실의 목록을 받아오는 API
   Future<void> fetchMeetingRooms() async {
-    final token = await storage.read(key: 'auth_token');
-    final response = await http.get(
-      Uri.parse('$apiURL/api/meeting-room'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+    try {
+      final response = await _meetingRoomDataSource.fetchMeetingRooms();
+      final data = response.data;
       final rooms = List<Map<String, dynamic>>.from(
         data['meeting_rooms'].map((room) => {
               'room_number': room['room_number'],
@@ -88,9 +68,9 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
       setState(() {
         _meetingRooms = rooms;
       });
-    } else {
+    } catch (e) {
       // 에러 처리
-      print('Failed to load meeting rooms');
+      debugPrint('회의실 목록 로드 실패: $e');
     }
   }
 
@@ -171,7 +151,7 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
     });
   }
 
-  // 예약을 위한 함수 추가
+  // * 예약을 위한 함수 추가
   Future<void> _makeReservation(String roomNumber, DateTime selectedDay,
       String startTime, String endTime) async {
     if (_selectedRoom.isEmpty ||
@@ -206,91 +186,64 @@ class _MeetingRoomAppState extends State<MeetingRoomApp> {
     final roomNumber =
         _selectedRoom.replaceAll(RegExp(r'[^0-9]'), ''); // 호실 번호에서 숫자만 추출
 
-    // API URL 구성
-    final url = Uri.parse('$apiURL/api/meeting-room/reservation');
-
     try {
-      final token = await storage.read(key: 'auth_token');
-      final response = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'meeting_room_number': roomNumber,
-          'reservation_date': reservationDate,
-          'reservation_s_time': reservationSTime,
-          'reservation_e_time': reservationETime,
-        }),
-      );
-
-      // 서버 응답 상태 코드 및 본문 출력
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      await _meetingRoomDataSource.makeReservation(
+          roomNumber, reservationDate, reservationSTime, reservationETime);
 
       // 종료 시간에서 시간 부분만 추출
       int endIndex = reservationETime.indexOf(":"); // ":" 문자의 위치를 찾음
       String reservationEHour = reservationETime.substring(
           0, endIndex); // 시작부터 ":" 문자 위치까지의 부분 문자열을 추출
 
-      if (response.statusCode == 201) {
-        final responseData = jsonDecode(response.body);
-
-        // 수정된 AlertDialog 호출
-        showDialog(
-          context: context,
-          barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("회의실 예약 완료"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text("날짜: $reservationDate"),
-                    Text("호실: $roomNumber"),
-                    // 예약 종료 시간에서 시간 부분만 표시
-                    Text(
-                        "시간: $reservationSTime ~ ${reservationETime.split(":")[0]}:59"),
-                  ],
-                ),
+      // 수정된 AlertDialog 호출
+      showDialog(
+        context: context,
+        barrierDismissible: false, // 바깥 영역 클릭시 닫히지 않도록 설정
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("회의실 예약 완료"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text("날짜: $reservationDate"),
+                  Text("호실: $roomNumber"),
+                  // 예약 종료 시간에서 시간 부분만 표시
+                  Text(
+                      "시간: $reservationSTime ~ ${reservationETime.split(":")[0]}:59"),
+                ],
               ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text("확인"),
-                  onPressed: () {
-                    Navigator.of(context).popUntil(
-                        (route) => route.isFirst); // 첫 번째 페이지까지 모든 페이지를 닫음
-                    Navigator.pushNamed(context, '/meeting_room_main');
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        // 실패 메시지 표시 (상태 코드를 포함하여)
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text(
-                  "Failed to make a reservation. Status Code: ${response.statusCode}"),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.of(context).popUntil(
+                      (route) => route.isFirst); // 첫 번째 페이지까지 모든 페이지를 닫음
+                  Navigator.pushNamed(context, '/meeting_room_main');
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
-      print(e);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("예약에 실패하였습니다."),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 

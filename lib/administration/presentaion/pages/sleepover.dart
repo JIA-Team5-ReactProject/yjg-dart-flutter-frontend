@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:yjg/administration/data/data_sources/sleepover_data_source.dart';
 import 'package:yjg/administration/presentaion/widgets/sleepover_widget.dart';
-import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Sleepover extends StatefulWidget {
   const Sleepover({Key? key}) : super(key: key);
@@ -17,8 +14,8 @@ class Sleepover extends StatefulWidget {
 }
 
 class _SleepoverState extends State<Sleepover> {
-  static final storage = FlutterSecureStorage(); //정원이가 말해준 코드(토큰)
   Future<List<dynamic>>? _sleepoverApplications;
+  final _sleepoverDataSource = SleepoverDataSource();
 
   @override
   void initState() {
@@ -33,18 +30,10 @@ class _SleepoverState extends State<Sleepover> {
   }
 
   Future<List<dynamic>> fetchSleepoverApplications() async {
-    final token = await storage.read(key: 'auth_token'); //정원이가 말해준 코드(토큰 불러오기)
+    try {
+      final response = await _sleepoverDataSource.fetchSleepoverApplications();
 
-    final response = await http.get(
-      Uri.parse('$apiURL/api/absence/user'),
-      headers: {
-        "Content-Type": "application/json", //아래 토큰 $token으로 바꿔줘야함(로그인 연동)
-        "Authorization": "Bearer $token"
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
+      final result = response.data;
       if (result is Map &&
           result.containsKey('absence_lists') &&
           result['absence_lists']['data'] is List) {
@@ -52,8 +41,8 @@ class _SleepoverState extends State<Sleepover> {
       } else {
         return [];
       }
-    } else {
-      throw Exception('Failed to load sleepover applications');
+    } catch (e) {
+      throw Exception('예약 불러오기를 실패하였습니다.');
     }
   }
 
