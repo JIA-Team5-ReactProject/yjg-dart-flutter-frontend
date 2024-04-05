@@ -84,6 +84,7 @@ class InternationalRegisteration extends ConsumerWidget {
                                   // 사용 가능한 이메일
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
+                                      backgroundColor: Palette.mainColor,
                                       content: Text('사용 가능한 이메일입니다.'),
                                       duration: Duration(seconds: 2),
                                     ),
@@ -92,6 +93,7 @@ class InternationalRegisteration extends ConsumerWidget {
                                   // 이미 사용중인 이메일
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
+                                      backgroundColor: Colors.red,
                                       content: Text('이미 사용중인 이메일입니다.'),
                                       duration: Duration(seconds: 2),
                                     ),

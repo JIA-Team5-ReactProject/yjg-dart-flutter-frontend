@@ -40,7 +40,7 @@ class RegisterDataSource {
   // 이메일 중복 검사 API 호출
   Future<bool> checkEmailDuplicate(String email) async {
     try {
-      final url = '$apiURL/api/user/verify-email/$email';
+      final url = '$apiURL/api/verify-email/$email';
       final response =
           await dio.get(url, options: Options(extra: {"noAuth": true}));
 
