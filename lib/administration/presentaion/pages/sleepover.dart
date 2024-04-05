@@ -48,7 +48,6 @@ class _SleepoverState extends State<Sleepover> {
 
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -131,33 +130,16 @@ class _SleepoverState extends State<Sleepover> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
                       final application = snapshot.data![index];
-                      return InkWell(
-                          onTap: () async {
-                            final result = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => SleepoverWidget(
-                                id: application['id'],
-                                apply: application['status'],
-                                startDate: application['start_date'],
-                                lastDate: application['end_date'],
-                                content: application['content'],
-                              ),
-                            );
-
-                            if (result == true) {
-                              _loadSleepoverApplications();
-                            }
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: SleepoverWidget(
-                              id: application['id'],
-                              apply: application['status'],
-                              startDate: application['start_date'],
-                              lastDate: application['end_date'],
-                              content: application['content'],
-                            ),
-                          ));
+                      return Container(
+                        alignment: Alignment.center,
+                        child: SleepoverWidget(
+                          id: application['id'],
+                          apply: application['status'],
+                          startDate: application['start_date'],
+                          lastDate: application['end_date'],
+                          content: application['content'],
+                        ),
+                      );
                     },
                   );
                 }
