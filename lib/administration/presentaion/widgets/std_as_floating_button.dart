@@ -19,15 +19,15 @@ class StudentAsFloatingButton extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: onEdit,
-            child: const Icon(Icons.edit, size: 20),
             heroTag: 'editBtn',
+            child: const Icon(Icons.edit, size: 20),
           ),
           const SizedBox(width: 5),
           FloatingActionButton(
             onPressed: onDelete,
-            child: const Icon(Icons.delete, size: 20),
             backgroundColor: Colors.red,
             heroTag: 'deleteBtn',
+            child: const Icon(Icons.delete, size: 20),
           ),
         ],
       ),
