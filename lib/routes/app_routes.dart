@@ -94,7 +94,6 @@ class AppRoutes {
   };
 
   static String getInitialRouteBasedOnUserType(String? userType) {
-    debugPrint('getInitialRouteBasedOnUserType 시작: $userType');
     switch (userType) {
       case 'student':
         return '/dashboard_main';
