@@ -36,19 +36,6 @@ void main() async {
   );
 }
 
-String getInitialRouteBasedOnUserType(String? userType) {
-  switch (userType) {
-    case 'student':
-      return '/dashboard_main'; // 학생 대시보드로 이동
-    case 'admin':
-      return '/as_admin'; // AS 관리자 페이지로 이동
-    case 'salon':
-      return '/admin_salon_main'; // 미용실 관리자 페이지로 이동
-    default:
-      return '/login_student'; // 사용자 유형이 지정되지 않았거나 잘못된 경우, 로그인 페이지로 이동
-  }
-}
-
 class MyApp extends ConsumerWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final String initialRoute;
