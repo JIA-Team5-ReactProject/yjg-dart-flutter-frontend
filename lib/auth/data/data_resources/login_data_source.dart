@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:yjg/auth/data/models/user.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
@@ -15,7 +14,7 @@ class LoginDataSource {
   static final storage = FlutterSecureStorage(); // 토큰 담는 곳
 
   LoginDataSource() {
-      dio.interceptors.add(DioInterceptor(dio)); // 수정된 생성자를 사용
+    dio.interceptors.add(DioInterceptor(dio)); // 수정된 생성자를 사용
   }
   // 스토리지 모듈
   Future<void> _saveToStorage(Map<String, String> data) async {
@@ -34,7 +33,8 @@ class LoginDataSource {
     };
 
     try {
-      final response = await dio.post(url, data: data, options: Options(extra: {"noAuth": true}));
+      final response = await dio.post(url,
+          data: data, options: Options(extra: {"noAuth": true}));
       Usergenerated userGenerated = Usergenerated.fromJson(response.data);
 
       // 사용자 기본 정보 업데이트
@@ -63,22 +63,19 @@ class LoginDataSource {
   }
 
 // * 관리자 로그인
-  Future<http.Response> postAdminLoginAPI(WidgetRef ref) async {
+  Future<Response> postAdminLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
     final url = '$apiURL/api/admin/login';
-    final body = jsonEncode(<String, String>{
+    final data = {
       'email': loginState.email,
       'password': loginState.password,
-    });
+    };
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: body);
+    try {
+      final response = await dio.post(url,
+          data: data, options: Options(extra: {"noAuth": true}));
 
-    if (response.statusCode == 200) {
-      final result = Usergenerated.fromJson(jsonDecode(response.body));
+      final result = Usergenerated.fromJson(jsonDecode(response.data));
       String? token = result.accessToken; // 토큰값 추출
       String? refreshToken = result.refreshToken; // 리프레시 토큰값 추출
 
@@ -96,37 +93,42 @@ class LoginDataSource {
               .read(adminPrivilegesProvider.notifier)
               .updatePrivileges(result.user!);
         }
+        return response;
       } else {
         throw Exception('토큰이 없습니다.');
       }
-    } else {
-      throw Exception('로그인 실패: ${response.statusCode}');
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('로그인에 실패했습니다.');
     }
-    return response;
   }
 
   //  * 리프레시 토큰 교환
-  Future<void> getRefreshTokenAPI() async {
-    final storage = FlutterSecureStorage();
-    debugPrint('토큰 만료: 리프레시 토큰 교환 시작');
+  Future<String> getRefreshTokenAPI() async {
     final refreshToken = await storage.read(key: 'refresh_token');
+    if (refreshToken == null) throw Exception("리프레시 토큰이 없습니다.");
+
     final url = '$apiURL/api/refresh';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $refreshToken',
-      },
-    );
 
-    debugPrint('리프레시 토큰 교환 결과: ${response.statusCode}, ${response.body}');
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(extra: {
+          'useRefreshToken': true, // 리프레시 토큰 사용을 위한 플래그 설정
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      final accessToken = responseData['access_token'];
-      // 토큰 교체
-      storage.write(key: 'auth_token', value: accessToken);
-      debugPrint('리프레시 토큰 교환 완료, 액세스 토큰 교체: $accessToken');
+      final accessToken = response.data['access_token'];
+      if (accessToken != null) {
+        await storage.write(key: 'auth_token', value: accessToken);
+        debugPrint('리프레시 토큰 교환 완료, 액세스 토큰 교체: $accessToken');
+        return accessToken;
+      } else {
+        throw Exception("액세스 토큰이 없습니다.");
+      }
+    } catch (e) {
+      debugPrint('통신 결과: $e');
+      throw Exception('리프레시 토큰 교환에 실패했습니다.');
     }
   }
 }
