@@ -8,6 +8,7 @@ import 'package:yjg/auth/domain/usecases/domain_validation_usecase.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/main.dart';
 import 'package:yjg/shared/constants/api_url.dart';
+import 'package:yjg/shared/service/interceptor.dart';
 
 class GoogleLoginDataSource {
   static final _googleSignIn = GoogleSignIn(
@@ -18,6 +19,10 @@ class GoogleLoginDataSource {
 
   static final Dio dio = Dio();
   static final _storage = FlutterSecureStorage();
+
+  GoogleLoginDataSource() {
+    dio.interceptors.add(DioInterceptor(dio));
+  }
 
   // 구글로 로그인하는 함수
   Future<void> signInWithGoogle(WidgetRef ref, BuildContext context) async {
@@ -95,6 +100,8 @@ class GoogleLoginDataSource {
         // 로그인 성공 시 메인 대시보드로 이동
         navigatorKey.currentState!.pushNamed('/dashboard_main');
       }
+    } on DioException catch (e) {
+      debugPrint('${e.response}, 코드: ${e.response?.statusCode}');
     } catch (e) {
       debugPrint('비HTTP 에러 발생: $e');
     }
