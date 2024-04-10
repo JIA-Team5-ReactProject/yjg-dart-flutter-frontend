@@ -113,8 +113,19 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return FutureBuilder<bool>(
       future: _reservationDataSource.fetchWeekendApplyState(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); // 에러 처리
+        if (snapshot.hasError) { //에러 코드를 반환하는 경우
+          return Opacity(
+            opacity: false ? 1.0 : 0.5,
+            child: IgnorePointer(
+              ignoring: !false,
+              child: MoveButton(
+                icon: Icons.calendar_month_outlined,
+                text1: '주말 식수',
+                text2: '월~수 신청가능',
+                route: '/weekend_meal',
+              ),
+            ),
+          );
         } else {
           // API로부터 받은 값과 요일을 기준으로 버튼 활성화 결정
           final isButtonActive = snapshot.data == true;
@@ -141,8 +152,19 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return FutureBuilder<bool>(
       future: _reservationDataSource.fetchSemesterApplyState(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); // 에러 처리
+        if (snapshot.hasError) { //에러 코드를 반환하는 경우
+          return Opacity(
+            opacity: false ? 1.0 : 0.5,
+            child: IgnorePointer(
+              ignoring: !false,
+              child: MoveButton(
+                icon: Icons.calendar_month_outlined,
+                text1: '학기 식수',
+                text2: '학기 식수 신청',
+                route: '/meal_application',
+              ),
+            ),
+          ); 
         } else {
           // API로부터 받은 값을 기준으로 버튼 활성화 결정
           final isButtonActive = snapshot.data == true;

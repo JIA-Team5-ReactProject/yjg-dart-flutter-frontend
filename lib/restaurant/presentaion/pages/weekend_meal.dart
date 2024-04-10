@@ -37,6 +37,7 @@ class _WeekendMealState extends State<WeekendMeal> {
   List<dynamic> mealTypes = []; // API로부터 가져온 식사 유형 데이터를 저장할 리스트
   final _weekendReservationDataSource = WeekendMealReservationDataSource();
   final _reservationDataSource = MealReservationDataSource();
+  
   //get 함수로 불러온 신청 유저의 데이터를 저장할 변수들
   String studentId = '';
   String name = '';

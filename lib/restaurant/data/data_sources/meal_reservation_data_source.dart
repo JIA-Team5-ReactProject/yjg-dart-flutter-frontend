@@ -37,7 +37,12 @@ class MealReservationDataSource {
     try {
       final response = await dio.get(url);
       final data = response.data;
-      return data['weekend'] = true; // true면 true, 아니면 false
+      // 'state'의 내부 'state' 값에 따라 true 또는 false 반환
+      if (data['manual'] == 1) {
+        return true; // 'state'의 'state' 값이 1이면 true 반환
+      } else {
+        return false; // 그렇지 않으면 false 반환
+      }
     } catch (e) {
       debugPrint('Error: $e');
       throw Exception('주말 신청 상태를 불러오지 못했습니다.');
@@ -51,7 +56,13 @@ class MealReservationDataSource {
       String url = '$apiURL/api/restaurant/apply/state/check/semester';
       final response = await dio.get(url);
       final data = response.data;
-      return data['semester'] = true; // 1이면 true, 아니면 false
+
+      // 'state'의 내부 'state' 값에 따라 true 또는 false 반환
+      if (data['manual'] == 1) {
+        return true; // 'state'의 'state' 값이 1이면 true 반환
+      } else {
+        return false; // 그렇지 않으면 false 반환
+      }
     } catch (e) {
       debugPrint('Error: $e');
       throw Exception('학기 신청 상태를 불러오지 못했습니다.');
