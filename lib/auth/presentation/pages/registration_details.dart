@@ -10,6 +10,7 @@ class RegistrationDetails extends ConsumerWidget {
 
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController studentIdController = TextEditingController();
+  Map<String, dynamic> change = {};
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,17 +71,20 @@ class RegistrationDetails extends ConsumerWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                            final detailUseCase = DetailUseCase(ref: ref);
+                              final detailUseCase = DetailUseCase(ref: ref);
 
-                             String phoneNumber = phoneNumberController.text
-                                    .replaceAll(RegExp(r'[^\d]'), '');
+                              String phoneNumber = phoneNumberController.text
+                                  .replaceAll(RegExp(r'[^\d]'), '');
 
-                            await detailUseCase.execute(
-                              phoneNumber: phoneNumber,
-                              studentId: studentIdController.text,
-                              context: context,
-                            );
-                            
+                              change = {
+                                'phone_number': phoneNumber,
+                                'student_id': studentIdController.text,
+                              };
+
+                              await detailUseCase.execute(
+                                change: change,
+                                context: context,
+                              );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

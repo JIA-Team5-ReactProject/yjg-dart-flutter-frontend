@@ -37,7 +37,7 @@ class LoginDataSource {
         'refresh_token': userGenerated.refreshToken!,
         'name': userGenerated.user!.name!,
         'student_num': userGenerated.user!.studentId!,
-        'phone_num' : userGenerated.user!.phoneNumber!,
+        'phone_num': userGenerated.user!.phoneNumber!,
       });
 
       debugPrint('토큰 저장: ${userGenerated.accessToken}');
@@ -68,9 +68,13 @@ class LoginDataSource {
       String? refreshToken = result.refreshToken; // 리프레시 토큰값 추출
 
       if (token != null) {
-        await storage.write(key: 'auth_token', value: token); // 토큰 저장
-        await storage.write(
-            key: 'refresh_token', value: refreshToken); // 리프레시 토큰 저장
+        // 스토리지에 토큰과 사용자 정보 저장
+        await saveToStorage({
+          'auth_token': result.accessToken!,
+          'refresh_token': result.refreshToken!,
+          'name': result.user!.name!,
+          'phone_num': result.user!.phoneNumber!,
+        });
 
         debugPrint('토큰 저장: $token');
         debugPrint('리프레시 토큰 저장: $refreshToken');

@@ -10,14 +10,12 @@ class DetailUseCase {
   DetailUseCase({required this.ref});
 
   Future<void> execute({
-    required String studentId,
-    required String phoneNumber,
+    required change,
     required BuildContext context,
   }) async {
     // User 상태 업데이트
     ref.read(userProvider.notifier).additionalInfoFormUpdate(
-          studentId: studentId,
-          phoneNumber: phoneNumber,
+          change: change,
         );
 
     // SecureStorage에서 토큰 가져오기
@@ -37,7 +35,7 @@ class DetailUseCase {
     // 추가 정보 입력 API 호출
     try {
       final dataSource = UserDataSource(); // DataSource 인스턴스 생성
-      final response = await dataSource.patchAdditionalInfoAPI(ref);
+      final response = await dataSource.patchAdditionalInfoAPI(ref, change);
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(

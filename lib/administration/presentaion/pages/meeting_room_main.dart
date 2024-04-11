@@ -165,11 +165,7 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
                       "현재 예약된 회의실이 없습니다.",
                       style: TextStyle(color: Colors.grey),
                     ));
-                    return Center(
-                        child: Text(
-                      "현재 예약된 회의실이 없습니다.",
-                      style: TextStyle(color: Colors.grey),
-                    ));
+                    
                   }
                 }
               },
