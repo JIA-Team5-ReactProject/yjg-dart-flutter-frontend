@@ -21,7 +21,7 @@ class AuthService {
       return '/login_student';
     }
 
-    if (autoLoginStr == 'true' || JwtDecoder.isExpired(token!)) {
+    if (autoLoginStr == 'true' && JwtDecoder.isExpired(token!)) {
       // 리프레시 토큰으로 액세스 토큰 갱신
       await LoginDataSource().getRefreshTokenAPI();
 
