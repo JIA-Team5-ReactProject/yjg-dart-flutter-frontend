@@ -121,7 +121,9 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                                 route: '/salon_price_list'),
                           ],
                         ),
-                        SizedBox(height: 10.0,),
+                        SizedBox(
+                          height: 10.0,
+                        ),
                         // 공지사항
                         Container(
                           margin: const EdgeInsets.symmetric(
@@ -142,11 +144,22 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                                 itemCount: notices.length,
                                 itemBuilder: (context, index) {
                                   final notice = notices[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: NoticeBox(
-                                      title: notice.title ?? '제목 없음',
-                                      content: notice.content ?? '내용 없음',
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/notice_detail',
+                                        arguments:
+                                            notice.id, // 공지사항의 ID를 인자로 전달
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 20.0),
+                                      child: NoticeBox(
+                                        title: notice.title ?? '제목 없음',
+                                        content: notice.content ?? '내용 없음',
+                                      ),
                                     ),
                                   );
                                 },

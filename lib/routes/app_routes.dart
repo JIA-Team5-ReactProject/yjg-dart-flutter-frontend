@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/administration/presentaion/pages/notice_detail_page.dart';
 import 'package:yjg/auth/presentation/pages/new_password_update.dart';
 import 'package:yjg/auth/presentation/pages/student_login.dart';
 import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
@@ -78,6 +79,10 @@ class AppRoutes {
     //행정 관련
     '/admin_main': (context) => AdminMain(),
     '/notice': (context) => Notice(),
+    '/notice_detail': (context) {
+      final noticeId = ModalRoute.of(context)!.settings.arguments as int;
+      return NoticeDetailPage(noticeId: noticeId);
+    },
     '/as_page': (context) => AsPage(),
     '/as_application': (context) => AsApplication(),
     '/sleepover': (context) => Sleepover(),

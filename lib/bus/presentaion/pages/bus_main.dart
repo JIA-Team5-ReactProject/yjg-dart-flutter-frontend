@@ -26,7 +26,8 @@ class _BusMainState extends ConsumerState<BusMain> {
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '버스'),
       drawer: BaseDrawer(),
-      body: SingleChildScrollView( // SingleChildScrollView 추가하여 스크롤 가능하도록 수정
+      body: SingleChildScrollView(
+        // SingleChildScrollView 추가하여 스크롤 가능하도록 수정
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -95,18 +96,30 @@ class _BusMainState extends ConsumerState<BusMain> {
                     itemCount: notices.length,
                     itemBuilder: (context, index) {
                       final notice = notices[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: NoticeBox(
-                          title: notice.title ?? '제목 없음',
-                          content: notice.content ?? '내용 없음',
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/notice_detail',
+                            arguments: notice.id, // 공지사항의 ID를 인자로 전달
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: NoticeBox(
+                            title: notice.title ?? '제목 없음',
+                            content: notice.content ?? '내용 없음',
+                          ),
                         ),
                       );
                     },
                   ),
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator(color: Palette.stateColor4,)),
+              loading: () => const Center(
+                  child: CircularProgressIndicator(
+                color: Palette.stateColor4,
+              )),
               error: (error, _) => Center(child: Text('Error: $error')),
             ),
           ],

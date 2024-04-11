@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/administration/data/data_sources/notice_data_source.dart';
-import 'package:yjg/administration/presentaion/pages/notice_detail_page.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -146,12 +145,7 @@ class _NoticeState extends State<Notice> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NoticeDetailPage(notice: notice),
-          ),
-        );
+        Navigator.pushNamed(context, '/notice_detail', arguments: notice['id']);
       },
       child: Center(
         child: Container(
