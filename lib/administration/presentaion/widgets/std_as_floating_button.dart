@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yjg/shared/theme/palette.dart';
 
 class StudentAsFloatingButton extends StatelessWidget {
   final VoidCallback onEdit;
@@ -19,15 +20,16 @@ class StudentAsFloatingButton extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: onEdit,
+            backgroundColor: Palette.mainColor,
             heroTag: 'editBtn',
-            child: const Icon(Icons.edit, size: 20),
+            child: const Icon(Icons.edit, size: 20,color: Colors.white),
           ),
           const SizedBox(width: 5),
           FloatingActionButton(
             onPressed: onDelete,
-            backgroundColor: Colors.red,
+            backgroundColor: const Color.fromARGB(255, 166, 166, 166),
             heroTag: 'deleteBtn',
-            child: const Icon(Icons.delete, size: 20),
+            child: const Icon(Icons.delete, size: 20,color: Color.fromARGB(255, 255, 255, 255)),
           ),
         ],
       ),

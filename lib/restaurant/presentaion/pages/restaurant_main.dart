@@ -228,7 +228,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                 MoveButton(
                     icon: Icons.backup_table,
                     text1: '식단표',
-                    text2: '이번 일주일 식단표',
+                    text2: '이번 달 식단표',
                     route: '/menu_list'),
                 MoveButton(
                     icon: Icons.qr_code,
