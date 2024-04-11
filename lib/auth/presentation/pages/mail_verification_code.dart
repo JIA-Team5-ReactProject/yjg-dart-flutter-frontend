@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:timer_count_down/timer_count_down.dart";
-import "package:yjg/auth/domain/usecases/register_usecase.dart";
 import "package:yjg/auth/domain/usecases/reset_password_verify_code_usecase.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
 import "package:yjg/shared/theme/palette.dart";
