@@ -7,8 +7,8 @@ import 'package:yjg/salon/domain/usecases/reservation_usecase.dart';
 import 'package:yjg/salon/presentaion/viewmodels/reservations_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
-void myBookingModal(
-    BuildContext context, WidgetRef ref, Reservations reservation, String? status) {
+void myBookingModal(BuildContext context, WidgetRef ref,
+    Reservations reservation, String? status) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -46,22 +46,51 @@ void myBookingModal(
             // 상태
             _buildModalRow('상태', getStatusText(reservation.status ?? '')),
             SizedBox(height: 10.0),
-             if (status == 'submit')
+            if (status == 'submit')
               Align(
                 alignment: Alignment.centerRight,
                 child: InkWell(
                   onTap: () async {
-                    final bookingDataSource = BookingDataSource();
-                    final reservationUseCase =
-                        ReservationUseCase(bookingDataSource);
+                    final confirmDelete = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('예약 취소',
+                            style: TextStyle(
+                                color: Palette.textColor,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600)),
+                        content: Text('해당 예약을 취소하시겠습니까?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text('취소',
+                                style: TextStyle(
+                                    color: Palette.stateColor4,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text('삭제',
+                                style: TextStyle(
+                                    color: Palette.stateColor3,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                    );
 
-                    // 예약 취소 메서드 호출
-                    await reservationUseCase.cancelReservation(
-                        reservation.id ?? 0, context);
-                    
-                    // 예약 취소 후 목록 리프레시
-                    ref.refresh(reservationsProvider);
+                    if (confirmDelete == true) {
+                      final bookingDataSource = BookingDataSource();
+                      final reservationUseCase =
+                          ReservationUseCase(bookingDataSource);
 
+                      // 예약 취소 메서드 호출
+                      await reservationUseCase.cancelReservation(
+                          reservation.id ?? 0, context);
+
+                      // 예약 취소 후 목록 리프레시
+                      ref.refresh(reservationsProvider);
+                    }
                   },
                   child: Text(
                     '예약 취소하기',

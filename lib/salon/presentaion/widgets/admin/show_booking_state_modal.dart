@@ -36,7 +36,7 @@ void showBookingStateModal(
                 ),
                 ListTile(
                   title: const Text('승인하기'),
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
                       selectedAction = BookingAction.confirm;
                       isConfirm = true;
@@ -57,7 +57,7 @@ void showBookingStateModal(
                 ),
                 ListTile(
                   title: const Text('거절하기'),
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
                       selectedAction = BookingAction.reject;
                       isConfirm = false;
@@ -79,38 +79,43 @@ void showBookingStateModal(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                     onPressed: () async {
-                      AdminReservation updateState = AdminReservation(
-                        id: reservation.id,
-                        status: isConfirm,
-                      );
-                      ReservationResult result =
-                          await reservationUseCases.updateStatus(updateState);
-                      debugPrint('selectedDay: $selectedDay');
-                      if (result.isSuccess) {
-                        ref
-                            .read(reservationViewModelProvider.notifier)
-                            .fetchReservations(
-                                reservationDate: DateFormat('yyyy-MM-dd')
-                                    .format(selectedDay ?? DateTime.now()));
+                      bool? Confirm = await showConfirmDialog(
+                          context, isConfirm! ? '승인' : '거절');
 
-                        // 성공 알림 표시
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(result.message),
-                            backgroundColor: Palette.mainColor,
-                          ),
+                      if (Confirm == true) {
+                        AdminReservation updateState = AdminReservation(
+                          id: reservation.id,
+                          status: isConfirm,
                         );
+                        ReservationResult result =
+                            await reservationUseCases.updateStatus(updateState);
+                        debugPrint('selectedDay: $selectedDay');
+                        if (result.isSuccess) {
+                          ref
+                              .read(reservationViewModelProvider.notifier)
+                              .fetchReservations(
+                                  reservationDate: DateFormat('yyyy-MM-dd')
+                                      .format(selectedDay ?? DateTime.now()));
 
-                        // 모달 창 닫기
-                        Navigator.pop(context);
-                      } else {
-                        // 실패 시 실패 알림 표시
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(result.message),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                          // 성공 알림 표시
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result.message),
+                              backgroundColor: Palette.mainColor,
+                            ),
+                          );
+
+                          // 모달 창 닫기
+                          Navigator.pop(context);
+                        } else {
+                          // 실패 시 실패 알림 표시
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result.message),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -129,5 +134,34 @@ void showBookingStateModal(
         },
       );
     },
+  );
+}
+
+// 확인 다이얼로그 함수
+Future<bool?> showConfirmDialog(BuildContext context, String state) async {
+  return await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('예약 $state',
+          style: TextStyle(
+              color: Palette.textColor,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w600)),
+      content: Text('이 예약 건을 $state하시겠습니까?'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text('취소',
+              style: TextStyle(
+                  color: Palette.stateColor4, fontWeight: FontWeight.w600)),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(state,
+              style: TextStyle(
+                  color: Palette.stateColor3, fontWeight: FontWeight.w600)),
+        ),
+      ],
+    ),
   );
 }
