@@ -19,9 +19,9 @@ class LogoutDataSource {
     try {
       await dio.post(url);
 
-      await storage.delete(key: 'auth_token');
-      await storage.delete(key: 'refresh_token');
-      await storage.delete(key: 'studentName');
+      // 스토리지에 저장된 모든 정보를 삭제함
+      await storage.deleteAll();
+
       debugPrint('로그아웃 완료');
     } catch (e) {
       debugPrint('로그아웃 실패: $e');
