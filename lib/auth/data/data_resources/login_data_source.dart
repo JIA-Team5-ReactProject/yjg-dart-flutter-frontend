@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,19 +36,13 @@ class LoginDataSource {
           data: data, options: Options(extra: {"noAuth": true}));
       Usergenerated userGenerated = Usergenerated.fromJson(response.data);
 
-      // 사용자 기본 정보 업데이트
-      ref.read(userProvider.notifier).additionalInfoFormUpdate(
-            name: userGenerated.user!.name!,
-            phoneNumber: userGenerated.user!.phoneNumber!,
-            studentId: userGenerated.user!.studentId!,
-          );
-
       // 스토리지에 토큰과 사용자 정보 저장
       await _saveToStorage({
         'auth_token': userGenerated.accessToken!,
         'refresh_token': userGenerated.refreshToken!,
         'name': userGenerated.user!.name!,
         'student_num': userGenerated.user!.studentId!,
+        'phone_num' : userGenerated.user!.phoneNumber!,
       });
 
       debugPrint('토큰 저장: ${userGenerated.accessToken}');
@@ -63,7 +56,7 @@ class LoginDataSource {
   }
 
 // * 관리자 로그인
-  Future<Response> postAdminLoginAPI(WidgetRef ref) async {
+  Future<Map<String, dynamic>> postAdminLoginAPI(WidgetRef ref) async {
     final loginState = ref.read(userProvider.notifier);
     final url = '$apiURL/api/admin/login';
     final data = {
@@ -75,7 +68,7 @@ class LoginDataSource {
       final response = await dio.post(url,
           data: data, options: Options(extra: {"noAuth": true}));
 
-      final result = Usergenerated.fromJson(jsonDecode(response.data));
+      final result = Usergenerated.fromJson(response.data);
       String? token = result.accessToken; // 토큰값 추출
       String? refreshToken = result.refreshToken; // 리프레시 토큰값 추출
 
@@ -93,7 +86,7 @@ class LoginDataSource {
               .read(adminPrivilegesProvider.notifier)
               .updatePrivileges(result.user!);
         }
-        return response;
+        return response.data;
       } else {
         throw Exception('토큰이 없습니다.');
       }
