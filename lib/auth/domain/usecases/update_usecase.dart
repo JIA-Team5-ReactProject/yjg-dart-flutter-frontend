@@ -10,25 +10,19 @@ class UpdateUserInfoUseCase {
   UpdateUserInfoUseCase({required this.ref});
 
   Future<void> execute({
-    String? studentId,
-    String? name,
-    String? phoneNumber,
-    String? password,
-    String? newPassword,
+   // 객체를 받음
+    required change,
     required BuildContext context,
   }) async {
     // User 상태 업데이트
     ref.read(userProvider.notifier).additionalInfoFormUpdate(
-          studentId: studentId,
-          name: name,
-          phoneNumber: phoneNumber,
-          password: password,
-          newPassword: newPassword,
+        change: change
         );
 
     // SecureStorage에서 토큰 가져오기
     final storage = FlutterSecureStorage();
     String? token = await storage.read(key: 'auth_token');
+    String? userType = await storage.read(key: 'userType');
 
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -43,7 +37,13 @@ class UpdateUserInfoUseCase {
     // 업데이트 API 호출
     try {
       final dataSource = UserDataSource(); // DataSource 인스턴스 생성
-      final response = await dataSource.patchAdditionalInfoAPI(ref);
+
+      final response;
+
+      // userType에 따라 API 호출
+     userType == 'user'
+          ? response = await dataSource.patchAdditionalInfoAPI(ref, change)
+          : response = await dataSource.patchAdminInfoAPI(ref, change);
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(

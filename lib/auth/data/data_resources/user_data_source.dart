@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
 
@@ -13,36 +12,15 @@ class UserDataSource {
     dio.interceptors.add(DioInterceptor(dio));
   }
 
-  // 추가 정보 입력
-  Future<Response> patchAdditionalInfoAPI(WidgetRef ref) async {
-    // state 값 가져오기
-    final detailRegisterState = ref.read(userProvider.notifier);
+  // 추가 정보 입력 및 개인정보 수정
+  Future<Response> patchAdditionalInfoAPI(WidgetRef ref, change) async {
     String url = '$apiURL/api/user';
 
-    Map<String, dynamic> data = {}
-      ..addAll(detailRegisterState.studentId.isNotEmpty == true
-          ? {"student_id": detailRegisterState.studentId}
-          : {})
-      ..addAll(detailRegisterState.phoneNumber.isNotEmpty == true
-          ? {"phone_number": detailRegisterState.phoneNumber}
-          : {})
-      ..addAll(detailRegisterState.name.isNotEmpty == true
-          ? {"name": detailRegisterState.name}
-          : {})
-      ..addAll(detailRegisterState.password.isNotEmpty == true
-          ? {"current_password": detailRegisterState.password}
-          : {})
-      ..addAll(detailRegisterState.newPassword.isNotEmpty == true
-          ? {"new_password": detailRegisterState.newPassword}
-          : {});
-
-    debugPrint('추가 정보 입력: $data');
-
     try {
-      final response = await dio.patch(url, data: data);
+      final response = await dio.patch(url, data: change);
 
       debugPrint('추가 정보 입력 결과: ${response.data} ${response.statusCode}');
-
+      
       // approve 변경
       patchApproveAPI();
       return response;
@@ -54,6 +32,41 @@ class UserDataSource {
       // 다른 모든 예외를 캐치
       debugPrint('예상치 못한 오류: $e');
       throw Exception('알 수 없는 오류가 발생했습니다.');
+    }
+  }
+
+  // 관리자 개인정보 수정
+  Future<Response> patchAdminInfoAPI(WidgetRef ref, change) async {
+    String url = '$apiURL/api/admin';
+
+    try {
+      final response = await dio.patch(url, data: change);
+
+      debugPrint('추가 정보 입력 결과: ${response.data} ${response.statusCode}');
+      return response;
+    } on DioException catch (e) {
+      debugPrint('서버 오류 메시지: ${e.response?.data}');
+      debugPrint('서버 상태 코드: ${e.response?.statusCode}');
+      throw Exception('개인정보 수정에 실패하였습니다');
+    } catch (e) {
+      debugPrint('예상치 못한 오류: $e');
+      throw Exception('알 수 없는 오류가 발생했습니다.');
+    }
+  }
+
+
+  // 회원탈퇴
+  Future<Response> deleteUserAccountAPI() async {
+    String url = '$apiURL/api/unregister';
+
+    try {
+      final response = await dio.delete(url);
+
+      debugPrint('계정 삭제 결과: ${response.data} ${response.statusCode}');
+      return response;
+    } catch (e) {
+      debugPrint('예상치 못한 오류: $e');
+      throw Exception('계정 탈퇴에 실패하였습니다..');
     }
   }
 

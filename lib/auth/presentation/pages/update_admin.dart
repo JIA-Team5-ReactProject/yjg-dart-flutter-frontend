@@ -9,25 +9,23 @@ import "package:yjg/shared/widgets/base_appbar.dart";
 import "package:yjg/shared/widgets/base_drawer.dart";
 import "package:yjg/shared/widgets/bottom_navigation_bar.dart";
 
-class UpdateUser extends ConsumerStatefulWidget {
-  UpdateUser({Key? key}) : super(key: key);
+class UpdateAdmin extends ConsumerStatefulWidget {
+  UpdateAdmin({Key? key}) : super(key: key);
 
   @override
-  _UpdateUser createState() => _UpdateUser();
+  _UpdateAdmin createState() => _UpdateAdmin();
 }
 
-class _UpdateUser extends ConsumerState<UpdateUser> {
+class _UpdateAdmin extends ConsumerState<UpdateAdmin> {
   static final storage = FlutterSecureStorage();
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController studentIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   String? defaultName;
   String? defaultPhoneNumber;
-  String? defaultStudentId;
   Map<String, dynamic> change = {};
 
   // 사용자 정보 가져오기(스토리지)
@@ -41,12 +39,10 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
   Future<void> getUserInfo() async {
     String? name = await storage.read(key: 'name');
     String? phoneNumber = await storage.read(key: 'phone_num');
-    String? studentId = await storage.read(key: 'student_num');
 
     setState(() {
       defaultName = nameController.text = name!;
       defaultPhoneNumber = phoneNumberController.text = phoneNumber!;
-      defaultStudentId = studentIdController.text = studentId!;
     });
   }
 
@@ -110,15 +106,7 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                         inputFormatter: PhoneNumberInputFormatter(),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
-                      child: AuthTextFormField(
-                        controller: studentIdController,
-                        labelText: "학번",
-                        validatorText: "학번을 입력해 주세요.",
-                      ),
-                    ),
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 8),
@@ -161,14 +149,7 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                                   key: 'phone_num',
                                   value: phoneNumberController.text);
                             }
-                            // 학번 대조
-                            if (defaultStudentId != studentIdController.text) {
-                              change['student_num'] = studentIdController.text;
-                              await storage.write(
-                                  key: 'student_num',
-                                  value: studentIdController.text);
-                            }
-
+                            
                             // 그 외 비밀번호
                             if (passwordController.text.isNotEmpty) {
                               change['password'] = passwordController.text;

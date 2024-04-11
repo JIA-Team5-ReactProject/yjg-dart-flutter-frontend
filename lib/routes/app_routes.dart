@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yjg/administration/presentaion/pages/notice_detail_page.dart';
 import 'package:yjg/auth/presentation/pages/new_password_update.dart';
 import 'package:yjg/auth/presentation/pages/student_login.dart';
+import 'package:yjg/auth/presentation/pages/update_admin.dart';
 import 'package:yjg/dashboard/presentaion/pages/dashboard_main.dart';
 import 'package:yjg/administration/presentaion/pages/admin_main.dart';
 import 'package:yjg/administration/presentaion/pages/as_application.dart';
@@ -48,6 +49,7 @@ class AppRoutes {
     '/registration_detail': (context) => RegistrationDetails(),
     '/registration_international': (context) => InternationalRegisteration(),
     '/update_user': (context) => UpdateUser(),
+    '/update_admin' :(context) => UpdateAdmin(),
     '/reset_password': (context) => ResetPassword(),
     '/mail_verification_code': (context) => MailVerficationCode(),
     '/new_password': (context) => newPasswordUpdate(),
