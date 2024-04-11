@@ -54,6 +54,21 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            if (project.hasProperty('key.properties')) {
+                def keystoreProperties = new Properties()
+                file('key.properties').withInputStream { keystoreProperties.load(it) }
+
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
+
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
