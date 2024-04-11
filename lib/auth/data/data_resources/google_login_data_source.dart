@@ -9,6 +9,7 @@ import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/main.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
+import 'package:yjg/shared/service/save_to_storage.dart';
 
 class GoogleLoginDataSource {
   static final _googleSignIn = GoogleSignIn(
@@ -41,6 +42,7 @@ class GoogleLoginDataSource {
 
         // 구글 로그인 후 토큰을 교환
         GoogleSignInAuthentication googleAuth = await account.authentication;
+        printLongString(googleAuth.idToken ?? 'idToken is null');
 
         ref.read(userProvider.notifier).updateWithGoogleSignIn(
               email: account.email,
@@ -52,6 +54,15 @@ class GoogleLoginDataSource {
       }
     } catch (error) {
       debugPrint('signInWithGoogle 오류 발생: $error');
+    }
+  }
+
+  void printLongString(String text, {int chunkSize = 1024}) {
+    RegExp exp = RegExp('.{1,$chunkSize}');
+    Iterable<Match> matches = exp.allMatches(text);
+
+    for (Match match in matches) {
+      debugPrint(match.group(0));
     }
   }
 
@@ -75,20 +86,12 @@ class GoogleLoginDataSource {
       debugPrint('통신 결과: ${response.data} ${response.statusCode}');
 
       String? token = result.accessToken;
-      String? refreshToken = result.refreshToken;
-      String? studentNum = result.user?.studentId;
-      String? name = result.user?.name;
       int? approved = result.user?.approved;
 
-      // 사용자 기본 정보 업데이트
-      ref.read(userProvider.notifier).additionalInfoFormUpdate(
-            name: result.user!.name!,
-            phoneNumber: result.user!.phoneNumber!,
-            studentId: result.user!.studentId!,
-          );
-
       if (token != null) {
-        await _saveTokens(token, refreshToken, studentNum, name!);
+        // 스토리지에 토큰과 사용자 정보 저장
+        await saveToStorage(
+            {'auth_token': token, 'refresh_token': result.refreshToken!});
       } else {
         debugPrint('토큰이 없습니다.');
         throw Exception('토큰이 없습니다.');
@@ -97,6 +100,12 @@ class GoogleLoginDataSource {
       if (approved == 0) {
         navigatorKey.currentState!.pushNamed('/registration_detail');
       } else if (approved == 1) {
+        // 사용자 기본 정보 업데이트
+        await saveToStorage({
+          'name': result.user!.name!,
+          'student_num': result.user!.studentId!,
+          'phone_num': result.user!.phoneNumber!,
+        });
         // 로그인 성공 시 메인 대시보드로 이동
         navigatorKey.currentState!.pushNamed('/dashboard_main');
       }
@@ -105,15 +114,6 @@ class GoogleLoginDataSource {
     } catch (e) {
       debugPrint('비HTTP 에러 발생: $e');
     }
-  }
-
-  // 토큰을 저장하는 함수
-  Future<void> _saveTokens(String token, String? refreshToken,
-      String? studentNum, String displayName) async {
-    await _storage.write(key: 'auth_token', value: token);
-    await _storage.write(key: 'name', value: displayName);
-    await _storage.write(key: 'refresh_token', value: refreshToken ?? '');
-    await _storage.write(key: 'student_num', value: studentNum ?? '');
   }
 
   // 스낵바를 표시하는 함수
