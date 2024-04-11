@@ -1,46 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
+import 'package:yjg/administration/data/data_sources/notice_data_source.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 
 class NoticeDetailPage extends StatefulWidget {
-  final dynamic notice;
+  final int noticeId; // 공지사항 ID를 저장하는 필드
 
-  const NoticeDetailPage({Key? key, required this.notice}) : super(key: key);
+  const NoticeDetailPage({Key? key, required this.noticeId}) : super(key: key);
 
   @override
   State<NoticeDetailPage> createState() => _NoticeDetailPageState();
 }
 
 class _NoticeDetailPageState extends State<NoticeDetailPage> {
+  late Future<dynamic> noticeDetailFuture;
   final PageController _pageController = PageController();
+
+  final _noticeDataSource = NoticeDataSource();
+
+  @override
+  void initState() {
+    super.initState();
+    noticeDetailFuture = fetchNoticeDetail(widget.noticeId);
+  }
+
+  // * 특정 공지사항 불러오는 GET API
+  Future<dynamic> fetchNoticeDetail(int noticeId) async {
+    try {
+      final response = await _noticeDataSource.getNotice(noticeId);
+      return response.data['notice'];
+    } catch (e) {
+      throw Exception('공지사항 로드 실패: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> noticeImages = widget.notice['notice_images'];
-    final dateFormat = DateFormat('yyyy-MM-dd');
-    final formattedDate =
-        dateFormat.format(DateTime.parse(widget.notice['updated_at']));
-
     return Scaffold(
       appBar: const BaseAppBar(title: '공지사항'),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildTitleAndDateRow(widget.notice['title'],
-                formattedDate), // Title과 Date를 함께 표시하는 Row
-            SizedBox(height: 10),
-            _buildCustomRow(Html(data: widget.notice['content'])),
-            SizedBox(height: 20),
-            if (noticeImages.isNotEmpty) _buildImageGallery(noticeImages),
-          ],
-        ),
+      body: FutureBuilder<dynamic>(
+        future: noticeDetailFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('공지사항 호출 에러: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return Center(child: Text('공지사항을 찾을 수 없습니다.'));
+          } else {
+            final notice = snapshot.data;
+            List<dynamic> noticeImages = notice['notice_images'];
+            final dateFormat = DateFormat('yyyy-MM-dd');
+            final formattedDate =
+                dateFormat.format(DateTime.parse(notice['updated_at']));
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildTitleAndDateRow(notice['title'], formattedDate),
+                  SizedBox(height: 10),
+                  _buildCustomRow(Html(data: notice['content'])),
+                  SizedBox(height: 20),
+                  if (noticeImages.isNotEmpty) _buildImageGallery(noticeImages),
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }

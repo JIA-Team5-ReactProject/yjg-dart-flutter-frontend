@@ -124,23 +124,34 @@ class _AdminSalonMainState extends ConsumerState<AdminSalonMain> {
                     ),
                   ),
                   noticesAsyncValue.when(
-                    data: (notices) => SizedBox(
-                      height: 140.0,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: notices.length,
-                        itemBuilder: (context, index) {
-                          final notice = notices[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: NoticeBox(
-                              title: notice.title ?? '제목 없음',
-                              content: notice.content ?? '내용 없음',
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    data: (notices) {
+                      return SizedBox(
+                        height: 140.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: notices.length,
+                          itemBuilder: (context, index) {
+                            final notice = notices[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/notice_detail',
+                                  arguments: notice.id, // 공지사항의 ID를 인자로 전달
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 20.0),
+                                child: NoticeBox(
+                                  title: notice.title ?? '제목 없음',
+                                  content: notice.content ?? '내용 없음',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                     loading: () => const Center(
                         child: CircularProgressIndicator(
                             color: Palette.stateColor4)),

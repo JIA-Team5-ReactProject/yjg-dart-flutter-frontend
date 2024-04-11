@@ -23,4 +23,16 @@ class NoticeDataSource {
       throw Exception('공지사항 로드에 실패했습니다.');
     }
   }
+
+  // * 특정 공지사항 불러오는 GET API
+  Future<Response> getNotice(int noticeId) async {
+    String url = '$apiURL/api/notice/$noticeId';
+    try {
+      final response = await dio.get(url);
+      return response;
+    } catch (e) {
+      debugPrint('Error: $e');
+      throw Exception('공지사항 로드에 실패했습니다.');
+    }
+  }
 }
