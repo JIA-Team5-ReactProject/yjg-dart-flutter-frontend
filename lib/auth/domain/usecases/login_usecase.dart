@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
 import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
+import 'package:yjg/shared/service/navigate_and_remove_until.dart';
 
 class LoginUseCase {
   final WidgetRef ref;
@@ -47,7 +48,7 @@ class LoginUseCase {
   Future<void> _loginAsStudent(BuildContext context) async {
     await LoginDataSource().postStudentLoginAPI(ref);
     await storage.write(key: 'userType', value: 'student'); // 사용자 유형 저장
-    _navigateAndRemoveUntil(context, '/dashboard_main');
+    navigateAndRemoveUntil(context, '/dashboard_main');
   }
 
   /// 관리자 권한에 따라 로그인 처리
@@ -70,14 +71,10 @@ class LoginUseCase {
         _showNoPrivilegeError(context);
         return;
     }
-    _navigateAndRemoveUntil(context, route);
+    navigateAndRemoveUntil(context, route);
   }
 
-  /// 네비게이터를 사용하여 라우트를 이동하고, 이전 라우트를 제거
-  void _navigateAndRemoveUntil(BuildContext context, String routeName) {
-    Navigator.pushNamedAndRemoveUntil(
-        context, routeName, (Route<dynamic> route) => false);
-  }
+
 
   /// 로그인 실패 시 에러 메시지를 표시
   void _showLoginError(BuildContext context) {
