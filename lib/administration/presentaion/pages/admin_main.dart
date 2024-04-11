@@ -187,22 +187,22 @@ class _AdminMainState extends State<AdminMain> {
                   MoveButton(
                       icon: Icons.volume_mute_outlined,
                       text1: '공지사항',
-                      text2: '생활관 공지사항',
+                      text2: '글로벌 캠퍼스 공지',
                       route: '/notice'),
                   MoveButton(
                       icon: Icons.construction_outlined,
                       text1: 'AS 요청',
-                      text2: '글로벌캠퍼스 AD',
+                      text2: '글로벌 캠퍼스 AS',
                       route: '/as_page'),
                   MoveButton(
                       icon: Icons.hotel_outlined,
                       text1: '외박/외출 신청',
-                      text2: '외박,외출 신청',
+                      text2: '생활관 외박/외출',
                       route: '/sleepover'),
                   MoveButton(
                       icon: Icons.groups,
                       text1: '회의실 예약',
-                      text2: '생활관,라운지 회의실 예약',
+                      text2: '생활관B동 회의실',
                       route: '/meeting_room_main'),
                 ],
               ),
