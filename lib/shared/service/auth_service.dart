@@ -18,10 +18,13 @@ class AuthService {
     debugPrint('자동 로그인: $autoLoginStr');
 
     if (autoLoginStr == 'false' || (token == null && refreshToken == null)) {
+      debugPrint('자동로그인 미설정, 유저 정보 삭제');
+      await storage.deleteAll();
       return '/login_student';
     }
 
-    if (autoLoginStr == 'true' && JwtDecoder.isExpired(token!)) {
+    if (autoLoginStr == 'true' &&
+        (token != null && JwtDecoder.isExpired(token))) {
       // 리프레시 토큰으로 액세스 토큰 갱신
       await LoginDataSource().getRefreshTokenAPI();
 

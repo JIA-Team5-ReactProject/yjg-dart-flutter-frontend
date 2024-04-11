@@ -7,6 +7,7 @@ import 'package:yjg/auth/presentation/viewmodels/privilege_viewmodel.dart';
 import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
+import 'package:yjg/shared/service/save_to_storage.dart';
 
 class LoginDataSource {
   static final Dio dio = Dio();
@@ -14,12 +15,6 @@ class LoginDataSource {
 
   LoginDataSource() {
     dio.interceptors.add(DioInterceptor(dio)); // 수정된 생성자를 사용
-  }
-  // 스토리지 모듈
-  Future<void> _saveToStorage(Map<String, String> data) async {
-    for (var key in data.keys) {
-      await storage.write(key: key, value: data[key]);
-    }
   }
 
   // 외국인 유학생 로그인
@@ -37,7 +32,7 @@ class LoginDataSource {
       Usergenerated userGenerated = Usergenerated.fromJson(response.data);
 
       // 스토리지에 토큰과 사용자 정보 저장
-      await _saveToStorage({
+      await saveToStorage({
         'auth_token': userGenerated.accessToken!,
         'refresh_token': userGenerated.refreshToken!,
         'name': userGenerated.user!.name!,
