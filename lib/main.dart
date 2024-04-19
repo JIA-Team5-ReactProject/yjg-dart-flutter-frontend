@@ -15,6 +15,10 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  // 빌드가 안 될 경우 주석 해제 후 실행해 볼 것
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // await prefs.clear();
+
   await dotenv.load(fileName: ".env");
 
   await getDeviceInfo();
