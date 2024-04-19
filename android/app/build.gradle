@@ -54,7 +54,11 @@ android {
         multiDexEnabled true
     }
 
-    signingConfigs {
+    
+
+
+    buildTypes {
+        signingConfigs {
         release {
             if (project.hasProperty('key.properties')) {
                 def keystoreProperties = new Properties()
@@ -67,14 +71,6 @@ android {
             }
         }
     }
-
-
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
-        }
     }
 }
 
