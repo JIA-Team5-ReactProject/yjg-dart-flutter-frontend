@@ -24,6 +24,11 @@ class UserSelectionState {
 class UserSelectionNotifier extends StateNotifier<UserSelectionState> {
   UserSelectionNotifier() : super(UserSelectionState());
 
+   void reset() {
+    // 초기 상태로 리셋
+    state = UserSelectionState();
+  }
+
   void setSelectedCategoryId(int categoryId) {
     state = state.copyWith(selectedCategoryId: categoryId);
   }
