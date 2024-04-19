@@ -38,12 +38,17 @@ class RegisterUseCase {
             backgroundColor: Palette.mainColor),
       );
       // 성공 시 로그인 페이지로 이동(이전 페이지로 못 가게 막아버림)
-      Navigator.pushNamedAndRemoveUntil(context, '/login_student', (Route<dynamic> route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login_student', (Route<dynamic> route) => false);
     } catch (e) {
+      String message = e.toString();
+      if (message.startsWith('Exception: ')) {
+        message = message.substring('Exception: '.length);
+      }
       // 회원가입 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('회원가입에 실패하였습니다. 다시 시도해 주세요. 에러: $e'),
+          content: Text(message),
           backgroundColor: Colors.red,
         ),
       );

@@ -31,6 +31,10 @@ class RegisterDataSource {
 
       debugPrint('결과: ${response.data}');
       return response;
+    } on DioException catch (e) {
+      final responseData = e.response!.data;
+
+      throw Exception('${responseData['error']}');
     } catch (e) {
       debugPrint('통신 결과: $e');
       throw Exception('회원가입에 실패했습니다.');
@@ -50,7 +54,7 @@ class RegisterDataSource {
         return true;
       }
     } catch (e) {
-        return true;
+      return true;
     }
   }
 }
