@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/salon/presentaion/viewmodels/category_viewmodel.dart';
 import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
 import 'package:yjg/salon/presentaion/widgets/admin/edit_category_modal.dart';
@@ -18,6 +19,16 @@ class FilterGroupButton extends ConsumerStatefulWidget {
 
 class _FilterButtonsState extends ConsumerState<FilterGroupButton> {
   int? _selectedButtonIndex;
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userSelectionProvider.notifier).reset();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final categoryDataAsyncValue = ref.watch(categoryListProvider);
@@ -70,13 +81,20 @@ class _FilterButtonsState extends ConsumerState<FilterGroupButton> {
                     ),
                   ),
                 ),
-                onLongPress: () {
+                onLongPress: () async {
+                  final isAdmin = await storage.read(key: 'isAdmin');
                   // 선택한 텍스트
-                  final selectedText = buttons[index];
-                  final int selectedCategoryId = categoryData.keys.elementAt(index);
-                  widget.dataType == "유형"
-                      ? editCategoryModal(selectedCategoryId, selectedText, context, ref)
-                      : null;
+                  if (isAdmin == "true") {
+                    final selectedText = buttons[index];
+                    final int selectedCategoryId =
+                        categoryData.keys.elementAt(index);
+                    widget.dataType == "유형"
+                        ? editCategoryModal(
+                            selectedCategoryId, selectedText, context, ref)
+                        : null;
+                  } else {
+                    null;
+                  }
                 },
                 onPressed: () {
                   setState(() {

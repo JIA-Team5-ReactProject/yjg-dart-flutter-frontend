@@ -105,9 +105,10 @@ class GoogleLoginDataSource {
           'name': result.user!.name!,
           'student_num': result.user!.studentId!,
           'phone_num': result.user!.phoneNumber!,
+          'auto_login' : "true"
         });
         // 로그인 성공 시 메인 대시보드로 이동
-        navigatorKey.currentState!.pushNamed('/dashboard_main');
+        navigatorKey.currentState!.pushReplacementNamed('/dashboard_main');
       }
     } on DioException catch (e) {
       debugPrint('${e.response}, 코드: ${e.response?.statusCode}');
