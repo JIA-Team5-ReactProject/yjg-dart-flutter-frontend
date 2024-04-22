@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yjg/routes/app_routes.dart';
 import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/service/device_info.dart';

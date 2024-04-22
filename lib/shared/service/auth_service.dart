@@ -37,6 +37,10 @@ class AuthService {
       }
     }
 
+    // if (autoLoginStr == 'true' && (token != null && !JwtDecoder.isExpired(token))) {
+    //   return AppRoutes.getInitialRouteBasedOnUserType(userType);
+    // }
+
     return AppRoutes.getInitialRouteBasedOnUserType(userType);
   }
 }
