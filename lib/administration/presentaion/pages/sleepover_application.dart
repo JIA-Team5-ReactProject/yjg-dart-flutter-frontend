@@ -237,7 +237,7 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
   Widget _actionButton(String text, Color color, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(primary: color),
+      style: ElevatedButton.styleFrom(backgroundColor: color),
       child: Text(text, style: TextStyle(color: Colors.white)),
     );
   }
@@ -266,8 +266,8 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        primary: backgroundColor,
-        onPrimary: Colors.white,
+        backgroundColor: backgroundColor,
+        foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
