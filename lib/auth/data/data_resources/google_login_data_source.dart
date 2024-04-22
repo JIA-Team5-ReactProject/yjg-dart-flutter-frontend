@@ -105,7 +105,8 @@ class GoogleLoginDataSource {
           'name': result.user!.name!,
           'student_num': result.user!.studentId!,
           'phone_num': result.user!.phoneNumber!,
-          'auto_login' : "true"
+          'auto_login' : "true",
+          'userType': 'student',
         });
         // 로그인 성공 시 메인 대시보드로 이동
         navigatorKey.currentState!.pushReplacementNamed('/dashboard_main');
