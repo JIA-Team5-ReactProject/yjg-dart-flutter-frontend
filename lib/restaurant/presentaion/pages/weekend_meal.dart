@@ -364,10 +364,10 @@ class _WeekendMealState extends State<WeekendMeal> {
                     height: 80, // 버튼의 높이를 고정
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: isSelected
+                        backgroundColor: isSelected
                             ? const Color.fromARGB(255, 255, 255, 255)
                             : Color.fromARGB(255, 255, 255, 255),
-                        onPrimary: isSelected ? Colors.white : Colors.black,
+                        foregroundColor: isSelected ? Colors.white : Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           side: BorderSide(

@@ -280,11 +280,11 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
                   bool isSelected = selectedMealTypeId == type['meal_type'];
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: isSelected
+                      backgroundColor: isSelected
                           ? const Color.fromARGB(255, 255, 255, 255)
                           : Color.fromARGB(
                               255, 255, 255, 255), // 선택된 버튼은 파란색, 그 외는 흰색
-                      onPrimary: isSelected
+                      foregroundColor: isSelected
                           ? Colors.white
                           : Colors.black, // 선택된 버튼의 텍스트 색상은 흰색, 그 외는 검은색
                       shape: RoundedRectangleBorder(
