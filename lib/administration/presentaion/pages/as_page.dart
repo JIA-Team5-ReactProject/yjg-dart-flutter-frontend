@@ -37,11 +37,13 @@ class _AsPageState extends State<AsPage> {
     try {
       final response = await _stdAsDataSource.fetchASRequests();
       final data = response.data as Map<String, dynamic>;
+      print('요청ㅇㅈ보ㅗㅇㅈ보ㅗㅇㅈ배ㅐ');
       setState(() {
         asRequests = data['after_services'];
         isLoading = false; // 로딩 상태 해제
       });
     } catch (e) {
+      print('요청2');
       setState(() {
         isLoading = false;
         errorMessage = e.toString();
@@ -183,7 +185,7 @@ class _AsPageState extends State<AsPage> {
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
                 : errorMessage.isNotEmpty
-                    ? Center(child: Text("에러: $errorMessage"))
+                    ? Center(child: Text(errorMessage))
                     : filteredRequests.isEmpty
                         ? Center(
                             child: Text(

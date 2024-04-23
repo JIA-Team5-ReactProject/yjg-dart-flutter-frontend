@@ -22,41 +22,49 @@ class _AdminMainState extends State<AdminMain> {
   final _stdAsDataSource = StdAsDataSource();
   final _meetingRoomDataSource = MeetingRoomDataSource();
 
-  // * 예약 AS get 함수
-  Future<Map<String, dynamic>?> fetchLatestASRequest() async {
-    try {
-      final response = await _stdAsDataSource.fetchLatestASRequest();
+  Map<String, dynamic>? latestReservation;
+  Map<String, dynamic>? latestASRequest;
 
-      final data = response.data;
-      List<dynamic> reservations = data['after_services'];
-      if (reservations.isNotEmpty) {
-        // 'visit_date'를 기준으로 AS 요청을 정렬하고 가장 빠른 요청을 반환.
-        reservations.sort((a, b) => a['visit_date'].compareTo(b['visit_date']));
-        return reservations.first;
-      }
-
-      return null;
-    } catch (e) {
-      debugPrint('Error: $e');
-      throw Exception('예약 AS를 불러오지 못했습니다.');
-    }
+  @override
+  void initState() {
+    super.initState();
+    fetchInitialData();
   }
 
-  // * 최신 예약 정보 가져오기
+  void fetchInitialData() async {
+    latestReservation = await fetchLatestReservation();
+    latestASRequest = await fetchLatestASRequest();
+    setState(() {});
+  }
+
   Future<Map<String, dynamic>?> fetchLatestReservation() async {
     try {
       final response = await _meetingRoomDataSource.fetchLatestReservation();
-
       final data = response.data;
       List<dynamic> reservations = data['meeting_room_reservations'];
       if (reservations.isNotEmpty) {
-        // 가장 최근의 예약 정보 반환
         return reservations.first;
       }
-      return null; // 예약 정보가 없는 경우
+      return null;
     } catch (e) {
       debugPrint('Error: $e');
-      throw Exception('최신 예약 정보를 불러오지 못했습니다.');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchLatestASRequest() async {
+    try {
+      final response = await _stdAsDataSource.fetchLatestASRequest();
+      final data = response.data;
+      List<dynamic> reservations = data['after_services'];
+      if (reservations.isNotEmpty) {
+        reservations.sort((a, b) => a['visit_date'].compareTo(b['visit_date']));
+        return reservations.first;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error: $e');
+      return null;
     }
   }
 
@@ -176,7 +184,6 @@ class _AdminMainState extends State<AdminMain> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-
             //이동 버튼 배치
             Container(
               margin: EdgeInsets.only(bottom: 30),
@@ -185,17 +192,17 @@ class _AdminMainState extends State<AdminMain> {
                 runSpacing: 30, // 아이템들 사이의 세로 간격
                 children: <Widget>[
                   MoveButton(
-                      icon: Icons.volume_mute_outlined,
+                      icon: Icons.campaign_outlined,
                       text1: '공지사항',
                       text2: '글로벌 캠퍼스 공지',
                       route: '/notice'),
                   MoveButton(
-                      icon: Icons.construction_outlined,
+                      icon: Icons.construction,
                       text1: 'AS 요청',
                       text2: '글로벌 캠퍼스 AS',
                       route: '/as_page'),
                   MoveButton(
-                      icon: Icons.hotel_outlined,
+                      icon: Icons.hotel,
                       text1: '외박/외출 신청',
                       text2: '생활관 외박/외출',
                       route: '/sleepover'),
@@ -207,22 +214,17 @@ class _AdminMainState extends State<AdminMain> {
                 ],
               ),
             ),
-
             //AS현재 진행도
             FutureBuilder<Map<String, dynamic>?>(
-              future: fetchLatestASRequest(),
+              future: Future.value(latestASRequest),
               builder: (context, snapshot) {
-                // 로딩 중 표시
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return CircularProgressIndicator();
                 }
-
-                // 데이터가 있든 없든 카드는 표시합니다.
                 return Container(
                   height: 80,
                   width: 330,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(
@@ -249,7 +251,6 @@ class _AdminMainState extends State<AdminMain> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // AS 방문 예정 또는 AS 예약 없음 표시
                             Text(
                               snapshot.hasData && snapshot.data != null
                                   ? 'AS 방문 예정'

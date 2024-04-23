@@ -40,6 +40,7 @@ class _AsApplicationState extends State<AsApplication> {
   // * AS 예약 POST API 함수
   Future<bool> sendData() async {
     try {
+      print('요청');
       await _stdAsDataSource.sendData(
           title, input, place, day, _images); // 데이터 송신
       // API 호출 성공
@@ -52,6 +53,7 @@ class _AsApplicationState extends State<AsApplication> {
       return true; // 성공 시 true 반환
     } catch (e) {
       // API 호출 실패
+      print('실패 요청');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('AS 요청 전송에 실패했습니다.'),
@@ -310,7 +312,8 @@ class _AsApplicationState extends State<AsApplication> {
                 day = dayController.text;
                 input = inputController.text;
                 place = placeController.text;
-
+                
+                
                 setState(() {
                   _selectedDay = null;
                   _focusedDay = DateTime.now();
@@ -318,6 +321,10 @@ class _AsApplicationState extends State<AsApplication> {
                 });
 
                 await sendData();
+
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, '/as_page');
               },
               child: Text(
                 '요청하기',
