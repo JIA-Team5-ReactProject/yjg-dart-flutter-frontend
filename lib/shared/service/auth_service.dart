@@ -17,12 +17,21 @@ class AuthService {
     debugPrint('리프레시 토큰: $refreshToken');
     debugPrint('자동 로그인: $autoLoginStr');
 
-    if (autoLoginStr == 'false' || (token == null && refreshToken == null)) {
-      debugPrint('자동로그인 미설정, 유저 정보 삭제');
-      await storage.deleteAll();
-      return '/login_student';
+    // ^ 자동로그인 미설정 시의 처리
+    if (autoLoginStr == 'false') {
+      if (JwtDecoder.isExpired(token!)) {
+        debugPrint('자동로그인 미설정, 유저 정보 삭제');
+        await storage.deleteAll();
+        return '/login_student';
+      }
+
+      if (!JwtDecoder.isExpired(token)) {
+        final initRoute = AppRoutes.getInitialRouteBasedOnUserType(userType);
+        return initRoute;
+      } 
     }
 
+    // ^ 자동로그인 설정 시의 처리
     if (autoLoginStr == 'true' &&
         (token != null && JwtDecoder.isExpired(token))) {
       // 리프레시 토큰으로 액세스 토큰 갱신
@@ -36,10 +45,6 @@ class AuthService {
         return initRoute;
       }
     }
-
-    // if (autoLoginStr == 'true' && (token != null && !JwtDecoder.isExpired(token))) {
-    //   return AppRoutes.getInitialRouteBasedOnUserType(userType);
-    // }
 
     return AppRoutes.getInitialRouteBasedOnUserType(userType);
   }
