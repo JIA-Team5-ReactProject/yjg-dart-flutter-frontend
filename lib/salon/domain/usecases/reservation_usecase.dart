@@ -27,9 +27,10 @@ class ReservationUseCase {
               content: Text('예약 성공. 미용실 메인 페이지로 이동합니다.'),
               backgroundColor: Palette.mainColor),
         );
-        // 성공 시 메인 페이지로 이동(이전 페이지로 못 가게 막아버림)
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/salon_main', (Route<dynamic> route) => false);
+        Navigator.pushNamed(
+          context,
+          '/salon_main',
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
