@@ -8,13 +8,23 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 
-class BusSchedule extends ConsumerWidget {
+class BusSchedule extends ConsumerStatefulWidget {
   const BusSchedule({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(busViewModelProvider).fetchBusSchedules(0, 1, 's_bokhyun');
+  _BusScheduleState createState() => _BusScheduleState();
+}
 
+class _BusScheduleState extends ConsumerState<BusSchedule> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() =>
+        ref.read(busViewModelProvider).fetchBusSchedules(0, 1, 's_bokhyun'));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(title: '버스 시간표'),
       drawer: BaseDrawer(),
@@ -24,12 +34,12 @@ class BusSchedule extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10.0),
-            Text(
+            const SizedBox(height: 10.0),
+            const Text(
               '해당되는 버튼을 선택해주세요.',
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Row(
               children: [
                 Text(
@@ -39,7 +49,7 @@ class BusSchedule extends ConsumerWidget {
                       color: Palette.textColor.withOpacity(0.6),
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(width: 10.0),
+                const SizedBox(width: 10.0),
                 BusGroupButton(dataType: 'semester'),
               ],
             ),
@@ -52,7 +62,7 @@ class BusSchedule extends ConsumerWidget {
                       color: Palette.textColor.withOpacity(0.6),
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(width: 10.0),
+                const SizedBox(width: 10.0),
                 BusGroupButton(dataType: 'weekend'),
               ],
             ),
@@ -65,38 +75,36 @@ class BusSchedule extends ConsumerWidget {
                       color: Palette.textColor.withOpacity(0.6),
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(width: 10.0),
+                const SizedBox(width: 10.0),
                 BusGroupButton(dataType: 'start'),
               ],
             ),
-            SizedBox(height: 20.0),
-            Text(
+            const SizedBox(height: 20.0),
+            const Text(
               '노선목록',
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Expanded(
               child: Consumer(builder: (context, ref, child) {
                 final busSchedules =
                     ref.watch(busViewModelProvider).busSchedules;
 
                 return busSchedules.when(
-                  data: (schedules) {
-                    // 데이터가 있는 경우 BusScheduleCard 위젯을 리스트로 렌더링
-                    return ListView.builder(
-                      itemCount: schedules.busRounds.length,
-                      // BusSchedule 페이지 내 ListView.builder의 itemBuilder 부분
-                      itemBuilder: (context, index) {
-                        final busRound = schedules.busRounds[index];
-                        return BusScheduleCard(busRound: busRound);
-                      },
-                    );
-                  },
-                  loading: () => Center(child: CircularProgressIndicator(color: Palette.stateColor4)), // 로딩 중 표시
-                  error: (error, stack) => Text('에러가 발생했습니다.'), // 에러 발생 시 표시
+                  data: (schedules) => ListView.builder(
+                    itemCount: schedules.busRounds.length,
+                    itemBuilder: (context, index) {
+                      final busRound = schedules.busRounds[index];
+                      return BusScheduleCard(busRound: busRound);
+                    },
+                  ),
+                  loading: () => const Center(
+                      child: CircularProgressIndicator(
+                          color: Palette.stateColor4)),
+                  error: (error, stack) => const Text('에러가 발생했습니다.'),
                 );
               }),
             ),
