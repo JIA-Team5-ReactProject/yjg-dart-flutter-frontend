@@ -61,7 +61,22 @@ class _AsMainState extends ConsumerState<AsMain>
             '게시글을 누르면 상세보기로 이동합니다.',
             style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 15.0),
+          InkWell(
+              onTap: () => {
+                    ref.read(asDataNotifierProvider.notifier).fetchAsData(
+                        _tabController.index)
+              },
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.refresh, color: Palette.stateColor4, size: 20.0),
+                Text('AS 접수 정보 새로고침',
+                    style: TextStyle(
+                        color: Palette.stateColor4,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold)),
+              ])),
+          SizedBox(height: 25.0),
           Expanded(
             child: TabBarView(
               controller: _tabController,

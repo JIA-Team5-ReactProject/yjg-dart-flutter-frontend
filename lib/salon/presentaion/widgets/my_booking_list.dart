@@ -23,10 +23,10 @@ class _MyBookingListState extends ConsumerState<MyBookingList> {
 
   void loadReservations() async {
     Future.microtask(() async {
-    // ref.refresh를 사용하여 데이터를 강제로 새로고침
-    await ref.refresh(reservationsProvider.future);
-    setState(() => isLoading = false);
-  });
+      // ref.refresh를 사용하여 데이터를 강제로 새로고침
+      await ref.refresh(reservationsProvider.future);
+      setState(() => isLoading = false);
+    });
   }
 
   @override
@@ -34,7 +34,8 @@ class _MyBookingListState extends ConsumerState<MyBookingList> {
     final reservationsAsyncValue = ref.watch(reservationsProvider);
 
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator(color: Palette.stateColor4));
+      return const Center(
+          child: CircularProgressIndicator(color: Palette.stateColor4));
     }
 
     return reservationsAsyncValue.when(
@@ -76,11 +77,31 @@ class _MyBookingListState extends ConsumerState<MyBookingList> {
               Padding(
                 padding:
                     const EdgeInsets.only(left: 20.0, top: 30.0, bottom: 10.0),
-                child: Text(
-                  "${getStatusText(status)}된 내역이 ${reservationsForStatus.length}건 있습니다.",
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                child: Row(children: [
+                  Text(
+                    "${getStatusText(status)}된 내역이 ${reservationsForStatus.length}건 있습니다.",
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  InkWell(
+                    onTap: () => {
+                      ref.refresh(reservationsProvider.future),
+                    },
+                    child: Row(children: [
+                      Icon(Icons.refresh,
+                          color: Palette.stateColor4, size: 20.0),
+                      Text(
+                        '새로고침',
+                        style: TextStyle(
+                            color: Palette.stateColor4,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
+                  ),
+                  SizedBox(width: 15.0)
+                ]),
               ),
               ...reservationsForStatus
                   .map((reservation) =>
