@@ -31,9 +31,17 @@ class MiniRoundedBox extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(iconData, color: iconColor), // 아이콘 색상을 매개변수에서 받아 사용
+            Icon(iconData, color: iconColor),
             SizedBox(width: 15),
-            Text(text, style: TextStyle(color: Palette.textColor, fontSize: 15)),
+            Expanded(
+              child: Text(text, 
+                  style: TextStyle(
+                    color: Palette.textColor, 
+                    fontSize: 15, 
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ),
+            ),
           ],
         ),
       ),
