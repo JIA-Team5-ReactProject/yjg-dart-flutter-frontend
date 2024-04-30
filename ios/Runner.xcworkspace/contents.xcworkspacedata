@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:../../../../Downloads/GoogleService-info.plist">
+      location = "group:GoogleService-info.plist">
    </FileRef>
    <FileRef
       location = "group:Runner.xcodeproj">
