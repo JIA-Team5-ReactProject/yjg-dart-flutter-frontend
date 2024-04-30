@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:yjg/administration/data/data_sources/std_as_data_source.dart';
@@ -37,32 +38,42 @@ class _AsApplicationState extends State<AsApplication> {
     }
   }
 
-  // * AS 예약 POST API 함수
-  Future<bool> sendData() async {
-    try {
-      print('요청');
-      await _stdAsDataSource.sendData(
-          title, input, place, day, _images); // 데이터 송신
-      // API 호출 성공
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('AS 요청이 성공적으로 전송되었습니다.'),
-          backgroundColor: Palette.mainColor,
-        ),
-      );
-      return true; // 성공 시 true 반환
-    } catch (e) {
-      // API 호출 실패
-      print('실패 요청');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('AS 요청 전송에 실패했습니다.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return false; // 실패 시 false 반환
+  // AS 예약 POST API 함수
+Future<bool> sendData() async {
+  try {
+    print('요청 시작');
+    await _stdAsDataSource.sendData(title, input, place, day, _images);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('AS 요청이 성공적으로 전송되었습니다.'),
+        backgroundColor: Palette.mainColor,
+      ),
+    );
+    return true;
+  } on DioException catch (e) { // Dio 예외 처리
+    print('Dio Exception 발생: ${e.message}');
+    if (e.response != null) {
+      print('상태 코드: ${e.response!.statusCode}');
+      print('응답 데이터: ${e.response!.data}');
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('네트워크 문제가 발생했습니다: ${e.message}'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return false;
+  } catch (e) {
+    print('예외 발생: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('알 수 없는 오류가 발생했습니다.'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return false;
   }
+}
 
   // 제목 텍스트 컨트롤러를 생성 (TextFiled의 내용 접근을 위해서)
   final TextEditingController titleController = TextEditingController();
