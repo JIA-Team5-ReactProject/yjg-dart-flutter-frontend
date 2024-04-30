@@ -25,39 +25,43 @@ class StdAsDataSource {
       throw Exception('예약 AS를 불러오지 못했습니다.');
     }
   }
-
   // * 예약 AS post 함수
   Future<void> sendData(title, input, place, day, List<XFile> images) async {
-    final url = '$apiURL/api/after-service';
-    final formData = FormData();
+  final url = '$apiURL/api/after-service';
+  final formData = FormData();
 
-    // 필드 추가
-    formData.fields
-      ..add(MapEntry('title', title))
-      ..add(MapEntry('content', input))
-      ..add(MapEntry('visit_place', place))
-      ..add(MapEntry('visit_date', day));
+  // 필드 추가
+  formData.fields
+    ..add(MapEntry('title', title))
+    ..add(MapEntry('content', input))
+    ..add(MapEntry('visit_place', place))
+    ..add(MapEntry('visit_date', day));
 
-    // 이미지 파일을 요청에 추가
-    for (var image in images) {
-      formData.files.add(
-        MapEntry(
-          'images[]',
-          await MultipartFile.fromFile(image.path,
-              filename: image.path.split('/').last),
-        ),
-      );
-    }
-
-    try {
-      final response = await dio.post(url, data: formData);
-      debugPrint('통신 결과: $response');
-    } catch (e) {
-      debugPrint('Error: $e');
-      throw Exception('예약 AS를 등록하지 못했습니다.');
-    }
+  // 이미지 파일을 요청에 추가
+  for (var image in images) {
+    formData.files.add(
+      MapEntry(
+        'images[]',
+        await MultipartFile.fromFile(image.path,
+            filename: image.path.split('/').last),
+      ),
+    );
   }
 
+  try {
+    final response = await dio.post(url, data: formData);
+    debugPrint('통신 결과: $response');
+    // 서버로부터 받은 응답이나 데이터를 추가적으로 처리할 수 있음
+  } catch (e) {
+    debugPrint('Error: $e');
+    if (e is DioError) {
+      debugPrint('Dio Error Response: ${e.response}');
+      debugPrint('Dio Error Message: ${e.message}');
+      // 만약 DioError가 발생했다면, response와 message를 로깅하여 디버깅에 도움이 되도록 함
+    }
+    throw Exception('예약 AS를 등록하지 못했습니다.');
+  }
+}
   // * AS 카드 데이터를 불러오는 함수
   Future<Response> fetchASRequests() async {
     String url = '$apiURL/api/after-service/user';
