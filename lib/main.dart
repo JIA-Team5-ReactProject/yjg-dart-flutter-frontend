@@ -1,7 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:yjg/firebase_api.dart';
+import 'firebase_options.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:yjg/routes/app_routes.dart';
 import 'package:yjg/shared/service/auth_service.dart';
 import 'package:yjg/shared/service/device_info.dart';
@@ -12,13 +16,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // 네비게이터 키
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() async {
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // 빌드가 안 될 경우 주석 해제 후 실행해 볼 것
   // SharedPreferences prefs = await SharedPreferences.getInstance();
   // await prefs.clear();
+
+  await FirebaseApi().initNotifications(); // 파이어베이스 fcm 초기화
 
   await dotenv.load(fileName: ".env");
 

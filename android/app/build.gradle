@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -37,6 +40,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        // isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -60,21 +64,21 @@ android {
     }
 
     
-    signingConfigs {
-        release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile file(keystoreProperties['storeFile'])
-           storePassword keystoreProperties['storePassword']
-       }
-    }
+    // signingConfigs {
+    //     release {
+    //        keyAlias keystoreProperties['keyAlias']
+    //        keyPassword keystoreProperties['keyPassword']
+    //        storeFile file(keystoreProperties['storeFile'])
+    //        storePassword keystoreProperties['storePassword']
+    //    }
+    // }
 
 
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-        }
-    }
+    // buildTypes {
+    //     release {
+    //         signingConfig signingConfigs.release
+    //     }
+    // }
 }
 
 flutter {
@@ -83,6 +87,7 @@ flutter {
 
 dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
-
+    implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'androidx.multidex:multidex:2.0.1'
+    // coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }
