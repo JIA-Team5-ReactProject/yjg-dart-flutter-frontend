@@ -23,10 +23,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 빌드가 안 될 경우 주석 해제 후 실행해 볼 것
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // await prefs.clear();
-
   await FirebaseApi().initNotifications(); // 파이어베이스 fcm 초기화
 
   await dotenv.load(fileName: ".env");
