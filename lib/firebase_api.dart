@@ -1,33 +1,45 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
-// 백그라운드에서 받은 메시지를 처리하는 함수
-Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  debugPrint('mattabu: Title: ${message.notification?.title}');  // 메시지 제목 출력
-  debugPrint('mattabu: Body: ${message.notification?.title}');   // 메시지 내용 출력
-  debugPrint('mattabu: Payload: ${message.data}');               // 메시지 데이터 출력
-}
+import 'package:yjg/shared/service/notification_service.dart';
 
 class FirebaseApi {
-  // Firebase 메시징 인스턴스 생성
-  final _firebaseMessaging = FirebaseMessaging.instance;
+  // 메시지 수신을 위한 FirebaseMessaging 인스턴스 생성
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  // 알림 초기화 함수
+  // 알림 기능 초기화
   Future<void> initNotifications() async {
-    // 사용자로부터 알림 권한 요청 (사용자에게 권한 요청 창을 띄움)
+    // 권한 관리
     await _firebaseMessaging.requestPermission(
-      badge: true,  // 배지 허용
-      alert: true,  // 알림 허용
-      sound: true   // 소리 허용
+      badge: true, // 배지 권한
+      alert: true, // 알림 권한
+      sound: true, // 소리 권한
     );
 
-    // 백그라운드 메시지 처리 설정
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+    // 포그라운드 메시지 처리
+    FirebaseMessaging.onMessage.listen(_firebaseMessageHandler);
 
-    // 이 디바이스의 FCM 토큰 획득
+    // 백그라운드 메시지 처리
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessageHandler);
+
+    // Firebase에서 제공하는 토큰 가져오기(디바이스 식별용)
     final FCMToken = await _firebaseMessaging.getToken();
-
-    // 토큰 출력
     debugPrint('Token: $FCMToken');
+  }
+
+  // 포그라운드, 백그라운드 메시지 처리 핸들러
+  static Future<void> _firebaseMessageHandler(RemoteMessage message) async {
+    // 로그인 했을 경우에만 옴(로그아웃 시에는 토큰이 삭제되기 때문)
+    if (message.notification != null) {
+      final title = message.notification!.title ?? "No Title";
+      final body = message.notification!.body ?? "No Body";
+      final payload = jsonEncode(message.data); // 알림과 함께 전달할 추가 데이터
+
+      debugPrint('onMessage: $title / $body / $payload');
+
+      await NotificationService()
+          .showNotification(title, body, payload: payload);
+    }
   }
 }
