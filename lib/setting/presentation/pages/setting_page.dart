@@ -146,26 +146,25 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   );
 
                   if (confirmDelete == true) {
-                    UserDataSource().deleteUserAccountAPI();
-                  }
+                    try {
+                      UserDataSource().deleteUserAccountAPI();
 
-                  try {
-                    await storage.deleteAll();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('회원탈퇴에 성공하였습니다. 로그아웃됩니다.'),
-                        backgroundColor: Palette.mainColor,
-                      ),
-                    );
-                    Navigator.pushNamedAndRemoveUntil(context, '/login_student',
-                        (Route<dynamic> route) => false);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('회원탈퇴 실패. 다시 시도해 주세요. 에러: $e'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('회원탈퇴에 성공하였습니다. 로그아웃됩니다.'),
+                          backgroundColor: Palette.mainColor,
+                        ),
+                      );
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          '/login_student', (Route<dynamic> route) => false);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('회원탈퇴 실패. 다시 시도해 주세요. 에러: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   }
                 }),
               ),
