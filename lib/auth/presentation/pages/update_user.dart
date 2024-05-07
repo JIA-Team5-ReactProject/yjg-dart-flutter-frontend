@@ -40,8 +40,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
   // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
   Future<void> getUserInfo() async {
     String? name = await storage.read(key: 'name');
-    String? phoneNumber = await storage.read(key: 'phone_num');
-    String? studentId = await storage.read(key: 'student_num');
+    String? phoneNumber = await storage.read(key: 'phone_number');
+    String? studentId = await storage.read(key: 'student_id');
 
     setState(() {
       defaultName = nameController.text = name!;
@@ -156,22 +156,22 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                             // 폰 번호 대조
                             if (defaultPhoneNumber !=
                                 phoneNumberController.text) {
-                              change['phone_num'] = phoneNumberController.text;
+                              change['phone_number'] = phoneNumberController.text;
                               await storage.write(
-                                  key: 'phone_num',
+                                  key: 'phone_number',
                                   value: phoneNumberController.text);
                             }
                             // 학번 대조
                             if (defaultStudentId != studentIdController.text) {
-                              change['student_num'] = studentIdController.text;
+                              change['student_id'] = studentIdController.text;
                               await storage.write(
-                                  key: 'student_num',
+                                  key: 'student_id',
                                   value: studentIdController.text);
                             }
 
                             // 그 외 비밀번호
                             if (passwordController.text.isNotEmpty) {
-                              change['password'] = passwordController.text;
+                              change['current_password'] = passwordController.text;
                             }
                             if (newPasswordController.text.isNotEmpty) {
                               change['new_password'] =
