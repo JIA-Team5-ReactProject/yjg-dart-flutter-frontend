@@ -11,6 +11,7 @@ import 'package:yjg/setting/data/data_sources/fcm_token_datasource.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
 import 'package:yjg/shared/service/save_to_storage.dart';
+import 'package:yjg/shared/service/snack_bar.dart';
 
 class GoogleLoginDataSource {
   static final _googleSignIn = GoogleSignIn(
@@ -37,7 +38,7 @@ class GoogleLoginDataSource {
 
       if (account != null) {
         if (!domainValidationUseCase(account.email)) {
-          _showSnackBar(context, '학교 이메일(@g.yju.ac.kr)이 아닐 경우 로그인을 할 수 없습니다.');
+          showSnackBar(context, '학교 이메일(@g.yju.ac.kr)이 아닐 경우 로그인을 할 수 없습니다.');
           await _googleSignIn.disconnect();
           return;
         }
@@ -80,7 +81,7 @@ class GoogleLoginDataSource {
       'id_token': loginState.idToken,
       'os_type': deviceInfo ?? 'unknown',
     };
-    
+
     try {
       final response = await dio.post(url,
           data: data,
@@ -115,8 +116,8 @@ class GoogleLoginDataSource {
         // 승인이 되었다면 사용자 기본 정보 업데이트
         await saveToStorage({
           'name': result.user!.name!,
-          'student_num': result.user!.studentId!,
-          'phone_num': result.user!.phoneNumber!,
+          'student_id': result.user!.studentId!,
+          'phone_number': result.user!.phoneNumber!,
           'auto_login': "true", // 구글 로그인 시 자동 로그인 고정
           'userType': 'student',
         });
@@ -132,15 +133,5 @@ class GoogleLoginDataSource {
     } catch (e) {
       debugPrint('비HTTP 에러 발생: $e');
     }
-  }
-
-  // 스낵바를 표시하는 함수
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
   }
 }

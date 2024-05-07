@@ -37,8 +37,8 @@ class LoginDataSource {
         'auth_token': userGenerated.accessToken!,
         'refresh_token': userGenerated.refreshToken!,
         'name': userGenerated.user!.name!,
-        'student_num': userGenerated.user!.studentId!,
-        'phone_num': userGenerated.user!.phoneNumber!,
+        'student_id': userGenerated.user!.studentId!,
+        'phone_number': userGenerated.user!.phoneNumber!,
       });
 
       debugPrint('토큰 저장: ${userGenerated.accessToken}');
