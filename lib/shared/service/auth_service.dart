@@ -3,9 +3,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
 import 'package:yjg/routes/app_routes.dart';
+import 'package:yjg/setting/data/data_sources/fcm_token_datasource.dart';
 
 class AuthService {
   final FlutterSecureStorage storage = FlutterSecureStorage();
+
+  // fcm token getter
+  Future<String?> getFcmToken() async {
+    return await storage.read(key: 'fcm_token');
+  }
 
   Future<String?> getInitialRoute() async {
     final token = await storage.read(key: 'auth_token');
@@ -40,6 +46,9 @@ class AuthService {
     if (autoLoginStr == 'true' && (JwtDecoder.isExpired(token))) {
       // 리프레시 토큰으로 액세스 토큰 갱신
       await LoginDataSource().getRefreshTokenAPI();
+
+      // FCM 토큰 업데이트
+      await FcmTokenDataSource().patchFcmTokenAPI();
 
       // 갱신된 액세스 토큰으로 초기 라우터 설정
       final newToken = await storage.read(key: 'auth_token');

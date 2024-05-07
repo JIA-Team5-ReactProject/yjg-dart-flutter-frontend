@@ -36,7 +36,7 @@ import 'package:yjg/salon/presentaion/pages/salon_booking_step_two.dart';
 import 'package:yjg/salon/presentaion/pages/salon_main.dart';
 import 'package:yjg/salon/presentaion/pages/salon_my_book.dart';
 import 'package:yjg/salon/presentaion/pages/salon_price_list.dart';
-import 'package:yjg/setting/setting_page.dart';
+import 'package:yjg/setting/presentation/pages/setting_page.dart';
 
 class AppRoutes {
   static final Map<String, WidgetBuilder> routes = {

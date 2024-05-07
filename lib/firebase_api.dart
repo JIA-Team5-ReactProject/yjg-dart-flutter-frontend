@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/service/notification_service.dart';
 
 class FirebaseApi {
   // 메시지 수신을 위한 FirebaseMessaging 인스턴스 생성
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final storage = FlutterSecureStorage(); // FCM 토큰 저장
 
   // 알림 기능 초기화
   Future<void> initNotifications() async {
@@ -24,8 +26,9 @@ class FirebaseApi {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessageHandler);
 
     // Firebase에서 제공하는 토큰 가져오기(디바이스 식별용)
-    final FCMToken = await _firebaseMessaging.getToken();
-    debugPrint('Token: $FCMToken');
+    String? fcmToken = await _firebaseMessaging.getToken();
+    await storage.write(key: 'fcm_token', value: fcmToken);
+    debugPrint('FCM 토큰: $fcmToken');
   }
 
   // 포그라운드, 백그라운드 메시지 처리 핸들러
