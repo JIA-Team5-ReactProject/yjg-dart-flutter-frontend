@@ -32,4 +32,23 @@ class FcmTokenDataSource {
       throw Exception('FCM Token 업데이트에 실패하였습니다.');
     }
   }
+
+  // * 푸쉬 알림 허용 여부 업데이트
+  Future<Response> patchPushNotificationAPI(bool push) async {
+    String url = '$apiURL/api/push';
+
+    final data = {
+      'enable': push,
+    };
+
+    try {
+      final response = await dio.patch(url, data: data);
+      debugPrint('푸쉬 알림 허용 여부 업데이트 성공: $response');
+      return response;
+    } on DioException catch (e) {
+      throw Exception('푸쉬 알림 허용 여부 업데이트 오류 발생: $e');
+    } catch (e) {
+      throw Exception('푸쉬 알림 허용 여부 업데이트에 실패하였습니다.');
+    }
+  }
 }

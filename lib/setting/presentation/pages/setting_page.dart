@@ -3,13 +3,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:yjg/auth/data/data_resources/user_data_source.dart';
+import 'package:yjg/setting/data/data_sources/fcm_token_datasource.dart';
+import 'package:yjg/setting/domain/usecases/push_notification_usecase.dart';
 import 'package:yjg/shared/service/logout_service.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-
-bool notifications = false;
 
 class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -21,6 +21,8 @@ class SettingPage extends ConsumerStatefulWidget {
 class _SettingPageState extends ConsumerState<SettingPage> {
   static final storage = FlutterSecureStorage();
   static String? userType;
+  final pushNotificationUseCase = PushNotificationUseCase(FcmTokenDataSource());
+  bool notifications = true; // 알림 수신 여부 기본값
 
   // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
   Future<void> getUserInfo() async {
@@ -63,8 +65,8 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 onPressed: ((context) {}),
               ),
 
-              // TODO: 추후 알림 설정 추가
               SettingsTile.switchTile(
+                activeSwitchColor: Palette.mainColor,
                 title: Text(
                   '알림',
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
@@ -73,6 +75,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 onToggle: (value) {
                   setState(() {
                     notifications = !notifications;
+
+                    // 푸쉬 알림 허용 여부 업데이트
+                    pushNotificationUseCase.call(notifications);
                   });
                 },
                 leading: Icon(Icons.notifications),
@@ -148,22 +153,26 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   if (confirmDelete == true) {
                     try {
                       UserDataSource().deleteUserAccountAPI();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('회원탈퇴에 성공하였습니다. 로그아웃됩니다.'),
+                            backgroundColor: Palette.mainColor,
+                          ),
+                        );
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('회원탈퇴에 성공하였습니다. 로그아웃됩니다.'),
-                          backgroundColor: Palette.mainColor,
-                        ),
-                      );
-                      Navigator.pushNamedAndRemoveUntil(context,
-                          '/login_student', (Route<dynamic> route) => false);
+                        Navigator.pushNamedAndRemoveUntil(context,
+                            '/login_student', (Route<dynamic> route) => false);
+                      }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('회원탈퇴 실패. 다시 시도해 주세요. 에러: $e'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('회원탈퇴 실패. 다시 시도해 주세요. 에러: $e'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     }
                   }
                 }),
