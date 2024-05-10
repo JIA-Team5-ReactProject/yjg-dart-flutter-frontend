@@ -1,0 +1,122 @@
+[
+  {
+      "service_type": "펌",
+      "gender": "여자",
+      "service_name": "글램펌",
+      "price": 40000
+  },
+  {
+      "service_type": "커트",
+      "gender": "남자",
+      "service_name": "스타일리시 커트",
+      "price": 15000
+  },
+  {
+      "service_type": "염색",
+      "gender": "여자",
+      "service_name": "베이비 핑크 염색",
+      "price": 50000
+  },
+  {
+      "service_type": "세트",
+      "gender": "남자",
+      "service_name": "클래식 세트",
+      "price": 25000
+  },
+  {
+      "service_type": "펌",
+      "gender": "남자",
+      "service_name": "볼륨 펌",
+      "price": 30000
+  },
+  {
+      "service_type": "커트",
+      "gender": "여자",
+      "service_name": "레이어드 커트",
+      "price": 18000
+  },
+  {
+      "service_type": "염색",
+      "gender": "남자",
+      "service_name": "플래티넘 블론드",
+      "price": 55000
+  },
+  {
+      "service_type": "세트",
+      "gender": "여자",
+      "service_name": "웨딩 세트",
+      "price": 60000
+  },
+  {
+      "service_type": "펌",
+      "gender": "여자",
+      "service_name": "씨씨 펌",
+      "price": 45000
+  },
+  {
+      "service_type": "커트",
+      "gender": "남자",
+      "service_name": "프레시 커트",
+      "price": 13000
+  },
+  {
+      "service_type": "염색",
+      "gender": "여자",
+      "service_name": "써니 브라운 염색",
+      "price": 47000
+  },
+  {
+      "service_type": "세트",
+      "gender": "남자",
+      "service_name": "캐주얼 세트",
+      "price": 22000
+  },
+  {
+      "service_type": "펌",
+      "gender": "남자",
+      "service_name": "디지털 펌",
+      "price": 35000
+  },
+  {
+      "service_type": "커트",
+      "gender": "여자",
+      "service_name": "쇼트 커트",
+      "price": 20000
+  },
+  {
+      "service_type": "염색",
+      "gender": "남자",
+      "service_name": "쿨 애쉬",
+      "price": 53000
+  },
+  {
+      "service_type": "세트",
+      "gender": "여자",
+      "service_name": "엘레강스 세트",
+      "price": 65000
+  },
+  {
+      "service_type": "펌",
+      "gender": "여자",
+      "service_name": "네츄럴 웨이브",
+      "price": 38000
+  },
+  {
+      "service_type": "커트",
+      "gender": "남자",
+      "service_name": "버즈 커트",
+      "price": 10000
+  },
+  {
+      "service_type": "염색",
+      "gender": "여자",
+      "service_name": "로즈 골드",
+      "price": 48000
+  },
+  {
+      "service_type": "세트",
+      "gender": "남자",
+      "service_name": "모던 세트",
+      "price": 23000
+  }
+]
