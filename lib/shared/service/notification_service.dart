@@ -43,11 +43,11 @@ class NotificationService {
   void handleNotificationClick(String? payload) {
     if (payload != null && navigatorKey.currentState != null) {
       final data = jsonDecode(payload);
-      final id = data['id'];
+      final id = int.parse(data['id']);
 
       switch (data['page']) {
         case 'as': // 관리자, 학생 AS(댓글 등록, AS 접수, AS 처리)
-          navigatorKey.currentState!.pushNamed('/notice_detail', arguments: id);
+          navigatorKey.currentState!.pushNamed('/as_detail', arguments: id);
           break;
         case 'notice': // 긴급 공지사항
           navigatorKey.currentState!.pushNamed('/notice_detail', arguments: id);
