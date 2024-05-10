@@ -120,6 +120,7 @@ class GoogleLoginDataSource {
           'phone_number': result.user!.phoneNumber!,
           'auto_login': "true", // 구글 로그인 시 자동 로그인 고정
           'userType': 'student',
+          'push': result.user!.pushEnabled.toString(),
         });
 
         // FCM 토큰 업데이트
