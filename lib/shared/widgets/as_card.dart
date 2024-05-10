@@ -39,7 +39,6 @@ class _AsCardState extends State<AsCard> {
             ),
           ),
           onPressed: () {
-            print('Navigating to details with id: ${widget.id}');
             Navigator.pushNamed(
               context,
               '/as_detail',

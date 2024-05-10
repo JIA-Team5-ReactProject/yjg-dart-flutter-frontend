@@ -23,7 +23,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
   Future<void> getUserInfo() async {
     final storage = FlutterSecureStorage();
     String? name = await storage.read(key: 'name');
-    String? studentNum = await storage.read(key: 'student_num');
+    String? studentNum = await storage.read(key: 'student_id');
     setState(() {
       widget.name = name;
       widget.studenNum = studentNum;
