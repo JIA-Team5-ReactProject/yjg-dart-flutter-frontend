@@ -14,7 +14,7 @@ class FilterServiceList extends ConsumerWidget {
     final userSelection = ref.watch(userSelectionProvider);
     final selectedGender = userSelection.selectedGender; // 성별
     final selectedCategoryId = userSelection.selectedCategoryId;
-    String uniqueKey = "${selectedGender}_${selectedCategoryId}";
+    String uniqueKey = "${selectedGender}_$selectedCategoryId";
 
     final servicesAsyncValue = ref.watch(servicesProvider(uniqueKey));
 

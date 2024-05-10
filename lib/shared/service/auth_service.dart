@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yjg/auth/data/data_resources/login_data_source.dart';
+import 'package:yjg/firebase_api.dart';
 import 'package:yjg/routes/app_routes.dart';
 import 'package:yjg/setting/data/data_sources/fcm_token_datasource.dart';
 
@@ -18,6 +19,8 @@ class AuthService {
     final autoLoginStr = await storage.read(key: 'auto_login') ?? 'false';
     final refreshToken = await storage.read(key: 'refresh_token');
     final userType = await storage.read(key: 'userType');
+    FirebaseApi firebaseApi = FirebaseApi();
+    await firebaseApi.updateToken();
 
     debugPrint('액세스 토큰: $token');
     debugPrint('리프레시 토큰: $refreshToken');

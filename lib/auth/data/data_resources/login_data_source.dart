@@ -30,19 +30,20 @@ class LoginDataSource {
     try {
       final response = await dio.post(url,
           data: data, options: Options(extra: {"noAuth": true}));
-      Usergenerated userGenerated = Usergenerated.fromJson(response.data);
+      final result = Usergenerated.fromJson(response.data);
 
       // 스토리지에 토큰과 사용자 정보 저장
       await saveToStorage({
-        'auth_token': userGenerated.accessToken!,
-        'refresh_token': userGenerated.refreshToken!,
-        'name': userGenerated.user!.name!,
-        'student_id': userGenerated.user!.studentId!,
-        'phone_number': userGenerated.user!.phoneNumber!,
+        'auth_token': result.accessToken!,
+        'refresh_token': result.refreshToken!,
+        'name': result.user!.name!,
+        'student_id': result.user!.studentId!,
+        'phone_number': result.user!.phoneNumber!,
+        'push': result.user!.pushEnabled.toString(),
       });
 
-      debugPrint('토큰 저장: ${userGenerated.accessToken}');
-      debugPrint('리프레시 토큰 저장: ${userGenerated.refreshToken}');
+      debugPrint('토큰 저장: ${result.accessToken}');
+      debugPrint('리프레시 토큰 저장: ${result.refreshToken}');
 
       // FCM 토큰 업데이트
       FcmTokenDataSource().patchFcmTokenAPI();
@@ -78,6 +79,7 @@ class LoginDataSource {
           'refresh_token': result.refreshToken!,
           'name': result.user!.name!,
           'phone_num': result.user!.phoneNumber!,
+          'push': result.user!.pushEnabled.toString(),
         });
 
         debugPrint('토큰 저장: $token');

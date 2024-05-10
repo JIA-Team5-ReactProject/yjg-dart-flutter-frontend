@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:yjg/firebase_api.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
 
@@ -16,11 +17,15 @@ class FcmTokenDataSource {
   // 로그인 시 FCM 토큰을 업데이트, 자동 로그인 시에도 업데이트
   Future<Response> patchFcmTokenAPI() async {
     String url = '$apiURL/api/fcm-token';
-    String fcmToken = storage.read(key: 'fcm_token').toString();
+    FirebaseApi firebaseApi = FirebaseApi();
+    await firebaseApi.updateToken();
+    String? fcmToken = await storage.read(key: 'fcm_token');
 
     final data = {
       'fcm_token': fcmToken,
     };
+
+    debugPrint('보내는 FCM Token: $fcmToken');
 
     try {
       final response = await dio.patch(url, data: data);

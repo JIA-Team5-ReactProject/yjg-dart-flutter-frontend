@@ -20,29 +20,36 @@ class FirebaseApi {
     );
 
     // 포그라운드 메시지 처리
-    FirebaseMessaging.onMessage.listen(_firebaseMessageHandler);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _handleMessage(message);
+    });
 
     // 백그라운드 메시지 처리
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessageHandler);
+    //     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //       _handleMessage(message);
+    //     });
 
     // Firebase에서 제공하는 토큰 가져오기(디바이스 식별용)
-    String? fcmToken = await _firebaseMessaging.getToken();
-    await storage.write(key: 'fcm_token', value: fcmToken);
-    debugPrint('FCM 토큰: $fcmToken');
+    updateToken();
   }
 
-  // 포그라운드, 백그라운드 메시지 처리 핸들러
-  static Future<void> _firebaseMessageHandler(RemoteMessage message) async {
-    // 로그인 했을 경우에만 옴(로그아웃 시에는 토큰이 삭제되기 때문)
+  // 토큰 갱신 및 저장 메서드
+  Future<void> updateToken() async {
+    String? fcmToken = await _firebaseMessaging.getToken();
+    await storage.write(key: 'fcm_token', value: fcmToken);
+    debugPrint('FCM 토큰 갱신: $fcmToken');
+  }
+
+  // 포그라운드 핸들러
+  void _handleMessage(RemoteMessage message) {
     if (message.notification != null) {
       final title = message.notification!.title ?? "No Title";
       final body = message.notification!.body ?? "No Body";
-      final payload = jsonEncode(message.data); // 알림과 함께 전달할 추가 데이터
+      final payload = jsonEncode(message.data);
 
       debugPrint('onMessage: $title / $body / $payload');
 
-      await NotificationService()
-          .showNotification(title, body, payload: payload);
+      NotificationService().showNotification(title, body, payload: payload);
     }
   }
 }

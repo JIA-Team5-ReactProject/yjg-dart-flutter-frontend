@@ -29,6 +29,9 @@ class User {
   String? phoneNumber;
   String? email;
   int? approved;
+  int? admin;
+  String? fcmToken;
+  int? pushEnabled;
   String? createdAt;
   String? updatedAt;
   List<Privileges>? privileges;
@@ -39,6 +42,9 @@ class User {
       this.name,
       this.phoneNumber,
       this.email,
+      this.admin,
+      this.fcmToken,
+      this.pushEnabled,
       this.approved,
       this.createdAt,
       this.updatedAt,
@@ -51,6 +57,9 @@ class User {
     phoneNumber = json['phone_number'];
     email = json['email'];
     approved = json['approved'];
+    admin = json['admin'];
+    fcmToken = json['fcm_token'];
+    pushEnabled = json['push_enabled'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['privileges'] != null) {
@@ -69,6 +78,9 @@ class User {
     data['phone_number'] = phoneNumber;
     data['email'] = email;
     data['approved'] = approved;
+    data['admin'] = admin;
+    data['fcm_token'] = fcmToken;
+    data['push_enabled'] = pushEnabled;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     if (privileges != null) {

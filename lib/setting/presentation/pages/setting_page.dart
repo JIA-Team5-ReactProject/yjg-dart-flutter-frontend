@@ -12,8 +12,8 @@ import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 
 class SettingPage extends ConsumerStatefulWidget {
-  const SettingPage({Key? key}) : super(key: key);
-
+  SettingPage({Key? key}) : super(key: key);
+  bool notifications = false;
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -22,17 +22,25 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   static final storage = FlutterSecureStorage();
   static String? userType;
   final pushNotificationUseCase = PushNotificationUseCase(FcmTokenDataSource());
-  bool notifications = true; // 알림 수신 여부 기본값
 
   // storage에서 isAdmin 값을 읽어와서 상태를 업데이트하는 메소드
   Future<void> getUserInfo() async {
     userType = await storage.read(key: 'userType');
   }
 
+  Future<void> getPushNotification() async {
+    final storage = FlutterSecureStorage();
+    bool push = await storage.read(key: 'push') == '0' ? false : true;
+    setState(() {
+      widget.notifications = push;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getUserInfo();
+    getPushNotification();
   }
 
   @override
@@ -71,13 +79,13 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   '알림',
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
-                initialValue: notifications,
+                initialValue: widget.notifications,
                 onToggle: (value) {
                   setState(() {
-                    notifications = !notifications;
+                    widget.notifications = !widget.notifications;
 
                     // 푸쉬 알림 허용 여부 업데이트
-                    pushNotificationUseCase.call(notifications);
+                    pushNotificationUseCase.call(widget.notifications);
                   });
                 },
                 leading: Icon(Icons.notifications),

@@ -24,10 +24,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
         switch (index) {
           case 0:
             final initialRoute = await AuthService().getInitialRoute();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              initialRoute!,
-              (route) => false,
-            );
+            if (context.mounted) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                initialRoute!,
+                (route) => false,
+              );
+            }
             break;
           case 1:
             Navigator.of(context).pushNamed('/setting');
