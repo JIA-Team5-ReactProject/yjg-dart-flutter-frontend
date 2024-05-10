@@ -156,10 +156,12 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                             // 폰 번호 대조
                             if (defaultPhoneNumber !=
                                 phoneNumberController.text) {
-                              change['phone_number'] = phoneNumberController.text;
+                              String phoneNumber = phoneNumberController.text
+                                  .replaceAll(RegExp(r'[^\d]'), '');
+
+                              change['phone_number'] = phoneNumber;
                               await storage.write(
-                                  key: 'phone_number',
-                                  value: phoneNumberController.text);
+                                  key: 'phone_number', value: phoneNumber);
                             }
                             // 학번 대조
                             if (defaultStudentId != studentIdController.text) {
@@ -171,7 +173,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
 
                             // 그 외 비밀번호
                             if (passwordController.text.isNotEmpty) {
-                              change['current_password'] = passwordController.text;
+                              change['current_password'] =
+                                  passwordController.text;
                             }
                             if (newPasswordController.text.isNotEmpty) {
                               change['new_password'] =
