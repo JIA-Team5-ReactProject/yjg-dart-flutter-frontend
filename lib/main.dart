@@ -48,12 +48,14 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   static const platform = MethodChannel('com.example.yjg/navigation'); // 플랫폼 채널 추가
 
-  MyApp({
+   MyApp({
     Key? key,
     required this.navigatorKey,
     required this.initialRoute,
   }) : super(key: key) {
-    _navigateToInitialPage(); // 앱 시작 시 네이티브 코드로부터 페이지 정보를 받아 처리
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _navigateToInitialPage(); // 앱 시작 후 네이티브 코드로부터 페이지 정보를 받아 처리
+    });
   }
 
   final GlobalKey<NavigatorState> navigatorKey;
