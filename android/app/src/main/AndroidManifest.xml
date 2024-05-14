@@ -32,9 +32,9 @@
             </intent-filter>
         </activity>
 
-        <!-- 위젯 프로바이더 -->
+        <!-- 식수 QR 위젯 프로바이더 -->
         <receiver android:name=".MyAppWidgetProvider"
-            android:label="Yeungjin Global Widget"
+            android:label="YJG 식수 QR"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -42,6 +42,17 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
+        </receiver>
+
+        <receiver android:name=".MySecondAppWidgetProvider"
+                android:label="YJG 버스 QR"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/second_widget_info" />
         </receiver>
 
         <!-- Flutter 플러그인 등록 -->
