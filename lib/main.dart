@@ -48,7 +48,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   static const platform = MethodChannel('com.example.yjg/navigation'); // 플랫폼 채널 추가
 
-   MyApp({
+  MyApp({
     Key? key,
     required this.navigatorKey,
     required this.initialRoute,
