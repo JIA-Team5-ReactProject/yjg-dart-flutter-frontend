@@ -1,32 +1,32 @@
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:dotted_line/dotted_line.dart";
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/service/logout_service.dart';
+import 'package:yjg/shared/service/user_info.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
 class BaseDrawer extends ConsumerStatefulWidget {
   BaseDrawer({super.key});
-  String? name;
-  String? studenNum; // 학번
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _BaseDrawerState();
 }
 
 class _BaseDrawerState extends ConsumerState<BaseDrawer> {
+  String? name;
+  String? studenNum; // 학번
+
   @override
   void initState() {
-    getUserInfo();
+    loadUserInfo();
     super.initState();
   }
 
-  Future<void> getUserInfo() async {
-    final storage = FlutterSecureStorage();
-    String? name = await storage.read(key: 'name');
-    String? studentNum = await storage.read(key: 'student_id');
+  Future<void> loadUserInfo() async {
+    final userInfo = await UserInfo.getUserInfo();
     setState(() {
-      widget.name = name;
-      widget.studenNum = studentNum;
+      name = userInfo['name'];
+      studenNum = userInfo['studentNum'];
     });
   }
 
@@ -54,8 +54,8 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/img/yju_tiger_logo.png'),
             ),
-            accountName: Text(widget.name ?? '정보 없음'),
-            accountEmail: Text(widget.studenNum ?? '정보 없음'),
+            accountName: Text(name ?? '정보 없음'),
+            accountEmail: Text(studenNum ?? '정보 없음'),
             decoration: const BoxDecoration(
               color: Palette.mainColor,
               borderRadius: BorderRadius.only(

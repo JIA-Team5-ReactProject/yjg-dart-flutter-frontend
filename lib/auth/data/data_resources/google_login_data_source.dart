@@ -10,7 +10,7 @@ import 'package:yjg/main.dart';
 import 'package:yjg/setting/data/data_sources/fcm_token_datasource.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
-import 'package:yjg/shared/service/save_to_storage.dart';
+import 'package:yjg/shared/service/storage.dart';
 import 'package:yjg/shared/service/snack_bar.dart';
 
 class GoogleLoginDataSource {

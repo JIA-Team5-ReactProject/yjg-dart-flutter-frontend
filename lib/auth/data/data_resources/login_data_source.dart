@@ -8,7 +8,7 @@ import 'package:yjg/auth/presentation/viewmodels/user_viewmodel.dart';
 import 'package:yjg/setting/data/data_sources/fcm_token_datasource.dart';
 import 'package:yjg/shared/constants/api_url.dart';
 import 'package:yjg/shared/service/interceptor.dart';
-import 'package:yjg/shared/service/save_to_storage.dart';
+import 'package:yjg/shared/service/storage.dart';
 
 class LoginDataSource {
   static final Dio dio = Dio();
