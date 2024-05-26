@@ -85,10 +85,10 @@ flutter {
 }
 
 dependencies {
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03' // EncryptedSharedPreferences 및 MasterKey
+    implementation 'com.auth0.android:jwtdecode:2.0.1' // JWT 디코딩
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:31.0.1')
-    // coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
 }
