@@ -37,6 +37,9 @@ class AdminReservationDataSource {
     try {
       final response = await dio.patch(url, data: data);
       return response;
+    } on DioException catch (e) {
+      debugPrint('코드: ${e.response!.statusCode} 데이터: ${e.response!.data}');
+      throw Exception('예약 상태 변경에 실패했습니다. : $e');
     } catch (e) {
       debugPrint('통신 결과: $e');
       throw Exception('예약 상태 변경에 실패했습니다.');

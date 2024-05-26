@@ -35,7 +35,12 @@ class AsCommentDataSource {
       final response = await dio.post(url, data: {'comment': comment});
       debugPrint('댓글 등록 결과: ${response.statusCode}, ${response.data}');
       return response;
-    } catch (e) {
+    } on DioException catch (e) {
+      debugPrint('댓글 작성 실패: ${e.response!.statusCode}, ${e.response!.data}');
+      throw Exception('댓글 작성에 실패했습니다. : $e');
+    } 
+    
+    catch (e) {
       throw Exception('댓글 작성에 실패했습니다.');
     }
   }

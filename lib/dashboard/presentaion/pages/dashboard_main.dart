@@ -36,32 +36,34 @@ class DashboardMain extends ConsumerWidget {
                     right: 0,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 30,
-                        runSpacing: 30,
-                        children: <Widget>[
-                          MoveButton(
-                              icon: Icons.directions_bus,
-                              text1: '버스',
-                              text2: '버스 시간표, 버스 QR',
-                              route: '/bus_main'),
-                          MoveButton(
-                              icon: Icons.restaurant,
-                              text1: '식수',
-                              text2: '식수 QR, 식수신청 등',
-                              route: '/restaurant_main'),
-                          MoveButton(
-                              icon: Icons.cut,
-                              text1: '미용실',
-                              text2: '미용실 예약, 가격표',
-                              route: '/salon_main'),
-                          MoveButton(
-                              icon: Icons.support_agent,
-                              text1: '행정',
-                              text2: '공지사항, AS 요청 등',
-                              route: '/admin_main'),
-                        ],
+                      child: SizedBox(
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: MediaQuery.of(context).size.width / 15,
+                          runSpacing: 30,
+                          children: <Widget>[
+                            MoveButton(
+                                icon: Icons.directions_bus,
+                                text1: '버스',
+                                text2: '버스 시간표, 버스 QR',
+                                route: '/bus_main'),
+                            MoveButton(
+                                icon: Icons.restaurant,
+                                text1: '식수',
+                                text2: '식수 QR, 식수신청 등',
+                                route: '/restaurant_main'),
+                            MoveButton(
+                                icon: Icons.cut,
+                                text1: '미용실',
+                                text2: '미용실 예약, 가격표',
+                                route: '/salon_main'),
+                            MoveButton(
+                                icon: Icons.support_agent,
+                                text1: '행정',
+                                text2: '공지사항, AS 요청 등',
+                                route: '/admin_main'),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -79,11 +81,10 @@ class DashboardMain extends ConsumerWidget {
                   },
                   child: asyncNotice.when(
                     data: (notice) => MiniRoundedBox(
-                    
                       iconData: Icons.support_agent,
                       iconColor: Palette.stateColor1,
                       text: notice.title,
-                       // API로부터 받은 긴급 공지사항 제목
+                      // API로부터 받은 긴급 공지사항 제목
                     ),
                     loading: () => Center(
                         child: CircularProgressIndicator(

@@ -637,24 +637,33 @@ class _MealApplicationState extends ConsumerState<MealApplication> {
           children: <Widget>[
             Text(
               '정말 취소 하시겠습니까?',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             SizedBox(height: 25),
           ],
         ),
         actions: [
-          ElevatedButton(
+          TextButton(
             onPressed: () async {
               Navigator.pop(context); // 다이얼로그를 닫습니다.
               await cancelMealApplication(); // 신청 취소 API 호출
             },
-            child: const Text('예'),
+            child: Text('예',
+                style: TextStyle(
+                    color: Palette.textColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12)),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () {
-              Navigator.pop(context); // 다이얼로그만 닫기
+              // 알림 창 닫기
+              Navigator.pop(context);
             },
-            child: const Text('아니오'),
+            child: Text('아니오',
+                style: TextStyle(
+                    color: Palette.stateColor3,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12)),
           ),
         ],
       ),
