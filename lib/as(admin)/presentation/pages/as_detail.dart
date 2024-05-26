@@ -104,13 +104,19 @@ class _AsDetailState extends ConsumerState<AsDetail> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('삭제 확인'),
+          title: Text('삭제 확인',
+              style: TextStyle(
+                  color: Palette.textColor,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600)),
           content: Text('정말 삭제하시겠습니까?'),
           actions: <Widget>[
             TextButton(
               onPressed: () =>
                   Navigator.of(context).pop(false), // '아니오' 선택 시 false 반환
-              child: Text('아니오'),
+              child: Text('취소',
+                  style: TextStyle(
+                      color: Palette.stateColor4, fontWeight: FontWeight.w600)),
             ),
             TextButton(
               onPressed: () {
@@ -118,7 +124,9 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                 Navigator.pop(context);
                 Navigator.popAndPushNamed(context, '/as_page');
               },
-              child: Text('예'),
+              child: Text('삭제',
+                  style: TextStyle(
+                      color: Palette.stateColor3, fontWeight: FontWeight.w600)),
             ),
           ],
         );
@@ -257,17 +265,20 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                                 ),
                                 SizedBox(height: 15),
                                 ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(Palette.mainColor),
-                                  ),
-                                  onPressed: () {
-                                    updateAsDetail(
-                                        asId,
-                                        _contentController.text,
-                                        _editedVisitDate ?? "");
-                                  },
-                                  child: Icon(Icons.task_alt,color: Colors.white,)
-                                ),
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                          Palette.mainColor),
+                                    ),
+                                    onPressed: () {
+                                      updateAsDetail(
+                                          asId,
+                                          _contentController.text,
+                                          _editedVisitDate ?? "");
+                                    },
+                                    child: Icon(
+                                      Icons.task_alt,
+                                      color: Colors.white,
+                                    )),
                               ],
                             )
                           : Text(asDetail['afterService']['content']),
@@ -277,7 +288,9 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(height: 10.0,),
+                    SizedBox(
+                      height: 10.0,
+                    ),
                     asDetail['afterService']['after_service_images'].length == 0
                         ? Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -291,7 +304,8 @@ class _AsDetailState extends ConsumerState<AsDetail> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     AsCommentBox(
-                        serviceId: asId,),
+                      serviceId: asId,
+                    ),
                     SizedBox(height: 60.0),
                   ],
                 ),

@@ -1122,7 +1122,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           children: <Widget>[
             Text(
               '정말 취소 하시겠습니까?',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             SizedBox(
               height: 25,
@@ -1130,7 +1130,7 @@ class _WeekendMealState extends State<WeekendMeal> {
           ],
         ),
         actions: [
-          ElevatedButton(
+          TextButton(
             onPressed: () async {
               // 신청 취소 처리
               await deleteApplication(applicationId);
@@ -1144,14 +1144,18 @@ class _WeekendMealState extends State<WeekendMeal> {
               // 알림 창 닫기
               Navigator.pop(context);
             },
-            child: Text('예'),
+            child: Text('예', style: TextStyle(
+                                  color: Palette.textColor,
+                                  fontWeight: FontWeight.w600, fontSize: 12)),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               // 알림 창 닫기
               Navigator.pop(context);
             },
-            child: Text('아니오'),
+            child: Text('아니오',  style: TextStyle(
+                                  color: Palette.stateColor3,
+                                  fontWeight: FontWeight.w600, fontSize: 12)),
           ),
         ],
       ),
