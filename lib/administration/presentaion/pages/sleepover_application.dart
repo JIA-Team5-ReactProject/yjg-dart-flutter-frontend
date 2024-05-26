@@ -29,11 +29,18 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: Text(title,
+              style: TextStyle(
+                  color: Palette.textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold)),
           content: Text(content),
           actions: <Widget>[
             TextButton(
-              child: Text('확인'),
+              child: Text(
+                '확인',
+                style: TextStyle(color: Palette.stateColor3),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
               },
@@ -286,7 +293,6 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     }
 
     String type = _startDate == _endDate ? 'go' : 'sleep';
-    Uri apiUrl = Uri.parse('$apiURL/api/absence');
 
     try {
       final response = await _sleepoverDataSource.submitApplication(
@@ -307,11 +313,13 @@ class _SleepoverApplicationState extends State<SleepoverApplication> {
     } on DioException catch (e) {
       // 409 예외 처리
       if (e.response?.statusCode == 409) {
-        _showDialog('예약 중복', '해당 날짜에 이미 예약이 존재합니다.');
+        _showDialog('예약 중복', '이미 신청된 날짜입니다.');
+      } else {
+        _showDialog('실패', '예기치 못한 오류가 발생했습니다.'); // 예외 메시지를 사용
       }
     } catch (e) {
       // 예외 처리
-      _showDialog('에러', '오류가 발생했습니다: $e');
+      _showDialog('에러', '예기치 못한 오류가 발생했습니다.');
     }
   }
 }

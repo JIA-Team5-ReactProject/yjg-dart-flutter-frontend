@@ -14,8 +14,8 @@ class SleepoverDataSource {
   }
 
   // * 외박/외출 신청하는 POST API 함수
-  Future<Response> submitApplication(
-      _startDate, _endDate, _reasonController, type) async {
+  Future<Response> submitApplication(DateTime? _startDate, DateTime? _endDate,
+      TextEditingController _reasonController, String type) async {
     String url = '$apiURL/api/absence';
     final data = {
       'start_date': DateFormat('yyyy-MM-dd').format(_startDate!),
@@ -24,9 +24,26 @@ class SleepoverDataSource {
       'type': type,
     };
 
-    final response = await dio.post(url, data: data);
-
-    return response;
+    try {
+      final response = await dio.post(url, data: data);
+      return response;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        throw DioException(
+          requestOptions: e.requestOptions,
+          error: '이미 신청된 날짜입니다.',
+          response: e.response,
+        );
+      } else {
+        throw DioException(
+          requestOptions: e.requestOptions,
+          response: e.response,
+          error: '외박/외출 신청을 실패하였습니다.',
+        );
+      }
+    } catch (e) {
+      throw Exception('예기치 못한 오류가 발생하였습니다.');
+    }
   }
 
   // * 외박/외출 신청 정보 불러오는 GET API 함수
@@ -47,8 +64,8 @@ class SleepoverDataSource {
     final url = '$apiURL/api/absence/$id';
 
     try {
-    final response = await dio.delete(url);
-    debugPrint('예약 취소 완료: ${response.statusCode}');
+      final response = await dio.delete(url);
+      debugPrint('예약 취소 완료: ${response.statusCode}');
     } catch (e) {
       throw Exception('예약 취소를 실패하였습니다.');
     }
