@@ -21,7 +21,6 @@ class UserDataSource {
     final loginType = await storage.read(key: 'login_type'); // 구글 로그인인지 확인
     final approve =
         await storage.read(key: 'approve'); // approve 확인(0일 경우, 승인 처리를 해야 하므로)
-    debugPrint('보내는 데이터: $change');
 
     try {
       final response = await dio.patch(url, data: change);
@@ -35,11 +34,14 @@ class UserDataSource {
         // 구글 로그아웃
         GoogleLoginDataSource().logoutWithGoogle();
       }
-      debugPrint('response data: ${response.data}, status code: ${response.statusCode}');
 
       return response;
     } on DioException catch (e) {
-      throw Exception('추가 정보 입력에 실패했습니다. : $e');
+      throw DioException(
+        requestOptions: e.requestOptions,
+        response: e.response,
+        error: '추가 정보 입력에 실패하였습니다.',
+      );
     } catch (e) {
       throw Exception('알 수 없는 오류가 발생했습니다. : $e');
     }
@@ -74,7 +76,7 @@ class UserDataSource {
         GoogleLoginDataSource().logoutWithGoogle();
       }
 
-      storage.deleteAll(); // 모든 정보 삭제
+      await storage.deleteAll(); // 모든 정보 삭제
 
       return response;
     } catch (e) {

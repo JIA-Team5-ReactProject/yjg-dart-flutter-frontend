@@ -41,7 +41,6 @@ class _AsApplicationState extends State<AsApplication> {
   // AS 예약 POST API 함수
 Future<bool> sendData() async {
   try {
-    print('요청 시작');
     await _stdAsDataSource.sendData(title, input, place, day, _images);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -51,10 +50,8 @@ Future<bool> sendData() async {
     );
     return true;
   } on DioException catch (e) { // Dio 예외 처리
-    print('Dio Exception 발생: ${e.message}');
     if (e.response != null) {
-      print('상태 코드: ${e.response!.statusCode}');
-      print('응답 데이터: ${e.response!.data}');
+      debugPrint('네트워크 문제 발생: ${e.response!.data}');
     }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -64,7 +61,6 @@ Future<bool> sendData() async {
     );
     return false;
   } catch (e) {
-    print('예외 발생: $e');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('알 수 없는 오류가 발생했습니다.'),

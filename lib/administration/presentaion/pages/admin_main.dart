@@ -93,7 +93,9 @@ class _AdminMainState extends State<AdminMain> {
                           AsyncSnapshot<Map<String, dynamic>?> snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return CircularProgressIndicator(); // 로딩 중
+                          return Center(
+                              child: CircularProgressIndicator(
+                                  color: Colors.white)); // 로딩 중
                         } else if (snapshot.hasData && snapshot.data != null) {
                           final reservation = snapshot.data!;
                           final meetingRoomNumber =
@@ -219,12 +221,15 @@ class _AdminMainState extends State<AdminMain> {
               future: Future.value(latestASRequest),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return Center(
+                              child: CircularProgressIndicator(
+                                  color: Palette.stateColor4));
                 }
                 return Container(
                   height: 80,
                   width: 330,
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(
