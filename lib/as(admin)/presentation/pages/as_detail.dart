@@ -195,7 +195,7 @@ class _AsDetailState extends ConsumerState<AsDetail> {
         future: fetchAsDetail(asId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: Palette.stateColor4));
           } else if (snapshot.hasError) {
             return const Center(child: Text("에러(as_detail.dart)"));
           } else {

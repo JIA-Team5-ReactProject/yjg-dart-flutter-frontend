@@ -20,7 +20,11 @@ class StatusDataSource {
     try {
       final response = await dio.patch(url);
       return response;
-    } catch (e) {
+    } on DioException catch (e) {
+      throw Exception('추가 정보 입력에 실패했습니다. : $e');
+    }
+    
+    catch (e) {
       debugPrint('통신 결과: $e');
       throw Exception('상태 변경에 실패했습니다.');
     }

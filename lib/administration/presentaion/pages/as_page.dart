@@ -104,7 +104,7 @@ class _AsPageState extends State<AsPage> {
                         SizedBox(
                           width: 10,
                         ),
-                        Text('AS 신청하기')
+                        Text('AS 신청하기', style: TextStyle(letterSpacing: -0.5)),
                       ],
                     ),
                   ),
@@ -170,18 +170,18 @@ class _AsPageState extends State<AsPage> {
           SizedBox(height: 10),
 
           //선
-          Container(
-            width: 380,
-            margin: EdgeInsets.only(bottom: 10),
-            decoration: BoxDecoration(
-              border:
-                  Border(top: BorderSide(color: Color.fromARGB(255, 0, 0, 0))),
-            ),
-          ),
+          // Container(
+          //   width: 380,
+          //   margin: EdgeInsets.only(bottom: 10),
+          //   decoration: BoxDecoration(
+          //     border:
+          //         Border(top: BorderSide(color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.2))),
+          //   ),
+          // ),
 
           Expanded(
             child: isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator(color: Palette.stateColor4))
                 : errorMessage.isNotEmpty
                     ? Center(child: Text(errorMessage))
                     : filteredRequests.isEmpty
