@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yjg/firebase_api.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart'; // MethodChannel을 위해 추가
@@ -47,6 +49,8 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   static const platform = MethodChannel('com.example.yjg/navigation'); // 플랫폼 채널 추가
+  final GlobalKey<NavigatorState> navigatorKey;
+  final String initialRoute;
 
   MyApp({
     Key? key,
@@ -58,20 +62,27 @@ class MyApp extends StatelessWidget {
     });
   }
 
-  final GlobalKey<NavigatorState> navigatorKey;
-  final String initialRoute;
 
   Future<void> _navigateToInitialPage() async {
     try {
-      final String page = await platform.invokeMethod('getInitialPage');
-      debugPrint('Received page from native: $page');  // 로그를 추가하여 받은 페이지 정보를 확인
-      if (page.isNotEmpty) {
-        navigatorKey.currentState?.pushNamed(page);
+      final String? page = await platform.invokeMethod<String>('getInitialPage');
+      final FlutterSecureStorage storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'auth_token');
+
+      if (page != null && page.isNotEmpty && token != null) {
+        debugPrint('안드로이드로 부터 받은 페이지: $page');
+        navigatorKey.currentState?.pushReplacementNamed(page);
+      } else {
+        debugPrint('토큰 x 안드로이드로 부터 받은 페이지 /login_student');
+        navigatorKey.currentState?.pushReplacementNamed('/login_student');
       }
     } catch (e) {
-      debugPrint('Error fetching initial page: $e');
+      debugPrint('에러: $e');
+      navigatorKey.currentState?.pushReplacementNamed('/login_student');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
