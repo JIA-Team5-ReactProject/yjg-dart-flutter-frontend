@@ -1,0 +1,76 @@
+{
+  "login": {
+    "admin": {
+      "descriptionText": "モバイルアプリでは管理者の登録を提供していません。",
+      "textButton1": "学生ログインに移動"
+    },
+    "student": {
+      "descriptionText": "学校メールがある場合",
+      "textButton1": "アカウントがない場合",
+      "textButton2": "管理者ログインに移動",
+      "googleLoginButton": "Googleでログイン"
+    },
+    "sharedForm": {
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "loginButton": "ログイン",
+      "forgotPassword": "パスワードを忘れた場合",
+      "automaticLogin": "自動ログイン"
+    }
+  },
+  "mainDashboard": {
+    "qrButton" : {
+      "bus" : "バスQR",
+      "restaurant" : "学食QR"
+    },
+    "navigation": {
+      "bus": {
+        "title": "バス",
+        "description": "バス時刻表など"
+      },
+      "salon": {
+        "title": "サロン",
+        "description": "サロン予約など"
+      },
+      "restaurant": {
+        "title": "学食",
+        "description": "学食申請など"
+      },
+      "administration": {
+        "title": "学校行政",
+        "description": "お知らせなど"
+      }
+    }
+  },
+  "bus" : {
+    "appbar": "バス",
+    "busSchedule" : {
+      "title": "バス時刻表",
+      "description": "バスの時刻表を確認してください。"
+    }
+  },
+  "drawer" : {
+    "bus" : {
+      "title": "バス",
+      "busSchedule" : "時刻表"
+    },
+    "restaurant" : {
+      "title": "学食",
+      "menu" : "メニュー",
+      "weekendApply" : "週末学食申請"
+    },
+    "salon" : {
+      "title": "サロン",
+      "salonBooking" : "サロン予約",
+      "priceList" : "価格表"
+    },
+    "administration" : {
+      "title": "学校行政",
+      "notice" : "お知らせ",
+      "as" : "設備修理申請",
+      "meetingRoom" : "会議室予約",
+      "sleepover" : "外泊・外出申請"
+    },
+    "logout" : "ログアウト"
+  }
+}
