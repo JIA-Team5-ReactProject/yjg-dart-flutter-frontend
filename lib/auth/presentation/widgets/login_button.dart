@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -71,9 +72,9 @@ class LoginButton extends ConsumerWidget {
         ),
       ),
       child: const Text(
-        '로그인',
+        'login.sharedForm.loginButton',
         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-      ),
+      ).tr(),
     );
   }
 }

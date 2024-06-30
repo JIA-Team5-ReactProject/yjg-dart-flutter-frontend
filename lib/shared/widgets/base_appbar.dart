@@ -66,9 +66,11 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
           actions: [
             IconButton(
               onPressed: () {},
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               icon: const Icon(
                 Icons.notifications_none_outlined,
-                color: Colors.white,
+                color: Colors.transparent,
                 size: 30,
               ),
             ),

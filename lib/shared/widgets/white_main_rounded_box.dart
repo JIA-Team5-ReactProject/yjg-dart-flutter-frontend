@@ -78,9 +78,12 @@ class WhiteMainRoundedBox extends StatelessWidget {
                   splashColor: Palette.backgroundColor.withOpacity(0.0),
                   highlightColor: Palette.backgroundColor.withOpacity(0.0),
                   onTap: () => {
-                    page == 'salon'
-                        ? Navigator.pushNamed(context, '/salon_my_book')
-                        : null
+                    if (page == 'salon')
+                      {Navigator.pushNamed(context, '/salon_my_book')}
+                    else if (page == 'bus')
+                      {Navigator.pushNamed(context, '/bus_qr')}
+                    else
+                      {null}
                   }, // 텍스트 간격 조절
                   child: Text(
                     actionText,

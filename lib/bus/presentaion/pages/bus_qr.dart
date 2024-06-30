@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:yjg/shared/datasources/qr_img_data_source.dart';
+import 'package:yjg/shared/service/user_info.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
@@ -12,6 +16,35 @@ class BusQr extends StatefulWidget {
 }
 
 class _BusQrState extends State<BusQr> {
+  String qlXml = '';
+  bool isLoading = true;
+  String? name;
+  String? studentNum;
+
+  // ql api 호출
+  void getQl() async {
+    final response = await QrImgDataSource().getImgQRDataAPI();
+    setState(() {
+      qlXml = response.data.toString();
+      isLoading = false;
+    });
+  }
+
+  Future<void> loadUserInfo() async {
+    final userInfo = await UserInfo.getUserInfo();
+    setState(() {
+      name = userInfo['name'];
+      studentNum = userInfo['studentNum'];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserInfo();
+    getQl();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +58,7 @@ class _BusQrState extends State<BusQr> {
           Container(
             margin: EdgeInsets.only(left: 50, right: 50),
             width: 500,
-            height: 550,
+            height: 500,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -36,9 +69,8 @@ class _BusQrState extends State<BusQr> {
             ),
             child: Column(
               children: [
-
                 Container(
-                  margin: EdgeInsets.only(top: 20, bottom: 15,left: 10),
+                  margin: EdgeInsets.only(top: 20, bottom: 15, left: 10),
                   child: Row(
                     children: [
                       //뒤로가기 버튼
@@ -70,18 +102,18 @@ class _BusQrState extends State<BusQr> {
                 Container(
                   margin: EdgeInsets.only(bottom: 15),
                   child: Text(
-                    '버스 탑승 시 단말기에 QR 코드를 찍어주세요.',
+                    '버스 입장 시 단말기에 QR코드를 찍어주세요.',
                     style: TextStyle(fontSize: 12),
                   ),
                 ),
 
                 //카운트 다운
                 Countdown(
-                  seconds: 15,
+                  seconds: 60,
                   build: (_, double time) => Text(
                     time.toInt().toString(),
                     style: TextStyle(
-                      fontSize: 35,
+                      fontSize: 25,
                     ),
                   ),
                   onFinished: () {
@@ -91,11 +123,17 @@ class _BusQrState extends State<BusQr> {
 
                 //QR여기에 넣기
                 Container(
-                  width: 220,
-                  height: 220,
-                  color: Colors.black,
+                  margin: EdgeInsets.only(top: 20),
+                  child: isLoading
+                      ? CircularProgressIndicator(
+                          color: Palette.stateColor4,
+                        )
+                      : SvgPicture.string(
+                          qlXml,
+                          width: 200,
+                          height: 200,
+                        ),
                 ),
-
 
                 //구분 점선
                 Container(
@@ -107,23 +145,20 @@ class _BusQrState extends State<BusQr> {
                 ),
 
                 //학번 글자
-                Text('1901201',style: TextStyle(
-                  color: Color.fromARGB(255, 148, 148, 148),
-                  fontSize: 15
-                ),),
+                Text(
+                  studentNum ?? '',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 148, 148, 148), fontSize: 15),
+                ),
 
                 //이름 글자
-                Text('이민혁',style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold
-                ),),
-
-                //학과 글자
-                Text('컴퓨터정보계열',style: TextStyle(
-                  color: Color.fromARGB(255, 29, 127, 159),
-                  fontSize: 15
-                ),),
+                Text(
+                  name ?? '',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
               ],
             ),
           ),

@@ -5,7 +5,7 @@ import 'package:yjg/salon/data/models/business_hours.dart';
 
 import 'package:intl/intl.dart'; 
 
-final salonHoursProvider = FutureProvider.family<List<BusinessHours>, String>((ref, date) async {
+final salonHoursProvider = FutureProvider.autoDispose.family<List<BusinessHours>, String>((ref, date) async {
   final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(date)); // 날짜 포맷팅
   final response = await BookingDataSource().getSalonHourAPI(formattedDate);
   final List<dynamic> decoded = response.data['business_hours'];

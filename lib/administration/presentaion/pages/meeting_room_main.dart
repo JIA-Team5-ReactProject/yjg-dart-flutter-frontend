@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yjg/administration/data/data_sources/meeting_room_data_source.dart';
+import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/blue_main_rounded_box.dart';
@@ -198,7 +199,7 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(statusText,
-              style: TextStyle(color: textColor)), // 여기서 색상과 내용을 적용
+              style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold)), // 여기서 색상과 내용을 적용
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -207,7 +208,7 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
               SizedBox(height: 20,),
               Container(
                 width: 350,
-                padding: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.only(bottom: 5),
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
@@ -224,9 +225,11 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
                       " ${reservation['reservation_date']}",
                       style: TextStyle(fontSize: 15),
                     ),
-                    SizedBox(width: 20,),
+                    SizedBox(width: 10,),
                     Text(
                         "$startTime ~ ${reservation['reservation_e_time'].split(':')[0]}:59",style: TextStyle(fontSize: 15),),
+                 
+                    
                   ],
                 ),
               ),
@@ -234,13 +237,13 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("확인"),
+              child: Text("확인", style: TextStyle(color: Palette.textColor)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("삭제"),
+              child: Text("삭제", style: TextStyle(color: Palette.stateColor3)),
               onPressed: () {
                 // 삭제 확인 대화상자 표시
                 showDeleteConfirmationDialog(context, reservation['id']);
@@ -258,17 +261,17 @@ class _MeetingRoomMainState extends State<MeetingRoomMain> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("예약 삭제 확인"),
+          title: Text("예약 삭제 확인", style: TextStyle(color: Palette.textColor, fontSize: 16, fontWeight: FontWeight.bold)),
           content: Text("이 예약을 삭제하시겠습니까?"),
           actions: <Widget>[
             TextButton(
-              child: Text("취소"),
+              child: Text("취소", style: TextStyle(color: Palette.textColor)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("확인"),
+              child: Text("확인", style: TextStyle(color: Palette.stateColor3)),
               onPressed: () {
                 // 예약 삭제 API 호출
                 deleteReservation(context, reservationId);

@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_form_field.dart";
@@ -35,7 +36,7 @@ class _InternationalAdminLoginForm
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: AuthTextFormField(
                 controller: emailController,
-                labelText: "이메일",
+                labelText: "login.sharedForm.email".tr(),
                 validatorText: "이메일을 입력해 주세요.",
               ),
             ),
@@ -43,7 +44,7 @@ class _InternationalAdminLoginForm
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: AuthTextFormField(
                 controller: passwordController,
-                labelText: "비밀번호",
+                labelText: "login.sharedForm.password".tr(),
                 validatorText: "비밀번호를 입력해 주세요.",
               ),
             ),
@@ -59,7 +60,7 @@ class _InternationalAdminLoginForm
                       Navigator.pushNamed(context, '/reset_password');
                     },
                     child: Text(
-                      "비밀번호 찾기",
+                      "login.sharedForm.forgotPassword".tr(),
                       style: TextStyle(
                         color: Palette.mainColor,
                         fontSize: fontSize * 0.035,
