@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/theme/palette.dart';
@@ -50,7 +51,7 @@ class _AutoLoginCheckBoxState extends State<AutoLoginCheckBox> {
           }
         },
       ),
-      Text('자동 로그인'),
+      Text('login.sharedForm.automaticLogin'.tr(), style: TextStyle(fontSize: 14.0)),
     ]);
   }
 }

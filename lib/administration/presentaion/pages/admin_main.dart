@@ -70,6 +70,12 @@ class _AdminMainState extends State<AdminMain> {
 
   @override
   Widget build(BuildContext context) {
+    // 화면의 가로 길이
+    final screenWidth = MediaQuery.of(context).size.width;
+    // 버튼의 가로 길이
+    final buttonWidth = (screenWidth - 90) / 2;
+    // 세로 길이 설정
+    final buttonHeight = buttonWidth * 1.05;
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '행정'),
@@ -188,10 +194,15 @@ class _AdminMainState extends State<AdminMain> {
             ),
             //이동 버튼 배치
             Container(
+              padding: EdgeInsets.symmetric(horizontal: 40.0),
               margin: EdgeInsets.only(bottom: 30),
-              child: const Wrap(
-                spacing: 30, // 아이템들 사이의 가로 간격
-                runSpacing: 30, // 아이템들 사이의 세로 간격
+              child: GridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                crossAxisCount: 2, // 한 줄에 2개씩 배치
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 15.0,
+                childAspectRatio: buttonWidth / buttonHeight, // 아이템들 사이의 세로 간격
                 children: <Widget>[
                   MoveButton(
                       icon: Icons.campaign_outlined,
@@ -222,8 +233,8 @@ class _AdminMainState extends State<AdminMain> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
-                              child: CircularProgressIndicator(
-                                  color: Palette.stateColor4));
+                      child: CircularProgressIndicator(
+                          color: Palette.stateColor4));
                 }
                 return Container(
                   height: 80,

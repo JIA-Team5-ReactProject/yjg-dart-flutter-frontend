@@ -70,6 +70,7 @@ dependencies:
   flutter_local_notifications: ^17.1.1
   home_widget: ^0.5.0
   flutter_svg: ^2.0.10+1
+  easy_localization: ^3.0.7
 
 dev_dependencies:
   flutter_test:
@@ -86,25 +87,27 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
       - .env
+      - assets/langs/
+
       
 fonts:
     - family: Pretendard
       fonts:
-        - asset: assets/fonts/Pretendard-Thin.ttf
+        - asset: assets/fonts/PretendardJP-Thin.ttf
           weight: 100
-        - asset: assets/fonts/Pretendard-ExtraLight.ttf
+        - asset: assets/fonts/PretendardJP-ExtraLight.ttf
           weight: 200
-        - asset: assets/fonts/Pretendard-Light.ttf
+        - asset: assets/fonts/PretendardJP-Light.ttf
           weight: 300
-        - asset: assets/fonts/Pretendard-Regular.ttf
+        - asset: assets/fonts/PretendardJP-Regular.ttf
           weight: 400
-        - asset: assets/fonts/Pretendard-Medium.ttf
+        - asset: assets/fonts/PretendardJP-Medium.ttf
           weight: 500
-        - asset: assets/fonts/Pretendard-SemiBold.ttf
+        - asset: assets/fonts/PretendardJP-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/Pretendard-Bold.ttf
+        - asset: assets/fonts/PretendardJP-Bold.ttf
           weight: 700
-        - asset: assets/fonts/Pretendard-ExtraBold.ttf
+        - asset: assets/fonts/PretendardJP-ExtraBold.ttf
           weight: 800
-        - asset: assets/fonts/Pretendard-Black.ttf
+        - asset: assets/fonts/PretendardJP-Black.ttf
           weight: 900

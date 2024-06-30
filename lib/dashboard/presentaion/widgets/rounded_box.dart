@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:yjg/shared/widgets/custom_rounded_button.dart';
@@ -59,13 +60,13 @@ class RoundedBox extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushNamed(context, '/bus_qr');
                           },
-                          buttonText: '버스 QR'),
+                          buttonText: 'mainDashboard.qrButton.bus'.tr()),
                       SizedBox(width: 8),
                       CustomRoundedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/meal_qr');
                           },
-                          buttonText: '식수 QR'),
+                          buttonText: 'mainDashboard.qrButton.restaurant'.tr()),
                     ],
                   ),
                 ],

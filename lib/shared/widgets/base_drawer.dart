@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:dotted_line/dotted_line.dart";
@@ -64,10 +65,10 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
               ),
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 16.0, top: 16.0),
             child: Text(
-              '버스',
+              "drawer.bus.title".tr(),
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
           ),
@@ -75,7 +76,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.schedule),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('시간표'),
+            title: Text('drawer.bus.busSchedule'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context); //drawer 닫기
@@ -97,10 +98,10 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
           ),
 
           // ! 식수
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 16.0, top: 16.0),
             child: Text(
-              '식수',
+              'drawer.restaurant.title'.tr(),
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
           ),
@@ -108,7 +109,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.table_chart_outlined),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('식단표'),
+            title: Text('drawer.restaurant.menu'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -120,7 +121,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.event),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('주말 식수'),
+            title: Text('drawer.restaurant.weekendApply'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -140,10 +141,10 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
           ),
 
           // ! 미용실
-          const Padding(
+           Padding(
             padding: EdgeInsets.only(left: 16.0, top: 16.0),
             child: Text(
-              '미용실',
+              'drawer.salon.title'.tr(),
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
           ),
@@ -151,7 +152,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.add_task),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('예약'),
+            title:  Text('drawer.salon.salonBooking'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -163,7 +164,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.content_paste_search),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('가격표'),
+            title:  Text('drawer.salon.priceList'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -183,10 +184,10 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
           ),
 
           // ! 행정
-          const Padding(
+           Padding(
             padding: EdgeInsets.only(left: 16.0, top: 16.0),
             child: Text(
-              '행정',
+              'drawer.administration.title'.tr(),
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
           ),
@@ -194,7 +195,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.campaign_outlined),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('공지사항'),
+            title:  Text('drawer.administration.notice'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -206,7 +207,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.construction),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('AS 요청'),
+            title: Text('drawer.administration.as'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -218,7 +219,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.work_history_outlined),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('외박/외출 신청'),
+            title:  Text('drawer.administration.sleepover'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -230,7 +231,7 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.groups_outlined),
             iconColor: Palette.mainColor,
             focusColor: Palette.mainColor,
-            title: const Text('회의실 예약'),
+            title: Text('drawer.administration.meetingRoom'.tr()),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               Navigator.pop(context);
@@ -252,8 +253,8 @@ class _BaseDrawerState extends ConsumerState<BaseDrawer> {
             leading: const Icon(Icons.logout_outlined),
             iconColor: Palette.stateColor3,
             focusColor: Palette.stateColor3,
-            title: const Text(
-              '로그아웃',
+            title: Text(
+              'drawer.logout'.tr(),
               style: TextStyle(
                 fontWeight: FontWeight.w600,
               ),

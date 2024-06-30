@@ -113,7 +113,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return FutureBuilder<bool>(
       future: _reservationDataSource.fetchWeekendApplyState(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) { //에러 코드를 반환하는 경우
+        if (snapshot.hasError) {
+          //에러 코드를 반환하는 경우
           return Opacity(
             opacity: false ? 1.0 : 0.5,
             child: IgnorePointer(
@@ -152,7 +153,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return FutureBuilder<bool>(
       future: _reservationDataSource.fetchSemesterApplyState(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) { //에러 코드를 반환하는 경우
+        if (snapshot.hasError) {
+          //에러 코드를 반환하는 경우
           return Opacity(
             opacity: false ? 1.0 : 0.5,
             child: IgnorePointer(
@@ -164,7 +166,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                 route: '/meal_application',
               ),
             ),
-          ); 
+          );
         } else {
           // API로부터 받은 값을 기준으로 버튼 활성화 결정
           final isButtonActive = snapshot.data == true;
@@ -188,6 +190,12 @@ class _RestaurantMainState extends State<RestaurantMain> {
 
   @override
   Widget build(BuildContext context) {
+    // 화면의 가로 길이
+    final screenWidth = MediaQuery.of(context).size.width;
+    // 버튼의 가로 길이
+    final buttonWidth = (screenWidth - 90) / 2;
+    // 세로 길이 설정
+    final buttonHeight = buttonWidth * 1.05;
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '식수'),
@@ -219,27 +227,32 @@ class _RestaurantMainState extends State<RestaurantMain> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-
-            //이동 버튼 배치
-            Wrap(
-              spacing: 30, // 아이템들 사이의 가로 간격
-              runSpacing: 30, // 아이템들 사이의 세로 간격
-              children: <Widget>[
-                MoveButton(
-                    icon: Icons.backup_table,
-                    text1: '식단표',
-                    text2: '이번 달 식단표',
-                    route: '/menu_list'),
-                MoveButton(
-                    icon: Icons.qr_code,
-                    text1: '식수 QR',
-                    text2: '식사 시 QR 찍기',
-                    route: '/meal_qr'),
-                conditionalMoveButton(),
-                semesterMoveButton(),
-              ],
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40.0),
+              //이동 버튼 배치
+              child: GridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                crossAxisCount: 2, // 한 줄에 2개씩 배치
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 15.0,
+                childAspectRatio: buttonWidth / buttonHeight, // 아이템들 사이의 세로 간격
+                children: <Widget>[
+                  MoveButton(
+                      icon: Icons.backup_table,
+                      text1: '식단표',
+                      text2: '이번 달 식단표',
+                      route: '/menu_list'),
+                  MoveButton(
+                      icon: Icons.qr_code,
+                      text1: '식수 QR',
+                      text2: '식사 시 QR 찍기',
+                      route: '/meal_qr'),
+                  conditionalMoveButton(),
+                  semesterMoveButton(),
+                ],
+              ),
             ),
-
             //현재 주말 식수 신청 인원 현황 수
             Container(
               height: 60,

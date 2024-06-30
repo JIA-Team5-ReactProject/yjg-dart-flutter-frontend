@@ -53,6 +53,9 @@ class RegisterDataSource {
       } else {
         return true;
       }
+    } on DioException catch (e) {
+      debugPrint('${e.response}, 코드: ${e.response?.statusCode}');
+      return true;
     } catch (e) {
       return true;
     }

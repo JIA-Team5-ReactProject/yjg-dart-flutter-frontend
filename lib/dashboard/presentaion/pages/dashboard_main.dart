@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/dashboard/presentaion/viewmodels/urgent_viewmodel.dart';
@@ -18,6 +19,13 @@ class DashboardMain extends ConsumerWidget {
     // notice 상태 감시
     final asyncNotice = ref.watch(urgentNoticeProvider);
 
+    // 화면의 가로 길이
+    final screenWidth = MediaQuery.of(context).size.width;
+    // 버튼의 가로 길이
+    final buttonWidth = (screenWidth - 90) / 2;
+    // 세로 길이 설정
+    final buttonHeight = buttonWidth * 1.05;
+
     return Scaffold(
       appBar: const BaseAppBar(),
       drawer: BaseDrawer(),
@@ -26,7 +34,7 @@ class DashboardMain extends ConsumerWidget {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: 540, // Stack의 높이를 조정(Stack은 자식 요소로 크기 결정되므로 크기 조정해줘야 함)
+              height: buttonHeight * 2.5 + 100, // 버튼 두 개의 세로 길이 합산 + 간격
               child: Stack(
                 children: <Widget>[
                   RoundedBox(),
@@ -35,32 +43,50 @@ class DashboardMain extends ConsumerWidget {
                     left: 0,
                     right: 0,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.symmetric(horizontal: 40.0),
                       child: SizedBox(
-                        child: Wrap(
-                          alignment: WrapAlignment.center,
-                          spacing: MediaQuery.of(context).size.width / 15,
-                          runSpacing: 30,
+                        child: GridView.count(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          crossAxisCount: 2, // 한 줄에 2개씩 배치
+                          mainAxisSpacing: 20.0,
+                          crossAxisSpacing: 15.0,
+                          childAspectRatio:
+                              buttonWidth / buttonHeight, // 가로*세로 비율 조정
                           children: <Widget>[
                             MoveButton(
                                 icon: Icons.directions_bus,
-                                text1: '버스',
-                                text2: '버스 시간표, 버스 QR',
+                                text1:
+                                    'mainDashboard.navigation.bus.title'.tr(),
+                                text2:
+                                    'mainDashboard.navigation.bus.description'
+                                        .tr(),
                                 route: '/bus_main'),
                             MoveButton(
                                 icon: Icons.restaurant,
-                                text1: '식수',
-                                text2: '식수 QR, 식수신청 등',
+                                text1:
+                                    'mainDashboard.navigation.restaurant.title'
+                                        .tr(),
+                                text2:
+                                    'mainDashboard.navigation.restaurant.description'
+                                        .tr(),
                                 route: '/restaurant_main'),
                             MoveButton(
                                 icon: Icons.cut,
-                                text1: '미용실',
-                                text2: '미용실 예약, 가격표',
+                                text1:
+                                    'mainDashboard.navigation.salon.title'.tr(),
+                                text2:
+                                    'mainDashboard.navigation.salon.description'
+                                        .tr(),
                                 route: '/salon_main'),
                             MoveButton(
                                 icon: Icons.support_agent,
-                                text1: '행정',
-                                text2: '공지사항, AS 요청 등',
+                                text1:
+                                    'mainDashboard.navigation.administration.title'
+                                        .tr(),
+                                text2:
+                                    'mainDashboard.navigation.administration.description'
+                                        .tr(),
                                 route: '/admin_main'),
                           ],
                         ),
@@ -84,7 +110,6 @@ class DashboardMain extends ConsumerWidget {
                       iconData: Icons.support_agent,
                       iconColor: Palette.stateColor1,
                       text: notice.title,
-                      // API로부터 받은 긴급 공지사항 제목
                     ),
                     loading: () => Center(
                         child: CircularProgressIndicator(
