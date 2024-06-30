@@ -12,9 +12,10 @@ class BusDataSource {
     dio.interceptors.add(DioInterceptor(dio));
   }
 
-// * 버스 데이터
-  Future<Response> getBusDataAPI(int weekend, int semester, String route) async {
-     String url = '$apiURL/api/bus/round/appSchedule';
+  // * 버스 데이터
+  Future<Response> getBusDataAPI(
+      int weekend, int semester, String route) async {
+    String url = '$apiURL/api/bus/round/appSchedule';
 
     debugPrint('weekend: $weekend, semester: $semester, route: $route');
 
@@ -22,11 +23,10 @@ class BusDataSource {
       'weekend': weekend.toString(),
       'semester': semester.toString(),
       'bus_route_direction': route,
-    }; 
+    };
 
     try {
-    final response = await dio.get(
-      url, queryParameters: queryParams);
+      final response = await dio.get(url, queryParameters: queryParams);
       return response;
     } catch (e) {
       throw Exception('버스 데이터를 불러오지 못했습니다.');

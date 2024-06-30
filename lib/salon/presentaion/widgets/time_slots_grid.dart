@@ -23,15 +23,22 @@ class TimeSlotsGrid extends ConsumerWidget {
         itemBuilder: (context, index) {
           bool isSelected = timeSlots[index].time ==
               ref.watch(selectedTimeSlotProvider.notifier).state;
+          bool isAvailable = timeSlots[index].available == true;
           return Padding(
             padding: const EdgeInsets.all(3.0),
             child: ElevatedButton(
               style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    return Palette.textColor.withOpacity(0.7);
-                  },
-                ),
+                backgroundColor: isAvailable == true
+                    ? MaterialStateProperty.all<Color>(Colors.white)
+                    : MaterialStateProperty.all<Color>(
+                        Palette.stateColor4.withOpacity(0.2)),
+                foregroundColor: isAvailable == true
+                    ? MaterialStateProperty.all<Color>(
+                        Palette.textColor.withOpacity(0.7))
+                    : MaterialStateProperty.all<Color>(
+                        Palette.stateColor4.withOpacity(0.9)),
+                overlayColor: MaterialStateProperty.all<Color>(
+                    Palette.stateColor1.withOpacity(0.3)),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -39,6 +46,7 @@ class TimeSlotsGrid extends ConsumerWidget {
                         BorderSide(color: Palette.stateColor4.withOpacity(0.4)),
                   ),
                 ),
+                elevation: MaterialStateProperty.all<double>(0),
               ),
               onPressed: timeSlots[index].available == true
                   ? () {
@@ -48,11 +56,13 @@ class TimeSlotsGrid extends ConsumerWidget {
 
                       bookingExecutionModal(context, ref);
                     }
-                  : null, // `timeSlots[index].available`이 false 또는 null일 때는 버튼 비활성화
-
-              child: Text(
-                timeSlots[index].time!,
-                style: TextStyle(fontSize: 12.0, letterSpacing: -0.5),
+                  : null,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  timeSlots[index].time!,
+                  style: TextStyle(fontSize: 12.0, letterSpacing: -0.5),
+                ),
               ),
             ),
           );

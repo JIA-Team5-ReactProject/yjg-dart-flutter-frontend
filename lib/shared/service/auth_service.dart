@@ -17,13 +17,11 @@ class AuthService {
   Future<String?> getInitialRoute() async {
     final token = await storage.read(key: 'auth_token');
     final autoLoginStr = await storage.read(key: 'auto_login') ?? 'false';
-    final refreshToken = await storage.read(key: 'refresh_token');
     final userType = await storage.read(key: 'userType');
     FirebaseApi firebaseApi = FirebaseApi();
     await firebaseApi.updateToken();
 
     debugPrint('액세스 토큰: $token');
-    debugPrint('리프레시 토큰: $refreshToken');
     debugPrint('자동 로그인: $autoLoginStr');
 
     // ^ 토큰이 없을 경우 로그인 페이지로 이동
@@ -55,6 +53,10 @@ class AuthService {
 
       // 갱신된 액세스 토큰으로 초기 라우터 설정
       final newToken = await storage.read(key: 'auth_token');
+
+      // 홈 위젯을 위해 자동로그인으로 로그인이 됐을 경우, 자동로그인 성공 여부를 저장
+      await storage.write(key: 'successAutoLogin', value: 'true');
+
       // 갱신 토큰이 null이 아니고, 만료되지 않았다면 초기 라우터 설정
       if (newToken != null && !JwtDecoder.isExpired(newToken)) {
         final initRoute = AppRoutes.getInitialRouteBasedOnUserType(userType);

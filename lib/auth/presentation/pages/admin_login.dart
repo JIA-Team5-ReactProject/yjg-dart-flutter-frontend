@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:yjg/auth/presentation/widgets/auth_text_button.dart";
 import "package:yjg/auth/presentation/widgets/international_admin_login_form.dart";
@@ -31,10 +32,10 @@ class AdminLogin extends StatelessWidget {
                     image: AssetImage('assets/img/yju_text_logo.png'),
                     width: width * 0.3),
               ),
-              Text('모바일 어플에서는 관리자 회원가입을 지원하지 않습니다.', style: TextStyle(color: Palette.textColor.withOpacity(0.8), fontSize: fontSize * 0.035),),
+              Text("login.admin.descriptionText", style: TextStyle(color: Palette.textColor.withOpacity(0.8), fontSize: fontSize * 0.035),).tr(),
               InternationalAdminLoginForm(),
               AuthTextButton(
-                authText: "학생 로그인으로 이동",
+                authText: "login.admin.textButton1".tr(),
                 onPressed: () => {
                   Navigator.pushNamed(context, '/login_student'),
                 },

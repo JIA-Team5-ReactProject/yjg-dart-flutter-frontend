@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/data/data_resources/google_login_data_source.dart';
@@ -59,12 +60,12 @@ class GoogleLoginButton extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: Text(
-                '구글 아이디로 로그인하기',
+                'login.student.googleLoginButton',
                 style: TextStyle(
                     color: Palette.textColor,
                     fontSize: fontSize * 0.035,
                     letterSpacing: -0.5),
-              ),
+              ).tr(),
             ),
           ],
         ),

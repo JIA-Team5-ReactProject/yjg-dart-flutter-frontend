@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yjg/bus/presentaion/viewmodels/bus_main_button.dart';
 import 'package:yjg/bus/presentaion/viewmodels/notice_viewmodel.dart';
 import 'package:yjg/shared/theme/palette.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
@@ -8,7 +9,6 @@ import 'package:yjg/shared/widgets/notice_box.dart';
 import 'package:yjg/shared/widgets/white_main_rounded_box.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
-import 'package:yjg/shared/widgets/move_button.dart';
 
 class BusMain extends ConsumerStatefulWidget {
   const BusMain({Key? key}) : super(key: key);
@@ -44,10 +44,10 @@ class _BusMainState extends ConsumerState<BusMain> {
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: WhiteMainRoundedBox(
                         iconData: Icons.directions_bus,
-                        mainText: '글로벌캠퍼스',
-                        secondaryText: '탑승인원: 12명(45인승)',
-                        actionText: '위치 변경',
-                        timeText: '14:00',
+                        mainText: 'QR 찍기',
+                        secondaryText: '버스 탑승 시 QR 코드를 스캔해 주세요.',
+                        actionText: 'QR 코드 확인',
+                        page: 'bus',
                       ),
                     ),
                   ),
@@ -62,22 +62,7 @@ class _BusMainState extends ConsumerState<BusMain> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-            const Wrap(
-              spacing: 30,
-              runSpacing: 30,
-              children: <Widget>[
-                MoveButton(
-                    icon: Icons.schedule,
-                    text1: '시간표',
-                    text2: '버스 시간표 확인',
-                    route: '/bus_schedule'),
-                MoveButton(
-                    icon: Icons.qr_code,
-                    text1: '버스QR',
-                    text2: '버스 탑승 시 QR 찍기',
-                    route: '/bus_qr'),
-              ],
-            ),
+            BusMainButton(),
             const SizedBox(height: 20),
             Container(
               margin: const EdgeInsets.all(20),

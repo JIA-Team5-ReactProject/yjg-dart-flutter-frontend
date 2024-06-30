@@ -1,4 +1,5 @@
 // 한국인 대상 로그인 페이지
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:yjg/auth/presentation/widgets/google_login_button.dart';
 import 'package:yjg/auth/presentation/widgets/international_admin_login_form.dart';
@@ -42,14 +43,14 @@ class StudentLogin extends StatelessWidget {
                     Navigator.pushNamed(context, '/registration_international');
                   },
                   child: Text(
-                    "계정이 없을 경우",
+                    "login.student.textButton1",
                     style: TextStyle(
                       color: Palette.mainColor,
                       fontSize: fontSize * 0.035,
                       letterSpacing: -0.5,
                       fontWeight: FontWeight.w600,
                     ),
-                  ),
+                  ).tr(),
                 ),
               ),
               Padding(
@@ -59,14 +60,14 @@ class StudentLogin extends StatelessWidget {
                     Navigator.pushNamed(context, '/login_admin');
                   },
                   child: Text(
-                    "관리자 로그인으로 이동",
+                    "login.student.textButton2",
                     style: TextStyle(
                       color: Palette.stateColor4,
                       fontSize: fontSize * 0.035,
                       letterSpacing: -0.5,
                       fontWeight: FontWeight.w600,
                     ),
-                  ),
+                  ).tr(),
                 ),
               ),
 
@@ -82,12 +83,12 @@ class StudentLogin extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(top: height * 0.003),
                 child: Text(
-                  "학교 이메일이 있을 경우",
+                  "login.student.descriptionText",
                   style: TextStyle(
                       color: Palette.textColor.withOpacity(0.8),
                       fontWeight: FontWeight.w500,
                       fontSize: fontSize * 0.035),
-                ),
+                ).tr(),
               ),
               Padding(
                 padding: EdgeInsets.only(top: height * 0.02),
