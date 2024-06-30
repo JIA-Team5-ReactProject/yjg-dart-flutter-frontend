@@ -14,6 +14,7 @@ import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 class SettingPage extends ConsumerStatefulWidget {
   SettingPage({Key? key}) : super(key: key);
   bool notifications = false;
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -29,8 +30,8 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   }
 
   Future<void> getPushNotification() async {
-    final storage = FlutterSecureStorage();
-    bool push = await storage.read(key: 'push') == '0' ? false : true;
+    String? pushValue = await storage.read(key: 'push');
+    bool push = pushValue == '1';
     setState(() {
       widget.notifications = push;
     });
@@ -72,7 +73,6 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 ),
                 onPressed: ((context) {}),
               ),
-
               SettingsTile.switchTile(
                 activeSwitchColor: Palette.mainColor,
                 title: Text(
@@ -80,13 +80,16 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
                 initialValue: widget.notifications,
-                onToggle: (value) {
+                onToggle: (value) async {
                   setState(() {
-                    widget.notifications = !widget.notifications;
-
-                    // 푸쉬 알림 허용 여부 업데이트
-                    pushNotificationUseCase.call(widget.notifications);
+                    widget.notifications = value;
                   });
+
+                  // 푸쉬 알림 허용 여부 업데이트
+                  await pushNotificationUseCase.call(widget.notifications);
+
+                  // SecureStorage에 알림 설정 저장
+                  await storage.write(key: 'push', value: value ? '1' : '0');
                 },
                 leading: Icon(Icons.notifications),
               ),
@@ -187,24 +190,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               ),
             ],
           ),
-          SettingsSection(
-            title: Text(
-              '기타',
-              style: TextStyle(letterSpacing: -0.5),
-            ),
-            tiles: <SettingsTile>[
-              SettingsTile.navigation(
-                leading: Icon(Icons.star),
-                title: Text(
-                  '앱 평가하기',
-                  style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
-                ),
-                onPressed: ((context) {}),
-              ),
-            ],
-          ),
         ],
       ),
     );
   }
 }
+

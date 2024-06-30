@@ -34,6 +34,13 @@ class _SalonMainState extends ConsumerState<SalonMain> {
     final reservationsAsyncValue = ref.watch(reservationsProvider);
     final noticesAsyncValue = ref.watch(noticeProvider);
 
+    // 화면의 가로 길이
+    final screenWidth = MediaQuery.of(context).size.width;
+    // 버튼의 가로 길이
+    final buttonWidth = (screenWidth - 90) / 2;
+    // 세로 길이 설정
+    final buttonHeight = buttonWidth * 1.05;
+
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       appBar: const BaseAppBar(title: '미용실'),
@@ -105,24 +112,32 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        const Wrap(
-                          spacing: 30,
-                          runSpacing: 30,
-                          children: <Widget>[
-                            MoveButton(
-                                icon: Icons.add_task,
-                                text1: '예약',
-                                text2: '미용실 예약',
-                                route: '/salon_booking_step_one'),
-                            MoveButton(
-                                icon: Icons.content_paste_search,
-                                text1: '가격표',
-                                text2: '미용실 이용 가격 안내',
-                                route: '/salon_price_list'),
-                          ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 40.0),
+                          child: GridView.count(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            crossAxisCount: 2, // 한 줄에 2개씩 배치
+                            mainAxisSpacing: 20.0,
+                            crossAxisSpacing: 15.0,
+                            childAspectRatio:
+                                buttonWidth / buttonHeight, // 아이템들 사이의 세로 간격
+                            children: <Widget>[
+                              MoveButton(
+                                  icon: Icons.add_task,
+                                  text1: '예약',
+                                  text2: '미용실 예약',
+                                  route: '/salon_booking_step_one'),
+                              MoveButton(
+                                  icon: Icons.content_paste_search,
+                                  text1: '가격표',
+                                  text2: '미용실 이용 가격 안내',
+                                  route: '/salon_price_list'),
+                            ],
+                          ),
                         ),
                         SizedBox(
-                          height: 10.0,
+                          height: 20.0,
                         ),
                         // 공지사항
                         Container(

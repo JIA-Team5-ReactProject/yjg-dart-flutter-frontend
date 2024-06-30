@@ -19,19 +19,19 @@ class AppTheme {
     // 폰트
     textTheme: const TextTheme(
         bodyLarge: TextStyle(
-          fontFamily: 'PretendardRegular', // 폰트 설정
+          fontFamily: 'PretendardJPRegular', // 폰트 설정
           fontSize: 16,
           color: Colors.black,
           letterSpacing: -0.5,
         ),
         bodyMedium: TextStyle(
-          fontFamily: 'PretendardSemiBold', // 폰트 설정
+          fontFamily: 'PretendardJPSemiBold', // 폰트 설정
           fontSize: 14,
           color: Colors.black,
           letterSpacing: -0.5,
         ),
         bodySmall: TextStyle(
-          fontFamily: 'PretendardRegular', // 폰트 설정
+          fontFamily: 'PretendardJPRegular', // 폰트 설정
           fontSize: 14,
           color: Colors.black,
           letterSpacing: -0.5,
