@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -140,7 +141,7 @@ class _BookingCalendarState extends ConsumerState<BookingCalendar> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "3. 선택한 날짜의 시간을 선택해주세요.",
+                  "salon.salonBooking.stepTwo.description2".tr(),
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                 ),
               ],

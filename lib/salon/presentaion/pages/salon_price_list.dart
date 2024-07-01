@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
@@ -20,7 +21,7 @@ class SalonPriceList extends ConsumerWidget {
     String uniqueKey = "${selectedGender}_${selectedCategoryId}";
     return Scaffold(
       appBar: BaseAppBar(
-        title: '가격표',
+        title: 'salon.salonPriceList.title'.tr(),
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       drawer: BaseDrawer(),
@@ -35,7 +36,7 @@ class SalonPriceList extends ConsumerWidget {
                   height: 12.0,
                 ),
                 Text(
-                  '필터 설정',
+                  'salon.salonPriceList.PriceListPage.title1'.tr(),
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
@@ -44,7 +45,7 @@ class SalonPriceList extends ConsumerWidget {
                 Row(
                   children: [
                     Text(
-                      '성별',
+                      'salon.salonBooking.stepOne.filterText.gender'.tr(),
                       style:
                           TextStyle(color: Palette.textColor.withOpacity(0.7)),
                     ),
@@ -57,7 +58,7 @@ class SalonPriceList extends ConsumerWidget {
                 Row(
                   children: [
                     Text(
-                      '유형',
+                      'salon.salonBooking.stepOne.filterText.type'.tr(),
                       style:
                           TextStyle(color: Palette.textColor.withOpacity(0.7)),
                     ),
@@ -71,10 +72,10 @@ class SalonPriceList extends ConsumerWidget {
                   height: 40.0,
                 ),
                 Text(
-                  '서비스 목록',
+                  'salon.salonPriceList.PriceListPage.title2'.tr(),
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                 ),
-                Text('서비스와 가격은 변경될 수 있습니다.',
+                Text('salon.salonPriceList.PriceListPage.description'.tr(),
                     style: TextStyle(
                         fontSize: 12.0,
                         color: Palette.textColor.withOpacity(0.7))),

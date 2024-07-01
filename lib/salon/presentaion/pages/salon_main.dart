@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/viewmodels/notice_viewmodel.dart';
@@ -43,7 +44,7 @@ class _SalonMainState extends ConsumerState<SalonMain> {
 
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: const BaseAppBar(title: '미용실'),
+      appBar: BaseAppBar(title: 'salon.appbar'.tr()),
       drawer: BaseDrawer(),
       body: Stack(
         children: [
@@ -84,12 +85,15 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                                       child: WhiteMainRoundedBox(
                                         iconData: Icons.cut,
                                         mainText: hasReservations
-                                            ? '미용실 예약이 있습니다.'
-                                            : '미용실 예약이 없습니다.',
+                                            ? 'salon.bookingRoundedBox.title1'.tr()
+                                            : 'salon.bookingRoundedBox.title2'.tr(),
                                         secondaryText: hasReservations
-                                            ? '예약 시간을 꼭 지켜주세요.'
-                                            : '미용실을 이용해 보세요!',
-                                        actionText: '예약 확인하기',
+                                            ? 'salon.bookingRoundedBox.description1'
+                                                .tr()
+                                            : 'salon.bookingRoundedBox.description2'
+                                                .tr(),
+                                        actionText: 'salon.bookingRoundedBox.textButton'
+                                            .tr(),
                                         page: 'salon',
                                       ),
                                     ),
@@ -106,8 +110,8 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                         Container(
                           margin: const EdgeInsets.all(20),
                           alignment: Alignment.centerLeft,
-                          child: const Text(
-                            '미용실 이용하기',
+                          child: Text(
+                            'salon.descriptionText.title1'.tr(),
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
@@ -125,13 +129,13 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                             children: <Widget>[
                               MoveButton(
                                   icon: Icons.add_task,
-                                  text1: '예약',
-                                  text2: '미용실 예약',
+                                  text1: 'salon.salonBooking.title'.tr(),
+                                  text2: 'salon.salonBooking.description'.tr(),
                                   route: '/salon_booking_step_one'),
                               MoveButton(
                                   icon: Icons.content_paste_search,
-                                  text1: '가격표',
-                                  text2: '미용실 이용 가격 안내',
+                                  text1: 'salon.salonPriceList.title'.tr(),
+                                  text2: 'salon.salonPriceList.description'.tr(),
                                   route: '/salon_price_list'),
                             ],
                           ),
@@ -144,8 +148,8 @@ class _SalonMainState extends ConsumerState<SalonMain> {
                           margin: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 20),
                           alignment: Alignment.centerLeft,
-                          child: const Text(
-                            '미용실 공지사항',
+                          child: Text(
+                            'salon.descriptionText.title2'.tr(),
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),

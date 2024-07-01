@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:yjg/salon/data/data_sources/booking_data_source.dart';
 import 'package:yjg/salon/domain/usecases/reservation_usecase.dart';
 import 'package:yjg/salon/presentaion/viewmodels/booking_select_list_viewmodel.dart';
@@ -76,15 +76,17 @@ void bookingExecutionModal(BuildContext context, WidgetRef ref) {
                           await reservationUseCase.createReservation(
                               selectedServiceId,
                               formattedDate!,
-                              selectedTimeSlot!, context, ref);
-                   
+                              selectedTimeSlot!,
+                              context,
+                              ref);
+
                           ref.refresh(reservationsProvider);
                         } catch (error) {
                           debugPrint('Error: $error');
                         }
                       },
                       child: Text(
-                        '예약',
+                        'salon.salonBooking.stepTwo.bookingButton'.tr(),
                         style: TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold,

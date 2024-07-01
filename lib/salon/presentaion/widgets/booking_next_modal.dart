@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:yjg/shared/theme/palette.dart';
 
@@ -27,7 +28,7 @@ void bookingNextModal(BuildContext context, String price) {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        '결제금액',
+                        'salon.salonBooking.stepOne.description2'.tr(),
                         style: TextStyle(
                             fontSize: 16.0, fontWeight: FontWeight.bold),
                       ),
@@ -49,7 +50,7 @@ void bookingNextModal(BuildContext context, String price) {
                       Navigator.pushNamed(context, '/salon_booking_step_two');
                     },
                     child: Text(
-                      '다음',
+                      'salon.salonBooking.stepOne.nextButton'.tr(),
                       style: TextStyle(
                           fontSize: 15.0,
                           fontWeight: FontWeight.bold,
