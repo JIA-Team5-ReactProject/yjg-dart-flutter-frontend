@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +35,7 @@ class RegisterUseCase {
       await RegisterDataSource().postRegisterAPI(ref);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('회원가입에 성공하였습니다.'),
+            content: Text('registration.isSuccess'.tr()),
             backgroundColor: Palette.mainColor),
       );
       // 성공 시 로그인 페이지로 이동(이전 페이지로 못 가게 막아버림)

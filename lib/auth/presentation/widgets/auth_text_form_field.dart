@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -29,7 +30,7 @@ class AuthTextFormField extends ConsumerWidget {
       height: height * 0.08,
       child: TextFormField(
         // 라벨텍스트에 비밀번호라는 글자가 포함되어 있으면 obscureText를 true로 설정
-        obscureText: labelText.contains("비밀번호") ? true : false,
+        obscureText: labelText.contains("login.sharedForm.password".tr()) ? true : false,
         controller: controller,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
@@ -48,18 +49,18 @@ class AuthTextFormField extends ConsumerWidget {
         validator: (value) {
           // 공통: 필수 입력값 검사
           if (value == null || value.isEmpty) {
-            return '필수 입력 항목입니다.';
+            return 'registration.form.validatorText.isRequiredField'.tr();
           }
 
           // 이메일 유효성 검사
-          if (labelText == "이메일" &&
+          if (labelText == "registration.form.email".tr() &&
               !RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b').hasMatch(value)) {
-            return '유효한 이메일 주소를 입력해주세요.';
+            return 'registration.form.validatorText.isEmail'.tr();
           }
 
           // 비밀번호 유효성 검사
-          if (labelText == "비밀번호" && value.length < 8) {
-            return '비밀번호는 최소 8자 이상이어야 합니다.';
+          if ((labelText == "login.sharedForm.password".tr() )&& value.length < 8) {
+            return 'registration.form.validatorText.isPasswordMinLength'.tr();
           }
           return null;
           // 유효성 검사를 통과했다면 null 반환

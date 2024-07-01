@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:timer_count_down/timer_count_down.dart";
@@ -28,9 +29,9 @@ class MailVerficationCode extends ConsumerWidget {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: const Text(
-                  '메일로 받은 인증코드 6자리를 입력해 주세요.',
-                  style: TextStyle(fontSize: 16.0, color: Palette.textColor),
+                child: Text(
+                  'forgotPassword.isVerificationCodeEntered'.tr(),
+                  style: TextStyle(fontSize: 14.0, color: Palette.textColor),
                 ),
               ),
               Countdown(
@@ -45,7 +46,7 @@ class MailVerficationCode extends ConsumerWidget {
                   // 인증 코드 재전송 로직 구현
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('인증 코드가 만료되었습니다. 다시 전송해 주세요.'),
+                      content: Text('forgotPassword.isVerificationCodeExpired').tr(),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -67,8 +68,8 @@ class MailVerficationCode extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: nameVerficationCodeController,
-                          labelText: "인증 코드",
-                          validatorText: "인증 코드 6자리를 입력해 주세요.",
+                          labelText: "forgotPassword.verificationCode".tr(),
+                          validatorText: "forgotPassword.isVerificationCodeEntered".tr(),
                         ),
                       ),
                       Padding(
@@ -91,9 +92,9 @@ class MailVerficationCode extends ConsumerWidget {
                               } else {
                                 // Form이 유효하지 않은 경우, 사용자에게 알림
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                 SnackBar(
                                     content: Text(
-                                        '입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
+                                        'registration.form.validatorText.formInvalid').tr(),
                                     backgroundColor: Palette.mainColor,
                                   ),
                                 );
@@ -126,8 +127,8 @@ class MailVerficationCode extends ConsumerWidget {
                               fixedSize: MaterialStateProperty.all<Size>(
                                   Size(100, 40)),
                             ),
-                            child: const Text(
-                              '인증 완료',
+                            child: Text(
+                              'forgotPassword.form.resetButton'.tr(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),

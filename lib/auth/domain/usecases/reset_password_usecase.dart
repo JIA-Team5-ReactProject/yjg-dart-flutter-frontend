@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/data/data_resources/reset_password_data_source.dart';
@@ -30,7 +31,7 @@ class ResetPasswordUseCase {
       // 회원가입 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('유저 정보가 존재하지 않습니다. 다시 한 번 확인해 주세요.'),
+          content: Text('forgotPassword.form.isUserNotFound'.tr()),
           backgroundColor: Colors.red,
         ),
       );

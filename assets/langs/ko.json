@@ -19,6 +19,59 @@
     }
   },
 
+  "registration" : {
+    "description": "情報を入力してください。",
+    "isSuccess": "登録が完了しました。",
+    "form": {
+      "name": "名前",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "phoneNumber": "電話番号",
+      "studentNumber": "学籍番号",
+      "registerButton": "登録",
+      "validatorText" : {
+        "isRequiredField": "必須項目です。",
+        "isEmail": "メールアドレスの形式が正しくありません。",
+        "isPasswordMinLength": "パスワードは8文字以上で入力してください。",
+        "name": "名前を入力してください。",
+        "email": "メールアドレスを入力してください。",
+        "emailExist": "このメールアドレスは既に登録されています。",
+        "emailNotExist": "このメールアドレスは登録されていません。",
+        "emailDuplicateCheck": "メールの重複チェックを行ってください。",
+        "password": "パスワードを入力してください。",
+        "phoneNumber": "電話番号を入力してください。",
+        "studentNumber": "学籍番号を入力してください。",
+        "emailFormat": "メールアドレスの形式が正しくありません。",
+        "phoneFormat": "電話番号の形式が正しくありません。",
+        "studentNumberFormat": "学籍番号の形式が正しくありません。",
+        "formInvalid": "全ての項目を入力してください。"
+      }
+    }
+  },
+
+  "forgotPassword": {
+    "verificationCode": "認証コード",
+    "isVerificationCodeEntered": "メールで受け取った6桁の認証コードを入力してください。",
+    "isVerificationCodeExpired" : "認証コードの有効期限が切れました。再送信してください。",
+    "resetPassword" : {
+      "description": "新しいパスワードを入力してください。",
+      "passwordResetSuccess": "パスワードがリセットされました。ログインしてください。",
+      "passwordResetFailed": "パスワードのリセットに失敗しました。再度お試しください。",
+      "form": {
+        "resetButton": "パスワードリセット",
+        "newPassword" : "新しいパスワード",
+        "newPasswordValidatorText" : "パスワードは8文字以上で入力してください。"
+      }
+    },
+    "form": {
+      "sendButton": "メール送信",
+      "resetButton": "パスワードリセット",
+      "isUserNotFound": "ユーザー情報が存在しません。再度ご確認ください。",
+      "isVerificationSuccessful" : "認証に成功しました。パスワードを再設定してください。",
+      "isVerificationCodeInvalid" : "認証番号が正しくありません。再度ご確認ください。"
+    }
+  },
+
   "mainDashboard": {
     "qrButton": {
       "bus": "バスQR",
@@ -143,6 +196,35 @@
         "approved": "承認",
         "unknown": "不明"
       }
+    }
+  },
+
+  "settings": {
+    "title": "設定",
+    "common": {
+      "title": "共通",
+      "language": {
+        "title": "言語",
+        "ko": "韓国語",
+        "ja": "日本語"
+      },
+      "notification": "通知"
+  },
+  "account": {
+    "title": "アカウント",
+    "informationUpdate": "情報更新",
+    "logout": "ログアウト",
+    "withdrawal": {
+      "title": "退会",
+      "withdrawalSuccess": "退会が完了しました。ログイン画面に戻ります。",
+      "withdrawalFailed": "退会に失敗しました。再度お試しください。",
+      "confirm": {
+        "title": "退会確認",
+        "description": "本当に退会しますか？退会後の復旧は不可能です。",
+        "yes": "はい",
+        "no": "いいえ"
+      }
+    }
     }
   },
 
