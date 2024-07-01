@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class BusMainButton extends StatelessWidget {
@@ -20,7 +21,7 @@ class BusMainButton extends StatelessWidget {
                 color: Color.fromARGB(255, 29, 127, 159), size: 50.0), // 아이콘
             SizedBox(height: 10.0), // 아이콘과 글자 사이의 간격
             Text(
-              '시간표',
+              'bus.busSchedule.title'.tr(),
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -28,7 +29,7 @@ class BusMainButton extends StatelessWidget {
             ), // 첫 번째 글자
             SizedBox(height: 5.0), // 글자 간격 조절
             Text(
-              '버스 시간표를 확인하세요.',
+              'bus.busSchedule.description'.tr(),
               style: TextStyle(color: Colors.black, fontSize: 13),
             ), // 두 번째 글자
           ],

@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
     required this.initialRoute,
   }) : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _navigateToInitialPage(); // 앱 시작 후 네이티브 코드로부터 페이지 정보를 받아 처리
+      // _navigateToInitialPage(); // 앱 시작 후 네이티브 코드로부터 페이지 정보를 받아 처리
     });
   }
 

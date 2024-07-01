@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:yjg/shared/datasources/qr_img_data_source.dart';
@@ -49,7 +50,7 @@ class _BusQrState extends State<BusQr> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 29, 127, 159),
-      appBar: BaseAppBar(title: '버스QR'),
+      appBar: BaseAppBar(title: 'QR.bus.appbar'.tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: CustomBottomNavigationBar(),
       body: Column(
@@ -87,7 +88,7 @@ class _BusQrState extends State<BusQr> {
 
                       //식당 QR코드 글자
                       Text(
-                        '버스 QR 코드',
+                        'QR.bus.title'.tr(),
                         style: TextStyle(
                           color: const Color.fromARGB(255, 29, 127, 159),
                           fontSize: 20,
@@ -98,11 +99,10 @@ class _BusQrState extends State<BusQr> {
                   ),
                 ),
 
-                //~~~글자
                 Container(
                   margin: EdgeInsets.only(bottom: 15),
                   child: Text(
-                    '버스 입장 시 단말기에 QR코드를 찍어주세요.',
+                    'QR.bus.description'.tr(),
                     style: TextStyle(fontSize: 12),
                   ),
                 ),

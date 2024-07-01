@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/bus/presentaion/viewmodels/bus_main_button.dart';
@@ -24,7 +25,7 @@ class _BusMainState extends ConsumerState<BusMain> {
 
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: const BaseAppBar(title: '버스'),
+      appBar: BaseAppBar(title: 'bus.appbar'.tr()),
       drawer: BaseDrawer(),
       body: SingleChildScrollView(
         // SingleChildScrollView 추가하여 스크롤 가능하도록 수정
@@ -44,9 +45,9 @@ class _BusMainState extends ConsumerState<BusMain> {
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: WhiteMainRoundedBox(
                         iconData: Icons.directions_bus,
-                        mainText: 'QR 찍기',
-                        secondaryText: '버스 탑승 시 QR 코드를 스캔해 주세요.',
-                        actionText: 'QR 코드 확인',
+                        mainText: 'bus.qrRoundedBox.title'.tr(),
+                        secondaryText: 'bus.qrRoundedBox.description'.tr(),
+                        actionText: 'bus.qrRoundedBox.textButton'.tr(),
                         page: 'bus',
                       ),
                     ),
@@ -57,8 +58,8 @@ class _BusMainState extends ConsumerState<BusMain> {
             Container(
               margin: const EdgeInsets.all(20),
               alignment: Alignment.centerLeft,
-              child: const Text(
-                '버스 이용하기',
+              child: Text(
+                'bus.descriptionText.title1'.tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -67,8 +68,8 @@ class _BusMainState extends ConsumerState<BusMain> {
             Container(
               margin: const EdgeInsets.all(20),
               alignment: Alignment.centerLeft,
-              child: const Text(
-                '버스 공지사항',
+              child: Text(
+                'bus.descriptionText.title2'.tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
