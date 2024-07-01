@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/domain/usecases/reset_password_usecase.dart";
@@ -28,8 +29,8 @@ class ResetPassword extends ConsumerWidget {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: const Text(
-                  '정보를 입력해 주세요.',
+                child: Text(
+                  'registration.description'.tr(),
                   style: TextStyle(fontSize: 18.0, color: Palette.textColor),
                 ),
               ),
@@ -48,8 +49,9 @@ class ResetPassword extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: nameController,
-                          labelText: "이름",
-                          validatorText: "이름을 입력해 주세요.",
+                          labelText: "registration.form.name".tr(),
+                          validatorText:
+                              "registration.form.validatorText.name".tr(),
                         ),
                       ),
                       Padding(
@@ -57,8 +59,9 @@ class ResetPassword extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: emailController,
-                          labelText: "이메일",
-                          validatorText: "이메일을 입력해 주세요.",
+                          labelText: "registration.form.email".tr(),
+                          validatorText:
+                              "registration.form.validatorText.email".tr(),
                         ),
                         // 중복 검사 결과 표시
                       ),
@@ -72,23 +75,25 @@ class ResetPassword extends ConsumerWidget {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                try{
-                                final resetPasswordUsecase = ResetPasswordUseCase(ref: ref);
+                                try {
+                                  final resetPasswordUsecase =
+                                      ResetPasswordUseCase(ref: ref);
 
-                                await resetPasswordUsecase.execute(
-                                  email: emailController.text,
-                                  name: nameController.text,
-                                  context: context,
-                                );
+                                  await resetPasswordUsecase.execute(
+                                    email: emailController.text,
+                                    name: nameController.text,
+                                    context: context,
+                                  );
                                 } catch (e) {
                                   debugPrint('비밀번호 찾기 실패: $e');
                                 }
                               } else {
                                 // Form이 유효하지 않은 경우, 사용자에게 알림
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                        '입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
+                                        'registration.form.validatorText.formInvalid'
+                                            .tr()),
                                     backgroundColor: Palette.mainColor,
                                   ),
                                 );
@@ -121,8 +126,8 @@ class ResetPassword extends ConsumerWidget {
                               fixedSize: MaterialStateProperty.all<Size>(
                                   Size(100, 40)),
                             ),
-                            child: const Text(
-                              '메일 받기',
+                            child: Text(
+                              'forgotPassword.form.sendButton'.tr(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),

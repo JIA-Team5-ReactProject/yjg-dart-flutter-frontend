@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/data/data_resources/reset_password_data_source.dart';
@@ -24,7 +25,7 @@ class ResetPasswordNewUseCase {
       await dataSource.patchNewPasswordAPI(ref);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('비밀번호가 변경되었습니다. 로그인 해 주세요.'),
+          content: Text('forgotPassword.resetPassword.passwordResetSuccess').tr(),
           backgroundColor: Palette.mainColor,
         ),
       );
@@ -34,7 +35,7 @@ class ResetPasswordNewUseCase {
       // 회원가입 실패 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('비밀번호 변경에 실패했습니다. 다시 시도해 주세요.'),
+          content: Text('forgotPassword.resetPassword.passwordResetFailed').tr(),
           backgroundColor: Colors.red,
         ),
       );

@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/domain/usecases/register_usecase.dart";
@@ -34,8 +35,8 @@ class InternationalRegisteration extends ConsumerWidget {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: const Text(
-                  '정보를 입력해 주세요.',
+                child: Text(
+                  'registration.description'.tr(),
                   style: TextStyle(fontSize: 18.0, color: Palette.textColor),
                 ),
               ),
@@ -54,8 +55,9 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: nameController,
-                          labelText: "이름",
-                          validatorText: "이름을 입력해 주세요.",
+                          labelText: "registration.form.name".tr(),
+                          validatorText:
+                              "registration.form.validatorText.name".tr(),
                         ),
                       ),
                       Padding(
@@ -63,8 +65,9 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: emailController,
-                          labelText: "이메일",
-                          validatorText: "이메일을 입력해 주세요.",
+                          labelText: "registration.form.email".tr(),
+                          validatorText:
+                              "registration.form.validatorText.email".tr(),
                           suffixIcon: IconButton(
                             icon: Icon(Icons.check_circle_outline),
                             onPressed: () async {
@@ -85,7 +88,9 @@ class InternationalRegisteration extends ConsumerWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       backgroundColor: Palette.mainColor,
-                                      content: Text('사용 가능한 이메일입니다.'),
+                                      content: Text(
+                                          'registration.form.validatorText.emailNotExist'
+                                              .tr()),
                                       duration: Duration(seconds: 2),
                                     ),
                                   );
@@ -94,7 +99,9 @@ class InternationalRegisteration extends ConsumerWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       backgroundColor: Colors.red,
-                                      content: Text('이미 사용중인 이메일입니다.'),
+                                      content: Text(
+                                          'registration.form.validatorText.emailExist'
+                                              .tr()),
                                       duration: Duration(seconds: 2),
                                     ),
                                   );
@@ -103,7 +110,9 @@ class InternationalRegisteration extends ConsumerWidget {
                                 // 필요한 경우 사용자에게 알림 표시
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('이메일 주소를 입력해주세요.'),
+                                    content: Text(
+                                        'registration.form.validatorText.email'
+                                            .tr()),
                                     duration: Duration(seconds: 2),
                                   ),
                                 );
@@ -118,8 +127,9 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: passwordController,
-                          labelText: "비밀번호",
-                          validatorText: "비밀번호를 입력해 주세요.",
+                          labelText: "registration.form.password".tr(),
+                          validatorText:
+                              "registration.form.validatorText.password".tr(),
                         ),
                       ),
                       Padding(
@@ -127,8 +137,10 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: studentIdController,
-                          labelText: "학번",
-                          validatorText: "학번을 입력해 주세요.",
+                          labelText: "registration.form.studentNumber".tr(),
+                          validatorText:
+                              "registration.form.validatorText.studentNumber"
+                                  .tr(),
                         ),
                       ),
                       Padding(
@@ -136,8 +148,10 @@ class InternationalRegisteration extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: phoneNumberController,
-                          labelText: "전화번호",
-                          validatorText: "전화번호를 입력해 주세요.",
+                          labelText: "registration.form.phoneNumber".tr(),
+                          validatorText:
+                              "registration.form.validatorText.phoneNumber"
+                                  .tr(),
                           inputFormatter: PhoneNumberInputFormatter(),
                         ),
                       ),
@@ -156,8 +170,10 @@ class InternationalRegisteration extends ConsumerWidget {
                               debugPrint('체크:  $emailCheckSuccess');
                               if (!emailCheckSuccess) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('이메일 중복 검사를 해주세요.'),
+                                  SnackBar(
+                                    content: Text(
+                                        'registration.form.validatorText.emailDuplicateCheck'
+                                            .tr()),
                                     backgroundColor: Colors.red,
                                   ),
                                 );
@@ -183,9 +199,10 @@ class InternationalRegisteration extends ConsumerWidget {
                               } else {
                                 // Form이 유효하지 않은 경우, 사용자에게 알림
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                        '입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
+                                        'registration.form.validatorText.formInvalid'
+                                            .tr()),
                                     backgroundColor: Palette.mainColor,
                                   ),
                                 );
@@ -218,8 +235,8 @@ class InternationalRegisteration extends ConsumerWidget {
                               fixedSize: MaterialStateProperty.all<Size>(
                                   Size(100, 40)),
                             ),
-                            child: const Text(
-                              '회원가입',
+                            child: Text(
+                              'registration.form.registerButton'.tr(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),

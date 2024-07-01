@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/domain/usecases/reset_password_new_usecase.dart";
@@ -27,8 +28,8 @@ class newPasswordUpdate extends ConsumerWidget {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: const Text(
-                  '새로운 비밀번호를 입력해 주세요.',
+                child: Text(
+                  'forgotPassword.resetPassword.description'.tr(),
                   style: TextStyle(fontSize: 18.0, color: Palette.textColor),
                 ),
               ),
@@ -47,8 +48,12 @@ class newPasswordUpdate extends ConsumerWidget {
                             horizontal: 8, vertical: 14),
                         child: AuthTextFormField(
                           controller: passwordController,
-                          labelText: "비밀번호",
-                          validatorText: "새로운 비밀번호를 입력해 주세요.",
+                          labelText:
+                              "forgotPassword.resetPassword.form.newPassword"
+                                  .tr(),
+                          validatorText:
+                              "forgotPassword.resetPassword.form.newPasswordvalidatorText"
+                                  .tr(),
                         ),
                       ),
                       Padding(
@@ -75,9 +80,10 @@ class newPasswordUpdate extends ConsumerWidget {
                               } else {
                                 // Form이 유효하지 않은 경우, 사용자에게 알림
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                        '입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
+                                        'registration.form.validatorText.formInvalid'
+                                            .tr()),
                                     backgroundColor: Palette.mainColor,
                                   ),
                                 );
@@ -110,8 +116,9 @@ class newPasswordUpdate extends ConsumerWidget {
                               fixedSize: MaterialStateProperty.all<Size>(
                                   Size(100, 40)),
                             ),
-                            child: const Text(
-                              '비밀번호 변경',
+                            child: Text(
+                              'forgotPassword.resetPassword.form.resetButton'
+                                  .tr(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),

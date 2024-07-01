@@ -52,7 +52,7 @@ class ResetPasswordDataSource {
     };
 
     try {
-      final response = await dio.get(
+      final response = await dio.post(
         url,
         queryParameters: queryParams,
         options: Options(extra: {"noAuth": true}),
@@ -62,6 +62,9 @@ class ResetPasswordDataSource {
       await storage.write(key: 'auth_token', value: token);
 
       return response;
+    } on DioException catch (e) {
+      debugPrint('${e.response}, 코드: ${e.response?.statusCode}');
+      throw Exception('인증번호 검증에 실패했습니다.');
     } catch (e) {
       debugPrint('통신 결과: $e');
       throw Exception('인증번호 검증에 실패했습니다.');
