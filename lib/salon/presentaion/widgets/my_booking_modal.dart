@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +24,7 @@ void myBookingModal(BuildContext context, WidgetRef ref,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              '예약 상세 정보',
+              'salon.myBookingList.bookingModal.title'.tr(),
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             Divider(
@@ -33,18 +34,18 @@ void myBookingModal(BuildContext context, WidgetRef ref,
             ),
             SizedBox(height: 10.0),
             // 서비스명
-            _buildModalRow('서비스명', reservation.salonService?.service ?? 'N/A'),
+            _buildModalRow('salon.myBookingList.bookingModal.service'.tr(), reservation.salonService?.service ?? 'N/A'),
             SizedBox(height: 10.0),
             // 가격
             _buildModalRow(
-                '가격', '${reservation.salonService?.price ?? 'N/A'}원'),
+                'salon.myBookingList.bookingModal.price'.tr(), '${reservation.salonService?.price ?? 'N/A'}원'),
             SizedBox(height: 10.0),
             // 날짜와 시간
-            _buildModalRow('날짜 및 시간',
+            _buildModalRow('salon.myBookingList.bookingModal.dateTime'.tr(),
                 '${reservation.reservationDate ?? 'N/A'} ${reservation.reservationTime ?? ''}'),
             SizedBox(height: 10.0),
             // 상태
-            _buildModalRow('상태', getStatusText(reservation.status ?? '')),
+            _buildModalRow('salon.myBookingList.bookingModal.state'.tr(), getStatusText(reservation.status ?? '')),
             SizedBox(height: 10.0),
             if (status == 'submit')
               Align(
@@ -54,23 +55,23 @@ void myBookingModal(BuildContext context, WidgetRef ref,
                     final confirmDelete = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('예약 취소',
+                        title: Text('salon.myBookingList.bookingModal.cancelButton'.tr(),
                             style: TextStyle(
                                 color: Palette.textColor,
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w600)),
-                        content: Text('해당 예약을 취소하시겠습니까?'),
+                        content: Text('salon.myBookingList.bookingModal.cancelModal.description').tr(),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(false),
-                            child: Text('취소',
+                            child: Text('salon.myBookingList.bookingModal.cancelModal.noButton'.tr(),
                                 style: TextStyle(
                                     color: Palette.stateColor4,
                                     fontWeight: FontWeight.w600)),
                           ),
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(true),
-                            child: Text('삭제',
+                            child: Text('salon.myBookingList.bookingModal.cancelModal.yesButton'.tr(),
                                 style: TextStyle(
                                     color: Palette.stateColor3,
                                     fontWeight: FontWeight.w600)),
@@ -93,7 +94,7 @@ void myBookingModal(BuildContext context, WidgetRef ref,
                     }
                   },
                   child: Text(
-                    '예약 취소하기',
+                    'salon.myBookingList.bookingModal.cancelButton'.tr(),
                     style: TextStyle(color: Palette.stateColor3),
                   ),
                 ),

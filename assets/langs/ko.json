@@ -1,12 +1,186 @@
 {
   "login": {
     "admin": {
-      "descriptionText": "모바일 어플에서는 관리자 회원가입을 지원하지 않습니다.",
-      "textButton1": "학생 로그인으로 이동"
+      "descriptionText": "モバイルアプリでは管理者の登録を提供していません。",
+      "textButton1": "学生ログインに移動"
+    },
+    "student": {
+      "descriptionText": "学校メールがある場合",
+      "textButton1": "アカウントがない場合",
+      "textButton2": "管理者ログインに移動",
+      "googleLoginButton": "Googleでログイン"
+    },
+    "sharedForm": {
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "loginButton": "ログイン",
+      "forgotPassword": "パスワードを忘れた場合",
+      "automaticLogin": "自動ログイン"
     }
   },
+
+  "mainDashboard": {
+    "qrButton": {
+      "bus": "バスQR",
+      "restaurant": "学食QR"
+    },
+    "navigation": {
+      "bus": {
+        "title": "バス",
+        "description": "バス時刻表など"
+      },
+      "salon": {
+        "title": "美容室",
+        "description": "美容室予約など"
+      },
+      "restaurant": {
+        "title": "学食",
+        "description": "学食申請など"
+      },
+      "administration": {
+        "title": "学校行政",
+        "description": "お知らせなど"
+      }
+    }
+  },
+
+  "bus": {
+    "appbar": "バス",
+    "qrRoundedBox": {
+      "title": "QRコードスキャン",
+      "description": "バス乗車時にQRコードを提示してください。",
+      "textButton": "QRコードを表示"
+    },
+    "descriptionText": {
+      "title1": "バス利用",
+      "title2": "バスお知らせ"
+    },
+    "busSchedule": {
+      "title": "バス時刻表",
+      "description": "バスの時刻表を確認してください。",
+      "busStop": {
+        "title1": "バス路線のフィルタリングを選択してください。",
+        "title2": "バス路線",
+        "filterTitle": {
+          "s/v": "学期休み",
+          "w/w": "平日週末",
+          "b/e": "起点選択"
+        },
+        "filter": {
+          "semester": "学期",
+          "vacation": "夏・冬休み",
+          "weekend": "週末",
+          "weekday": "平日",
+          "bokhyeon": "ポッヒョン",
+          "english": "英語村"
+        }
+      }
+    }
+  },
+
   "salon": {
-    "main": "Salon Main",
-    "booking": "Salon Booking"
+    "appbar": "美容室",
+    "bookingRoundedBox": {
+      "title1": "美容室予約があります。",
+      "title2": "美容室予約がありません。",
+      "description1": "予約時間を必ず守ってください。",
+      "description2": "美容室を利用してみてください！",
+      "textButton": "予約確認"
+    },
+    "descriptionText": {
+      "title1": "美容室利用",
+      "title2": "美容室お知らせ"
+    },
+    "salonBooking": {
+      "title": "予約",
+      "description": "美容室予約",
+      "currency": "ウォン",
+      "stepOne": {
+        "description1": "1.サービスを選択してください。",
+        "filterText": {
+          "gender": "性別",
+          "type": "種類"
+        },
+        "description2": "お支払い金額",
+        "nextButton": "次へ"
+      },
+      "stepTwo": {
+        "description1": "2.日付を選択してください。",
+        "description2": "3.時間を選択してください。",
+        "bookingButton": "予約"
+      }
+    },
+    "salonPriceList": {
+      "title": "価格表",
+      "description": "美容室の価格案内",
+      "PriceListPage": {
+        "title1": "フィルター選択",
+        "title2": "サービス一覧",
+        "description": "サービスと料金は変動する可能性があります。"
+      }
+    },
+    "myBookingList": {
+      "title": "予約リスト",
+      "defaultText1": "された記録が",
+      "defaultText2": "件あります。",
+      "refresh" : "更新",
+      "bookingModal" : {
+        "title": "予約詳細",
+        "service": "サービス名",
+        "price": "料金",
+        "dateTime": "日時",
+        "state": "状態",
+        "cancelButton": "予約キャンセル",
+        "cancelModal": {
+          "description": "予約をキャンセルしますか？",
+          "noButton": "いいえ",
+          "yesButton": "はい"
+        }
+      },
+      "bookingType": {
+        "accepted": "受付",
+        "rejected": "拒否",
+        "approved": "承認",
+        "unknown": "不明"
+      }
+    }
+  },
+
+  "QR": {
+    "bus": {
+      "appbar": "バスQR",
+      "title": "バスQRコード",
+      "description": "バス乗車時にQRコードを提示してください。"
+    },
+    "restaurant": {
+      "appbar": "学食QR",
+      "title": "学食QRコード",
+      "description": "学食利用時にQRコードを提示してください。"
+    }
+  },
+
+  "drawer": {
+    "bus": {
+      "title": "バス",
+      "busSchedule": "時刻表"
+    },
+    "restaurant": {
+      "title": "学食",
+      "menu": "メニュー",
+      "weekendApply": "週末学食申請"
+    },
+    "salon": {
+      "title": "美容室",
+      "salonBooking": "美容室予約",
+      "priceList": "価格表"
+    },
+    "administration": {
+      "title": "学校行政",
+      "notice": "お知らせ",
+      "as": "設備修理申請",
+      "meetingRoom": "会議室予約",
+      "sleepover": "外泊・外出申請"
+    },
+    "logout": "ログアウト"
   }
 }

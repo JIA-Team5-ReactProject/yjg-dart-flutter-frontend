@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/viewmodels/user_selection_viewmodel.dart';
@@ -20,7 +21,7 @@ class SalonBookingStepOne extends ConsumerWidget {
     String uniqueKey = "${selectedGender}_${selectedCategoryId}";
 
     return Scaffold(
-      appBar: BaseAppBar(title: "미용실 예약"),
+      appBar: BaseAppBar(title: "salon.salonBooking.title".tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: CustomSingleChildScrollView(
@@ -33,7 +34,7 @@ class SalonBookingStepOne extends ConsumerWidget {
                 height: 12.0,
               ),
               Text(
-                '1. 서비스를 선택해 주세요.',
+                'salon.salonBooking.stepOne.description1'.tr(),
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -42,7 +43,7 @@ class SalonBookingStepOne extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    '성별',
+                    'salon.salonBooking.stepOne.filterText.gender'.tr(),
                     style: TextStyle(color: Palette.textColor.withOpacity(0.7)),
                   ),
                   SizedBox(
@@ -54,7 +55,7 @@ class SalonBookingStepOne extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    '유형',
+                    'salon.salonBooking.stepOne.filterText.type'.tr(),
                     style: TextStyle(color: Palette.textColor.withOpacity(0.7)),
                   ),
                   SizedBox(

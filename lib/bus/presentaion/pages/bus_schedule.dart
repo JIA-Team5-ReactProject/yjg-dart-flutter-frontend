@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/bus/presentaion/viewmodels/bus_viewmodel.dart';
@@ -35,15 +36,15 @@ class _BusScheduleState extends ConsumerState<BusSchedule> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10.0),
-            const Text(
-              '해당되는 버튼을 선택해주세요.',
+            Text(
+              'bus.busSchedule.busStop.title1'.tr(),
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10.0),
             Row(
               children: [
                 Text(
-                  '학기방학',
+                  'bus.busSchedule.busStop.filterTitle.s/v'.tr(),
                   style: TextStyle(
                       fontSize: 14.0,
                       color: Palette.textColor.withOpacity(0.6),
@@ -56,7 +57,7 @@ class _BusScheduleState extends ConsumerState<BusSchedule> {
             Row(
               children: [
                 Text(
-                  '평일주말',
+                  'bus.busSchedule.busStop.filterTitle.w/w'.tr(),
                   style: TextStyle(
                       fontSize: 14.0,
                       color: Palette.textColor.withOpacity(0.6),
@@ -69,7 +70,7 @@ class _BusScheduleState extends ConsumerState<BusSchedule> {
             Row(
               children: [
                 Text(
-                  '기점선택',
+                  'bus.busSchedule.busStop.filterTitle.b/e'.tr(),
                   style: TextStyle(
                       fontSize: 14.0,
                       color: Palette.textColor.withOpacity(0.6),
@@ -80,8 +81,8 @@ class _BusScheduleState extends ConsumerState<BusSchedule> {
               ],
             ),
             const SizedBox(height: 20.0),
-            const Text(
-              '노선목록',
+            Text(
+              'bus.busSchedule.busStop.title2'.tr(),
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,

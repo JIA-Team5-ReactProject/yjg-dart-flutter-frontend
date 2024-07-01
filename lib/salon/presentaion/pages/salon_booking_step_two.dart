@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/salon/presentaion/widgets/booking_calendar.dart';
@@ -12,7 +13,7 @@ class SalonBookingStepTwo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: BaseAppBar(title: "미용실 예약"),
+      appBar: BaseAppBar(title: "salon.salonBooking.title".tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: CustomSingleChildScrollView(
@@ -24,7 +25,7 @@ class SalonBookingStepTwo extends ConsumerWidget {
               SizedBox(
                 height: 12.0,
               ),
-              Text('2. 예약 날짜를 선택해 주세요.',
+              Text('salon.salonBooking.stepTwo.description1'.tr(),
                   style:
                       TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
               BookingCalendar(),

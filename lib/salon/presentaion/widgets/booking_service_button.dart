@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import 'package:yjg/salon/presentaion/viewmodels/booking_select_id_viewmodel.dart';
@@ -55,7 +56,7 @@ class _BookingServiceButtonState extends ConsumerState<BookingServiceButton> {
           final service = services[index];
           final formattedPrice = NumberFormat('#,###', 'ko_KR')
                   .format(int.parse(service.price ?? '0')) +
-              '원';
+              'salon.salonBooking.currency'.tr();
           final serviceName = service.service ?? "Unknown Service";
 
           return InkWell(

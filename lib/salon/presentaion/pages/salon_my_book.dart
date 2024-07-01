@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/salon/presentaion/widgets/my_booking_list.dart";
@@ -11,7 +12,7 @@ class SalonMyBook extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: BaseAppBar(title: "예약 내역"),
+      appBar: BaseAppBar(title: "salon.myBookingList.title".tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: MyBookingList(),

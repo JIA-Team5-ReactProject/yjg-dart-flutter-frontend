@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:yjg/salon/data/models/reservation.dart';
 import 'package:yjg/salon/presentaion/viewmodels/reservations_viewmodel.dart';
 import 'package:yjg/salon/presentaion/widgets/my_booking_modal.dart';
@@ -79,7 +80,7 @@ class _MyBookingListState extends ConsumerState<MyBookingList> {
                     const EdgeInsets.only(left: 20.0, top: 30.0, bottom: 10.0),
                 child: Row(children: [
                   Text(
-                    "${getStatusText(status)}된 내역이 ${reservationsForStatus.length}건 있습니다.",
+                    "${getStatusText(status)}${tr('salon.myBookingList.defaultText1')} ${reservationsForStatus.length} ${tr('salon.myBookingList.defaultText2')}",
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -92,7 +93,7 @@ class _MyBookingListState extends ConsumerState<MyBookingList> {
                       Icon(Icons.refresh,
                           color: Palette.stateColor4, size: 20.0),
                       Text(
-                        '새로고침',
+                        tr('salon.myBookingList.refresh'),
                         style: TextStyle(
                             color: Palette.stateColor4,
                             fontSize: 13,
@@ -152,9 +153,9 @@ class ReservationTile extends ConsumerWidget {
             Text(
               statusText,
               style: TextStyle(
-                  color: statusText == '접수'
+                  color: statusText == tr('salon.myBookingList.bookingType.accepted')
                       ? Palette.stateColor1
-                      : statusText == '승인'
+                      : statusText == tr('salon.myBookingList.bookingType.approved')
                           ? Palette.stateColor2
                           : Palette.stateColor4),
             ),
@@ -168,12 +169,12 @@ class ReservationTile extends ConsumerWidget {
 String getStatusText(String status) {
   switch (status) {
     case 'submit':
-      return '접수';
+      return tr('salon.myBookingList.bookingType.accepted');
     case 'confirm':
-      return '승인';
+      return tr('salon.myBookingList.bookingType.approved');
     case 'reject':
-      return '거절';
+      return tr('salon.myBookingList.bookingType.rejected');
     default:
-      return '알 수 없음';
+      return tr('salon.myBookingList.unknown');
   }
 }
