@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -48,7 +49,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BaseAppBar(
-        title: '설정',
+        title: 'settings.title'.tr(),
       ),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
@@ -56,7 +57,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
         sections: [
           SettingsSection(
             title: Text(
-              '공통',
+              'settings.common.title'.tr(),
               style: TextStyle(letterSpacing: -0.5),
             ),
             tiles: <SettingsTile>[
@@ -64,11 +65,11 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               SettingsTile.navigation(
                 leading: Icon(Icons.language),
                 title: Text(
-                  '언어',
+                  'settings.common.language.title'.tr(),
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
                 value: Text(
-                  '한국어',
+                  'settings.common.language.ko'.tr(),
                   style: TextStyle(letterSpacing: -0.5, fontSize: 16.0),
                 ),
                 onPressed: ((context) {}),
@@ -76,7 +77,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               SettingsTile.switchTile(
                 activeSwitchColor: Palette.mainColor,
                 title: Text(
-                  '알림',
+                  'settings.common.notification'.tr(),
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
                 initialValue: widget.notifications,
@@ -97,14 +98,14 @@ class _SettingPageState extends ConsumerState<SettingPage> {
           ),
           SettingsSection(
             title: Text(
-              '계정',
+              'settings.account.title'.tr(),
               style: TextStyle(letterSpacing: -0.5),
             ),
             tiles: <SettingsTile>[
               SettingsTile.navigation(
                 leading: Icon(Icons.logout),
                 title: Text(
-                  '로그아웃',
+                  'settings.account.logout'.tr(),
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
                 onPressed: ((context) {
@@ -114,7 +115,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               SettingsTile.navigation(
                 leading: Icon(Icons.manage_accounts),
                 title: Text(
-                  '개인정보 수정',
+                  'settings.account.informationUpdate'.tr(),
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
                 onPressed: ((context) {
@@ -126,7 +127,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               SettingsTile.navigation(
                 leading: Icon(Icons.person_remove),
                 title: Text(
-                  '회원탈퇴',
+                  'settings.account.withdrawal.title'.tr(),
                   style: TextStyle(
                     letterSpacing: -0.5,
                     fontSize: 15.0,
@@ -136,23 +137,23 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   final confirmDelete = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text('회원탈퇴',
+                      title: Text('settings.account.withdrawal.confirm.title'.tr(),
                           style: TextStyle(
                               color: Palette.textColor,
                               fontSize: 16.0,
                               fontWeight: FontWeight.w600)),
-                      content: Text('정말 회원탈퇴 하시겠습니까? 탈퇴 후 복구가 불가능합니다.'),
+                      content: Text('settings.account.withdrawal.confirm.description').tr(),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('취소',
+                          child: Text('settings.account.withdrawal.confirm.no'.tr(),
                               style: TextStyle(
                                   color: Palette.stateColor4,
                                   fontWeight: FontWeight.w600)),
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: Text('삭제',
+                          child: Text('settings.account.withdrawal.confirm.yes'.tr(),
                               style: TextStyle(
                                   color: Palette.stateColor3,
                                   fontWeight: FontWeight.w600)),
@@ -167,7 +168,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('회원탈퇴에 성공하였습니다. 로그아웃됩니다.'),
+                            content: Text('settings.account.withdrawal.withdrawalSuccess').tr(),
                             backgroundColor: Palette.mainColor,
                           ),
                         );
@@ -179,7 +180,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('회원탈퇴 실패. 다시 시도해 주세요. 에러: $e'),
+                            content: Text('settings.account.withdrawal.withdrawalFailed').tr(),
                             backgroundColor: Colors.red,
                           ),
                         );
