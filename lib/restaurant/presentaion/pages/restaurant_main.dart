@@ -7,6 +7,7 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 //현재 신청 인원
 int satPerson = 0;
@@ -76,13 +77,28 @@ class _RestaurantMainState extends State<RestaurantMain> {
       setState(() {
         breakfastMenu = newBreakfastMenu.isNotEmpty
             ? newBreakfastMenu
-            : [' ', '등록 된', '메뉴가', '없습니다.'];
+            : [
+                ' ',
+                'restaurant.todaymenu.nomenu.1'.tr(),
+                'restaurant.todaymenu.nomenu.2'.tr(),
+                'restaurant.todaymenu.nomenu.3'.tr()
+              ];
         lunchMenu = newLunchMenu.isNotEmpty
             ? newLunchMenu
-            : [' ', '등록 된', '메뉴가', '없습니다.'];
+            : [
+                ' ',
+                'restaurant.todaymenu.nomenu.1'.tr(),
+                'restaurant.todaymenu.nomenu.2'.tr(),
+                'restaurant.todaymenu.nomenu.3'.tr()
+              ];
         dinnerMenu = newDinnerMenu.isNotEmpty
             ? newDinnerMenu
-            : [' ', '등록 된', '메뉴가', '없습니다.'];
+            : [
+                ' ',
+                'restaurant.todaymenu.nomenu.1'.tr(),
+                'restaurant.todaymenu.nomenu.2'.tr(),
+                'restaurant.todaymenu.nomenu.3'.tr()
+              ];
       }); // 데이터를 가져왔으므로 UI 갱신
     } catch (e) {
       debugPrint('오류 발생: $e');
@@ -121,8 +137,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
               ignoring: !false,
               child: MoveButton(
                 icon: Icons.calendar_month_outlined,
-                text1: '주말 식수',
-                text2: '월~수 신청가능',
+                text1: 'restaurant.title.3.1'.tr(),
+                text2: 'restaurant.title.3.2'.tr(),
                 route: '/weekend_meal',
               ),
             ),
@@ -137,8 +153,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
               ignoring: !isButtonActive,
               child: MoveButton(
                 icon: Icons.calendar_month_outlined,
-                text1: '주말 식수',
-                text2: '월~수 신청가능',
+                text1: 'restaurant.title.3.1'.tr(),
+                text2: 'restaurant.title.3.2'.tr(),
                 route: '/weekend_meal',
               ),
             ),
@@ -161,8 +177,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
               ignoring: !false,
               child: MoveButton(
                 icon: Icons.calendar_month_outlined,
-                text1: '학기 식수',
-                text2: '학기 식수 신청',
+                text1: 'restaurant.title.4.1'.tr(),
+                text2: 'restaurant.title.4.2'.tr(),
                 route: '/meal_application',
               ),
             ),
@@ -177,8 +193,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
               ignoring: !isButtonActive,
               child: MoveButton(
                 icon: Icons.calendar_month_outlined,
-                text1: '학기 식수',
-                text2: '학기 식수 신청',
+                text1: 'restaurant.title.4.1'.tr(),
+                text2: 'restaurant.title.4.2'.tr(),
                 route: '/meal_application',
               ),
             ),
@@ -198,7 +214,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
     final buttonHeight = buttonWidth * 1.05;
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: const BaseAppBar(title: '식수'),
+      appBar: BaseAppBar(title: 'restaurant.title.0.1'.tr()),
       drawer: BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Column(
@@ -211,9 +227,9 @@ class _RestaurantMainState extends State<RestaurantMain> {
               child: ListView(
                 scrollDirection: Axis.horizontal, // 가로로 스크롤
                 children: <Widget>[
-                  mealCard('오늘 조식', breakfastMenu),
-                  mealCard('오늘 중식', lunchMenu),
-                  mealCard('오늘 석식', dinnerMenu),
+                  mealCard('restaurant.todaymenu.1'.tr(), breakfastMenu),
+                  mealCard('restaurant.todaymenu.2'.tr(), lunchMenu),
+                  mealCard('restaurant.todaymenu.3'.tr(), dinnerMenu),
                 ],
               ),
             ),
@@ -222,8 +238,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
             Container(
               margin: EdgeInsets.all(20),
               alignment: Alignment(-0.85, 0.2),
-              child: const Text(
-                '식수 이용하기',
+              child: Text(
+                'restaurant.todaymenu.1'.tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -240,13 +256,13 @@ class _RestaurantMainState extends State<RestaurantMain> {
                 children: <Widget>[
                   MoveButton(
                       icon: Icons.backup_table,
-                      text1: '식단표',
-                      text2: '이번 달 식단표',
+                      text1: 'restaurant.title.1.1'.tr(),
+                      text2: 'restaurant.title.1.2'.tr(),
                       route: '/menu_list'),
                   MoveButton(
                       icon: Icons.qr_code,
-                      text1: '식수 QR',
-                      text2: '식사 시 QR 찍기',
+                      text1: 'restaurant.title.2.1'.tr(),
+                      text2: 'restaurant.title.2.2'.tr(),
                       route: '/meal_qr'),
                   conditionalMoveButton(),
                   semesterMoveButton(),
@@ -280,9 +296,11 @@ class _RestaurantMainState extends State<RestaurantMain> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text('현재 주말식수 신청 인원'), // 중간 텍스트
                       Text(
-                        '토요일: $satPerson명 | 일요일 $sunPerson명', // 아래 텍스트
+                        'restaurant.appnum.1'.tr(),
+                      ), // 중간 텍스트
+                      Text(
+                        '${'restaurant.appnum.2'.tr()}: $satPerson${'restaurant.appnum.4'.tr()}  |  ${'restaurant.appnum.3'.tr()}: $sunPerson${'restaurant.appnum.4'.tr()}',
                         style: TextStyle(
                           color: Color.fromARGB(255, 29, 127, 159),
                         ),

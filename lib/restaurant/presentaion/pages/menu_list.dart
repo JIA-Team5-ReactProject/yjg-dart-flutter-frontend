@@ -6,6 +6,7 @@ import 'package:yjg/restaurant/data/data_sources/menu_data_source.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MenuList extends StatefulWidget {
   @override
@@ -38,9 +39,24 @@ class _MenuListState extends State<MenuList> {
       if (data.isEmpty) {
         // API에서 가져온 리스트가 비어있을 경우 기본 메시지를 설정
         setState(() {
-          breakfastMenu = ['입력 된', '메뉴가', '없습니다'];
-          lunchMenu = ['입력 된', '메뉴가', '없습니다'];
-          dinnerMenu = ['입력 된', '메뉴가', '없습니다'];
+          breakfastMenu = [
+            ' ',
+            'restaurant.todaymenu.nomenu.1'.tr(),
+            'restaurant.todaymenu.nomenu.2'.tr(),
+            'restaurant.todaymenu.nomenu.3'.tr()
+          ];
+          lunchMenu = [
+            ' ',
+            'restaurant.todaymenu.nomenu.1'.tr(),
+            'restaurant.todaymenu.nomenu.2'.tr(),
+            'restaurant.todaymenu.nomenu.3'.tr()
+          ];
+          dinnerMenu = [
+            ' ',
+            'restaurant.todaymenu.nomenu.1'.tr(),
+            'restaurant.todaymenu.nomenu.2'.tr(),
+            'restaurant.todaymenu.nomenu.3'.tr()
+          ];
         });
       } else {
         List<String> newBreakfastMenu = [];
@@ -82,7 +98,7 @@ class _MenuListState extends State<MenuList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BaseAppBar(title: '식단표'),
+      appBar: BaseAppBar(title: 'restaurant.title.0.2'.tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
@@ -98,7 +114,8 @@ class _MenuListState extends State<MenuList> {
                 borderRadius: BorderRadius.circular(15.0),
               ),
               child: TableCalendar(
-                locale: 'ko-KR', //달력 언어 한국어로
+                locale: 'ja-JP', //달력 언어 일본어로
+                //locale: context.locale.toLanguageTag(), //시스템 언어에 따른 달력 언어 설정
                 firstDay: _firstDayOfMonth(DateTime.now()), // 캘린더의 첫번째 날짜
                 lastDay: _lastDayOfMonth(DateTime.now()), // 캘린더의 마지막 날짜
                 focusedDay: DateTime.now(), // 초기 포커스 되는 날짜
@@ -172,7 +189,7 @@ class _MenuListState extends State<MenuList> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                DateFormat('yyyy년 MM월 dd일').format(_selectedDay!), // 선택된 날짜 표시
+                DateFormat('yyyy年 MM月 dd日').format(_selectedDay!), // 선택된 날짜 표시
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -185,11 +202,11 @@ class _MenuListState extends State<MenuList> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                menuSection('조식', breakfastMenu),
+                menuSection('restaurant.todaymenu.1'.tr(), breakfastMenu),
                 SizedBox(width: 100),
-                menuSection('중식', lunchMenu),
+                menuSection('restaurant.todaymenu.2'.tr(), lunchMenu),
                 SizedBox(width: 100),
-                menuSection('석식', dinnerMenu),
+                menuSection('restaurant.todaymenu.3'.tr(), dinnerMenu),
               ],
             ),
           ),

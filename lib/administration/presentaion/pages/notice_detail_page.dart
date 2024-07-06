@@ -5,6 +5,7 @@ import 'package:yjg/administration/data/data_sources/notice_data_source.dart';
 import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class NoticeDetailPage extends StatefulWidget {
   final int noticeId; // 공지사항 ID를 저장하는 필드
@@ -33,14 +34,14 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
       final response = await _noticeDataSource.getNotice(noticeId);
       return response.data['notice'];
     } catch (e) {
-      throw Exception('공지사항 로드 실패: $e');
+      throw Exception('notice.loadFailed'.tr(args: [e.toString()]));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BaseAppBar(title: '공지사항'),
+      appBar: BaseAppBar(title: 'notice.title'.tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: FutureBuilder<dynamic>(
@@ -49,9 +50,11 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('공지사항 호출 에러: ${snapshot.error}'));
+            return Center(
+                child:
+                    Text('notice.error'.tr(args: [snapshot.error.toString()])));
           } else if (!snapshot.hasData) {
-            return Center(child: Text('공지사항을 찾을 수 없습니다.'));
+            return Center(child: Text('notice.notFound'.tr()));
           } else {
             final notice = snapshot.data;
             List<dynamic> noticeImages = notice['notice_images'];
