@@ -38,7 +38,7 @@ void myBookingModal(BuildContext context, WidgetRef ref,
             SizedBox(height: 10.0),
             // 가격
             _buildModalRow(
-                'salon.myBookingList.bookingModal.price'.tr(), '${reservation.salonService?.price ?? 'N/A'}원'),
+                'salon.myBookingList.bookingModal.price'.tr(), '${reservation.salonService?.price ?? 'N/A'}'),
             SizedBox(height: 10.0),
             // 날짜와 시간
             _buildModalRow('salon.myBookingList.bookingModal.dateTime'.tr(),
@@ -114,10 +114,11 @@ Widget _buildModalRow(
 ) {
   // 가격 정보를 천 단위 구분자로 포맷
   if (title == '가격' && value != null && value != 'N/A') {
+    String currency = 'salon.salonBooking.currency'.tr();
     final number =
-        double.tryParse(value.replaceAll('원', '').replaceAll(',', ''));
+        double.tryParse(value.replaceAll(currency, '').replaceAll(',', ''));
     if (number != null) {
-      value = NumberFormat('#,##0', 'ko_KR').format(number) + '원';
+      value = NumberFormat('#,##0', 'ko_KR').format(number) + currency;
     }
   }
 

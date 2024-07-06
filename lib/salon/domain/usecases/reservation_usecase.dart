@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -24,7 +25,7 @@ class ReservationUseCase {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('예약 성공. 미용실 메인 페이지로 이동합니다.'),
+              content: Text('salon.salonBooking.isSuccess'.tr()),
               backgroundColor: Palette.mainColor),
         );
         Navigator.pushNamed(
@@ -34,7 +35,7 @@ class ReservationUseCase {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('예약 실패. 다시 시도해 주세요.'), backgroundColor: Colors.red),
+              content: Text('salon.salonBooking.isFailed'.tr()), backgroundColor: Colors.red),
         );
         throw Exception('예약에 실패했습니다. 다시 시도해주세요.');
       }
@@ -55,14 +56,14 @@ class ReservationUseCase {
       if (isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('예약이 취소되었습니다.'),
+              content: Text('salon.myBookingList.cancelSuccess'.tr()),
               backgroundColor: Palette.mainColor),
         );
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('예약 취소에 실패하였습니다.'), backgroundColor: Colors.red),
+              content: Text('salon.myBookingList.cancelFailed'.tr()), backgroundColor: Colors.red),
         );
       }
     } catch (e) {
@@ -70,7 +71,7 @@ class ReservationUseCase {
       debugPrint('예약 취소 중 오류 발생: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('예약 취소 중 오류가 발생했습니다.'), backgroundColor: Colors.red),
+            content: Text('salon.myBookingList.cancelError').tr(), backgroundColor: Colors.red),
       );
     }
   }

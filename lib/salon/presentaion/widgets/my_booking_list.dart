@@ -51,10 +51,10 @@ class _MyBookingListState extends ConsumerState<MyBookingList> {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Icon(Icons.history_toggle_off, size: 48.0, color: Colors.grey),
             SizedBox(height: 20),
-            Text("예약 이력이 없어요!",
+            Text("salon.myBookingList.emptyText".tr(),
                 style: TextStyle(fontSize: 18.0, color: Colors.grey)),
           ],
         ),
