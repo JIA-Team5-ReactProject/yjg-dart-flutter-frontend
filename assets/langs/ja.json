@@ -36,29 +36,28 @@
     }
   },
   "informationUpdate": {
-      "title": "情報更新",
-      "isError": "ログイン情報が無効です。再度ログインしてください。",
-      "description": "情報を更新してください。",
-      "isSuccess": "情報が更新されました。",
-      "isFailed": "情報の更新に失敗しました。再度お試しください。",
-      "form": {
-        "name": "名前",
-        "phoneNumber": "電話番号",
-        "studentNumber": "学籍番号",
-        "currentPassword": "パスワード",
-        "newPassword": "新しいパスワード",
-        "updateButton": "更新",
-        "validatorText": {
-          "name": "名前を入力してください。",
-          "phoneNumber": "電話番号を入力してください。",
-          "studentNumber": "学籍番号を入力してください。",
-          "emailFormat": "メールアドレスの形式が正しくありません。",
-          "newPassword": "新しいパスワードを入力してください。",
-          "currentPassword": "現在のパスワードを入力してください。"
-        }
+    "title": "情報更新",
+    "isError": "ログイン情報が無効です。再度ログインしてください。",
+    "description": "情報を更新してください。",
+    "isSuccess": "情報が更新されました。",
+    "isFailed": "情報の更新に失敗しました。再度お試しください。",
+    "form": {
+      "name": "名前",
+      "phoneNumber": "電話番号",
+      "studentNumber": "学籍番号",
+      "currentPassword": "パスワード",
+      "newPassword": "新しいパスワード",
+      "updateButton": "更新",
+      "validatorText": {
+        "name": "名前を入力してください。",
+        "phoneNumber": "電話番号を入力してください。",
+        "studentNumber": "学籍番号を入力してください。",
+        "emailFormat": "メールアドレスの形式が正しくありません。",
+        "newPassword": "新しいパスワードを入力してください。",
+        "currentPassword": "現在のパスワードを入力してください。"
       }
-    },
-
+    }
+  },
   "registration" : {
     "description": "情報を入力してください。",
     "isSuccess": "登録が完了しました。",
@@ -88,7 +87,6 @@
       }
     }
   },
-
   "forgotPassword": {
     "verificationCode": "認証コード",
     "isVerificationCodeEntered": "メールで受け取った6桁の認証コードを入力してください。",
@@ -111,16 +109,15 @@
       "isVerificationCodeInvalid" : "認証番号が正しくありません。再度ご確認ください。"
     }
   },
-
   "mainDashboard": {
     "qrButton": {
-      "bus": "バスQR",
-      "restaurant": "学食QR"
+      "bus": "バス QR",
+      "restaurant": "学食 QR"
     },
     "navigation": {
       "bus": {
         "title": "バス",
-        "description": "バス時刻表など"
+        "description": "バス時間表など"
       },
       "salon": {
         "title": "美容室",
@@ -136,21 +133,20 @@
       }
     }
   },
-
   "bus": {
     "appbar": "バス",
     "qrRoundedBox": {
       "title": "QRコードスキャン",
       "description": "バス乗車時にQRコードを提示してください。",
-      "textButton": "QRコードを表示"
+      "textButton": "QRコード表示"
     },
     "descriptionText": {
       "title1": "バス利用",
       "title2": "バスお知らせ"
     },
     "busSchedule": {
-      "title": "バス時刻表",
-      "description": "バスの時刻表を確認してください。",
+      "title": "バス時間表",
+      "description": "バスの時間表を確認してください。",
       "busStop": {
         "title1": "バス路線のフィルタリングを選択してください。",
         "title2": "バス路線",
@@ -170,7 +166,123 @@
       }
     }
   },
-
+  "restaurant": {
+    "todaymenu" :{
+      "1" : "朝食",
+      "2" : "昼食",
+      "3" : "夕飯",
+      "nomenu" : {
+        "1" : "登録されている",
+        "2" : "メニューが",
+        "3" : "ありません。"
+      }
+    },
+    "title" : {
+      "0" : {
+        "1" : "学食",
+        "2" : "献立表",
+        "3" : "週末学食",
+        "4" : "学食申請"
+      },
+      "1" : {
+        "1" : "献立表",
+        "2" : "今月の献立表"
+      },
+      "2" : {
+        "1" : "学食QR",
+        "2" : "食事時にQRを撮る"
+      },
+      "3" : {
+        "1" : "週末学食",
+        "2" : "月~水申請可能"
+      },
+      "4" : {
+        "1" : "学期学食",
+        "2" : "学期食の申請"
+      }
+    },
+    "appnum" : {
+      "1" : "現在の週末食事申請人数",
+      "2" : "土曜日",
+      "3" : "日曜日",
+      "4" : "人",
+      "5" : "曜日を選択",
+      "6" : "土曜日+日曜日"
+    },
+    "weekend" : {
+      "topbox" : {
+        "1" : "週末の学食の申請です。",
+        "2" : "申請期間 水曜日 21時まで",
+        "3" : "申請人数50名以上の場合、食事が提供されます。"
+      },
+      "middle" : {
+        "1" : "食事情報",
+        "2" : "タイプ",
+        "3" : "人数不足の場合",
+        "4" : "払い戻し",
+        "5" : "コンビニ弁当",
+        "6" : "口座 情報",
+        "7" : "水曜日の21時までに入金完了",
+        "8" : "申請"
+      }
+    },
+    "weekendapp" : {
+      "1": "学生情報",
+      "2": "学番",
+      "3": "名前",
+      "4": "電話",
+      "5": "申請",
+      "6": "申請状況",
+      "7": "取り消し",
+      "8": "週末学食の申請が完了しました。",
+      "9": "本当にキャンセルしますか？",
+      "10" : "キャンセルが完了しました。",
+      "11" : "入金確認が完了しました。"
+    },
+    "application": {
+      "period": "現在食事申請期間です。",
+      "notice": "種類以外の食事は自由食チケットを購入してください。",
+      "status": "申請",
+      "status1": "申請状況"
+    },
+    "student": {
+      "info": "学生情報"
+    },
+    "meal": {
+      "info": "食事情報",
+      "period": "2024.03.02 ~ 2024.07.18",
+      "amount": "期間算定金額"
+    },
+    "account": {
+      "info": "口座情報",
+      "period": "2024.03.01までに入金完了"
+    },
+    "payment": {
+      "reminder": "期間内に入金を完了してください",
+      "confirmation": "入金確認が完了しました。",
+      "thankyou": "ありがとうございます。"
+    },
+    "submit": {
+      "button": "申請",
+      "success": "学期食事の申請が完了しました。",
+      "failure": "学期食事の申請に失敗しました。",
+      "alert": "申請が完了しました。",
+      "confirm": "確認"
+    },
+    "cancel": {
+      "button": "申請取消",
+      "success": "学期食事の申請が取消されました。",
+      "failure": "学期食事の申請取消に失敗しました。",
+      "confirm": {
+        "message": "本当に取消しますか？",
+        "yes": "はい",
+        "no": "いいえ"
+      }
+    },
+    "non_select": {
+      "message": "種類を選択してください。"
+    }
+  },
   "salon": {
     "appbar": "美容室",
     "bookingRoundedBox": {
@@ -244,7 +356,6 @@
       }
     }
   },
-
   "settings": {
     "title": "設定",
     "common": {
@@ -255,6 +366,7 @@
         "ja": "日本語"
       },
       "notification": "通知"
+    }
   },
   "account": {
     "title": "アカウント",
@@ -271,26 +383,23 @@
         "no": "いいえ"
       }
     }
-    }
   },
-
   "QR": {
     "bus": {
-      "appbar": "バスQR",
-      "title": "バスQRコード",
+      "appbar": "バス QR",
+      "title": "バス QRコード",
       "description": "バス乗車時にQRコードを提示してください。"
     },
     "restaurant": {
-      "appbar": "学食QR",
-      "title": "学食QRコード",
+      "appbar": "学食 QR",
+      "title": "学食 QRコード",
       "description": "学食利用時にQRコードを提示してください。"
     }
   },
-
   "drawer": {
     "bus": {
       "title": "バス",
-      "busSchedule": "時刻表"
+      "busSchedule": "時間表"
     },
     "restaurant": {
       "title": "学食",
@@ -310,5 +419,32 @@
       "sleepover": "外泊・外出申請"
     },
     "logout": "ログアウト"
+  },
+  "admin" : {
+    "title" : "学校行政",
+    "topwhitebox1" : "生活館 B",
+    "topwhitebox2" : "予約日",
+    "topwhitebox3" : "予約時間",
+    "topwhitebox4" : "予約された会議室はありません",
+    "useService": "行政を利用",
+    "notice": "お知らせ",
+    "noticeDescription": "キャンパスのお知らせ",
+    "asRequest": "修理申請",
+    "asDescription": "キャンパス修理",
+    "sleepover": "外泊/外出申請",
+    "sleepoverDescription": "生活館の外泊/外出",
+    "meetingRoom": "会議室予約",
+    "meetingRoomDescription": "生活館Bの会議室",
+    "asUpcoming": "修理訪問予定",
+    "asNoReservation": "AS予約なし"
+  },
+  "notice": {
+    "title": "お知らせ",
+    "urgent": "緊急通知",
+    "regular": "お知らせ",
+    "loadFailed": "お知らせ読み込み失敗: {0}",
+    "error": "エラー: {0}",
+    "noNotices": "お知らせがありません。",
+    "notFound": "お知らせが見つかりません。"
   }
 }

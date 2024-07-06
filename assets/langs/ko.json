@@ -36,29 +36,28 @@
     }
   },
   "informationUpdate": {
-      "title": "정보 업데이트",
-      "isError": "로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.",
-      "description": "정보를 업데이트하세요.",
-      "isSuccess": "정보가 업데이트되었습니다.",
-      "isFailed": "정보 업데이트에 실패했습니다. 다시 시도해주세요.",
-      "form": {
-        "name": "이름",
-        "phoneNumber": "전화번호",
-        "studentNumber": "학번",
-        "currentPassword": "현재 비밀번호",
-        "newPassword": "새 비밀번호",
-        "updateButton": "업데이트",
-        "validatorText": {
-          "name": "이름을 입력하세요.",
-          "phoneNumber": "전화번호를 입력하세요.",
-          "studentNumber": "학번을 입력하세요.",
-          "emailFormat": "이메일 형식이 올바르지 않습니다.",
-          "newPassword": "새 비밀번호를 입력하세요.",
-          "currentPassword": "현재 비밀번호를 입력하세요."
-        }
+    "title": "정보 업데이트",
+    "isError": "로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.",
+    "description": "정보를 업데이트하세요.",
+    "isSuccess": "정보가 업데이트되었습니다.",
+    "isFailed": "정보 업데이트에 실패했습니다. 다시 시도해주세요.",
+    "form": {
+      "name": "이름",
+      "phoneNumber": "전화번호",
+      "studentNumber": "학번",
+      "currentPassword": "현재 비밀번호",
+      "newPassword": "새 비밀번호",
+      "updateButton": "업데이트",
+      "validatorText": {
+        "name": "이름을 입력하세요.",
+        "phoneNumber": "전화번호를 입력하세요.",
+        "studentNumber": "학번을 입력하세요.",
+        "emailFormat": "이메일 형식이 올바르지 않습니다.",
+        "newPassword": "새 비밀번호를 입력하세요.",
+        "currentPassword": "현재 비밀번호를 입력하세요."
       }
-    },
-
+    }
+  },
   "registration" : {
     "description": "정보를 입력하세요.",
     "isSuccess": "등록이 완료되었습니다.",
@@ -88,7 +87,6 @@
       }
     }
   },
-
   "forgotPassword": {
     "verificationCode": "인증 코드",
     "isVerificationCodeEntered": "이메일로 받은 6자리 인증 코드를 입력하세요.",
@@ -111,7 +109,6 @@
       "isVerificationCodeInvalid" : "인증 번호가 올바르지 않습니다. 다시 확인하세요."
     }
   },
-
   "mainDashboard": {
     "qrButton": {
       "bus": "버스 QR",
@@ -136,7 +133,6 @@
       }
     }
   },
-
   "bus": {
     "appbar": "버스",
     "qrRoundedBox": {
@@ -170,7 +166,123 @@
       }
     }
   },
-
+  "restaurant": {
+    "todaymenu" :{
+      "1" : "조식",
+      "2" : "중식",
+      "3" : "석식",
+      "nomenu" : {
+        "1" : "등록된",
+        "2" : "메뉴가",
+        "3" : "없습니다."
+      }
+    },
+    "title" : {
+      "0" : {
+        "1" : "학식",
+        "2" : "식단표",
+        "3" : "주말학식",
+        "4" : "식수 신청"
+      },
+      "1" : {
+        "1" : "식단표",
+        "2" : "이번 달의 식단표"
+      },
+      "2" : {
+        "1" : "학식QR",
+        "2" : "식사 시 QR 찍기"
+      },
+      "3" : {
+        "1" : "주말학식",
+        "2" : "월~수 신청 가능"
+      },
+      "4" : {
+        "1" : "학기 학식",
+        "2" : "학기 식사 신청"
+      }
+    },
+    "appnum" : {
+      "1" : "현재 주말 식사 신청 인원",
+      "2" : "토요일",
+      "3" : "일요일",
+      "4" : "명",
+      "5" : "요일 선택",
+      "6" : "토요일+일요일"
+    },
+    "weekend" : {
+      "topbox" : {
+        "1" : "주말 식사 신청입니다.",
+        "2" : "신청 기간 수요일 21시까지",
+        "3" : "신청 인원 50명 이상일 경우 식사가 제공됩니다."
+      },
+      "middle" : {
+        "1" : "식사 정보",
+        "2" : "유형",
+        "3" : "인원 부족 시",
+        "4" : "환불",
+        "5" : "편의점 도시락",
+        "6" : "계좌 정보",
+        "7" : "수요일 21시까지 입금 완료",
+        "8" : "신청"
+      }
+    },
+    "weekendapp" : {
+      "1": "학생 정보",
+      "2": "학번",
+      "3": "이름",
+      "4": "전화",
+      "5": "신청",
+      "6": "신청 현황",
+      "7": "취소",
+      "8": "주말 식사 신청이 완료되었습니다.",
+      "9": "정말 취소하시겠습니까?",
+      "10" : "취소가 완료되었습니다.",
+      "11" : "입금 확인이 완료되었습니다."
+    },
+    "application": {
+      "period": "현재 식수 신청 기간입니다.",
+      "notice": "유형 외의 식사는 자유식 티켓을 구입해 주세요.",
+      "status": "신청",
+      "status1": "신청현황"
+    },
+    "student": {
+      "info": "학생정보"
+    },
+    "meal": {
+      "info": "식사정보",
+      "period": "2024.03.02 ~ 2024.07.18",
+      "amount": "기간 산정 금액"
+    },
+    "account": {
+      "info": "계좌 정보",
+      "period": "2024.03.01까지 입금 완료"
+    },
+    "payment": {
+      "reminder": "기간내에 입금을 완료해주세요",
+      "confirmation": "입금 확인이 완료 되었습니다.",
+      "thankyou": "감사합니다."
+    },
+    "submit": {
+      "button": "신청",
+      "success": "학기 식수 신청이 완료되었습니다.",
+      "failure": "학기 식수 신청에 실패했습니다.",
+      "alert": "신청이 완료 되었습니다.",
+      "confirm": "확인"
+    },
+    "cancel": {
+      "button": "신청 취소",
+      "success": "학기 식수 신청이 취소되었습니다.",
+      "failure": "학기 식수 신청 취소에 실패했습니다.",
+      "confirm": {
+        "message": "정말 취소 하시겠습니까?",
+        "yes": "예",
+        "no": "아니오"
+      }
+    },
+    "non_select": {
+      "message": "유형을 선택해주세요."
+    }
+  },
   "salon": {
     "appbar": "미용실",
     "bookingRoundedBox": {
@@ -244,7 +356,6 @@
       }
     }
   },
-
   "settings": {
     "title": "설정",
     "common": {
@@ -255,6 +366,7 @@
         "ja": "일본어"
       },
       "notification": "알림"
+    }
   },
   "account": {
     "title": "계정",
@@ -268,12 +380,10 @@
         "title": "회원 탈퇴 확인",
         "description": "정말 회원 탈퇴하시겠습니까? 탈퇴 후 복구가 불가능합니다.",
         "yes": "예",
-        "no": "아니요"
+        "no": "아니오"
       }
     }
-    }
   },
-
   "QR": {
     "bus": {
       "appbar": "버스 QR",
@@ -286,7 +396,6 @@
       "description": "학식 이용 시 QR 코드를 제시하세요."
     }
   },
-
   "drawer": {
     "bus": {
       "title": "버스",
@@ -310,5 +419,32 @@
       "sleepover": "외박・외출 신청"
     },
     "logout": "로그아웃"
+  },
+  "admin" : {
+    "title" : "행정",
+    "topwhitebox1" : "생활관 B동",
+    "topwhitebox2" : "예약 날짜",
+    "topwhitebox3" : "예약 시간",
+    "topwhitebox4" : "예약 된 회의실 없음",
+    "useService": "행정 이용하기",
+    "notice": "공지사항",
+    "noticeDescription": "글로벌 캠퍼스 공지",
+    "asRequest": "AS 요청",
+    "asDescription": "글로벌 캠퍼스 AS",
+    "sleepover": "외박/외출 신청",
+    "sleepoverDescription": "생활관 외박/외출",
+    "meetingRoom": "회의실 예약",
+    "meetingRoomDescription": "생활관B동 회의실",
+    "asUpcoming": "AS 방문 예정",
+    "asNoReservation": "AS 예약 없음"
+  },
+  "notice": {
+    "title": "공지사항",
+    "urgent": "긴급공지",
+    "regular": "공지사항",
+    "loadFailed": "공지사항 로드 실패: {0}",
+    "error": "에러: {0}",
+    "noNotices": "공지사항이 없습니다.",
+    "notFound": "공지사항을 찾을 수 없습니다."
   }
 }

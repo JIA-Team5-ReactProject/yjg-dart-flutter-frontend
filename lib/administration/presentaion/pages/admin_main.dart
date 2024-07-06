@@ -10,6 +10,7 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:yjg/shared/widgets/move_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AdminMain extends StatefulWidget {
   const AdminMain({super.key});
@@ -78,7 +79,7 @@ class _AdminMainState extends State<AdminMain> {
     final buttonHeight = buttonWidth * 1.05;
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: const BaseAppBar(title: '행정'),
+      appBar: BaseAppBar(title: 'admin.title'.tr()),
       drawer: BaseDrawer(),
       body: CustomSingleChildScrollView(
         child: Column(
@@ -113,10 +114,12 @@ class _AdminMainState extends State<AdminMain> {
 
                           return WhiteMainRoundedBox(
                             iconData: Icons.headset_mic,
-                            mainText: '생활관B동 - $meetingRoomNumber호',
+                            mainText:
+                                "${"admin.topwhitebox1".tr()} - $meetingRoomNumber",
                             secondaryText:
-                                '예약 날짜: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(reservation['reservation_date']))}',
-                            actionText: '예약 시간: $startTime ~ $endTime',
+                                "${"admin.topwhitebox2".tr()} : ${DateFormat('yyyy-MM-dd').format(DateTime.parse(reservation['reservation_date']))}",
+                            actionText:
+                                "${"admin.topwhitebox3".tr()} : $startTime ~ $endTime",
                             timeText: '',
                           );
                         } else {
@@ -161,7 +164,7 @@ class _AdminMainState extends State<AdminMain> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '예약 된 회의실 없음',
+                                        "admin.topwhitebox4".tr(),
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Palette.textColor,
@@ -187,9 +190,10 @@ class _AdminMainState extends State<AdminMain> {
             Container(
               margin: EdgeInsets.all(20),
               alignment: Alignment(-0.85, 0.2),
-              child: const Text(
-                '행정 이용하기',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Text(
+                'admin.useService'.tr(),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             //이동 버튼 배치
@@ -206,23 +210,23 @@ class _AdminMainState extends State<AdminMain> {
                 children: <Widget>[
                   MoveButton(
                       icon: Icons.campaign_outlined,
-                      text1: '공지사항',
-                      text2: '글로벌 캠퍼스 공지',
+                      text1: 'admin.notice'.tr(),
+                      text2: 'admin.noticeDescription'.tr(),
                       route: '/notice'),
                   MoveButton(
                       icon: Icons.construction,
-                      text1: 'AS 요청',
-                      text2: '글로벌 캠퍼스 AS',
+                      text1: 'admin.asRequest'.tr(),
+                      text2: 'admin.asDescription'.tr(),
                       route: '/as_page'),
                   MoveButton(
                       icon: Icons.hotel,
-                      text1: '외박/외출 신청',
-                      text2: '생활관 외박/외출',
+                      text1: 'admin.sleepover'.tr(),
+                      text2: 'admin.sleepoverDescription'.tr(),
                       route: '/sleepover'),
                   MoveButton(
                       icon: Icons.groups,
-                      text1: '회의실 예약',
-                      text2: '생활관B동 회의실',
+                      text1: 'admin.meetingRoom'.tr(),
+                      text2: 'admin.meetingRoomDescription'.tr(),
                       route: '/meeting_room_main'),
                 ],
               ),
@@ -269,8 +273,8 @@ class _AdminMainState extends State<AdminMain> {
                           children: [
                             Text(
                               snapshot.hasData && snapshot.data != null
-                                  ? 'AS 방문 예정'
-                                  : 'AS 예약 없음',
+                                  ? 'admin.asUpcoming'.tr()
+                                  : 'admin.asNoReservation'.tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Palette.textColor,

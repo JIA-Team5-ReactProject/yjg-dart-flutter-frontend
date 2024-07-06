@@ -4,6 +4,7 @@ import 'package:yjg/shared/widgets/base_appbar.dart';
 import 'package:yjg/shared/widgets/base_drawer.dart';
 import 'package:yjg/shared/widgets/bottom_navigation_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Notice extends StatefulWidget {
   const Notice({Key? key}) : super(key: key);
@@ -33,14 +34,14 @@ class _NoticeState extends State<Notice> {
         lastPage = data['notices']['last_page'];
       });
     } catch (e) {
-      throw Exception('공지사항 로드 실패: $e');
+      throw Exception('notice.loadFailed'.tr(args: [e.toString()]));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BaseAppBar(title: '공지사항'),
+      appBar: BaseAppBar(title: 'notice.title'.tr()),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: Column(
@@ -52,9 +53,11 @@ class _NoticeState extends State<Notice> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                      child: Text('notice.error'
+                          .tr(args: [snapshot.error.toString()])));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No notices available'));
+                  return Center(child: Text('notice.noNotices'.tr()));
                 } else {
                   return _buildNoticesList(snapshot.data!);
                 }
@@ -105,8 +108,8 @@ class _NoticeState extends State<Notice> {
 
     return ListView(
       children: [
-        _buildSection('긴급공지', urgentNotices, true),
-        _buildSection('공지사항', regularNotices, false),
+        _buildSection('notice.urgent'.tr(), urgentNotices, true),
+        _buildSection('notice.regular'.tr(), regularNotices, false),
       ],
     );
   }
