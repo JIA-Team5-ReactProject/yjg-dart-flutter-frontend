@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:yjg/auth/domain/usecases/detail_usecase.dart";
@@ -29,8 +30,8 @@ class RegistrationDetails extends ConsumerWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: const Text(
-                '추가 정보를 입력해 주세요.',
+              child: Text(
+                'login.googleLogin.description'.tr(),
                 style: TextStyle(fontSize: 18.0, color: Palette.textColor),
               ),
             ),
@@ -49,8 +50,8 @@ class RegistrationDetails extends ConsumerWidget {
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: phoneNumberController,
-                        labelText: "전화번호",
-                        validatorText: "전화번호를 입력해 주세요.",
+                        labelText: "login.googleLogin.form.phoneNumber".tr(),
+                        validatorText: "login.googleLogin.form.validatorText.phoneNumber".tr(),
                         inputFormatter: PhoneNumberInputFormatter(),
                       ),
                     ),
@@ -59,8 +60,8 @@ class RegistrationDetails extends ConsumerWidget {
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: studentIdController,
-                        labelText: "학번",
-                        validatorText: "학번을 입력해 주세요.",
+                        labelText: "login.googleLogin.form.studentNumber".tr(),
+                        validatorText: "login.googleLogin.form.validatorText.studentNumber".tr(),
                       ),
                     ),
                     Padding(
@@ -87,9 +88,9 @@ class RegistrationDetails extends ConsumerWidget {
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                 SnackBar(
                                     content: Text(
-                                        '입력되지 않은 필드가 있습니다. 다시 한 번 확인해 주세요.'),
+                                        'registration.form.validatorText.formInvalid'.tr()),
                                     backgroundColor: Palette.mainColor),
                               );
                             }
@@ -121,8 +122,8 @@ class RegistrationDetails extends ConsumerWidget {
                             fixedSize:
                                 MaterialStateProperty.all<Size>(Size(100, 40)),
                           ),
-                          child: const Text(
-                            '회원가입 완료',
+                          child: Text(
+                            'login.googleLogin.button'.tr(),
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),

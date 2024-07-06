@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
@@ -54,7 +55,7 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BaseAppBar(
-        title: '개인정보 수정',
+        title: 'informationUpdate.title'.tr(),
       ),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
@@ -72,8 +73,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: const Text(
-                '빈칸 없이 모든 정보를 입력해 주세요.',
+              child: Text(
+                'informationUpdate.description'.tr(),
                 style: TextStyle(
                   fontSize: 15.0,
                   color: Palette.textColor,
@@ -96,8 +97,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                           horizontal: 8, vertical: 16),
                       child: AuthTextFormField(
                         controller: nameController,
-                        labelText: "이름",
-                        validatorText: "이름을 입력해 주세요.",
+                        labelText: "informationUpdate.form.name".tr(),
+                        validatorText: "informationUpdate.form.validatorText.name".tr(),
                       ),
                     ),
                     Padding(
@@ -105,8 +106,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: phoneNumberController,
-                        labelText: "전화번호",
-                        validatorText: "전화번호를 입력해 주세요.",
+                        labelText: "informationUpdate.form.phoneNumber".tr(),
+                        validatorText: "informationUpdate.form.validatorText.phoneNumber".tr(),
                         inputFormatter: PhoneNumberInputFormatter(),
                       ),
                     ),
@@ -115,8 +116,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: studentIdController,
-                        labelText: "학번",
-                        validatorText: "학번을 입력해 주세요.",
+                        labelText: "informationUpdate.form.studentNumber".tr(),
+                        validatorText: "informationUpdate.form.validatorText.studentNumber".tr(),
                       ),
                     ),
                     Padding(
@@ -124,8 +125,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: passwordController,
-                        labelText: "현재 비밀번호",
-                        validatorText: "비밀번호를 입력해 주세요.",
+                        labelText: "informationUpdate.form.currentPassword".tr(),
+                        validatorText: "informationUpdate.form.validatorText.currentPassword".tr(),
                       ),
                     ),
                     Padding(
@@ -133,8 +134,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                           horizontal: 8, vertical: 8),
                       child: AuthTextFormField(
                         controller: newPasswordController,
-                        labelText: "새 비밀번호",
-                        validatorText: "비밀번호를 입력해 주세요.",
+                        labelText: "informationUpdate.form.newPassword".tr(),
+                        validatorText: "informationUpdate.form.validatorText.newPassword".tr(),
                       ),
                     ),
                     Padding(
@@ -186,6 +187,11 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                               change: change,
                               context: context,
                             );
+
+                            // 변경 사항 초기화
+                            setState(() {
+                              change.clear();
+                            });
                           },
                           style: ButtonStyle(
                             backgroundColor:
@@ -214,8 +220,8 @@ class _UpdateUser extends ConsumerState<UpdateUser> {
                             fixedSize:
                                 MaterialStateProperty.all<Size>(Size(100, 40)),
                           ),
-                          child: const Text(
-                            '수정 완료',
+                          child: Text(
+                            'informationUpdate.form.updateButton'.tr(),
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
