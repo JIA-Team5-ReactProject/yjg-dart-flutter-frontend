@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -80,7 +81,7 @@ class LoginUseCase {
   void _showLoginError(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('로그인에 실패하였습니다. 다시 시도해 주세요.'),
+        content: Text('login.isFailed'.tr()),
         backgroundColor: Colors.red,
       ),
     );
@@ -90,7 +91,7 @@ class LoginUseCase {
   void _showNoPrivilegeError(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('권한이 없습니다. 관리자에게 문의해 주세요.'),
+        content: Text('login.admin.noPrivilege'.tr()),
         backgroundColor: Colors.red,
       ),
     );

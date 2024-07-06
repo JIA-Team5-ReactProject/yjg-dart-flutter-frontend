@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yjg/auth/data/data_resources/user_data_source.dart';
@@ -27,7 +28,7 @@ class DetailUseCase {
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('회원가입에 성공하였습니다. 다시 로그인해 주세요.'),
+                content: Text('googleLogin.isSuccess'.tr()),
                 backgroundColor: Palette.mainColor),
           );
           // 성공 시 메인 페이지로 이동(이전 페이지로 못 가게 막아버림)
@@ -50,7 +51,7 @@ class DetailUseCase {
       // 추가정보 입력 시 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('알 수 없는 에러가 발생하였습니다.'),
+          content: Text('googleLogin.isFailed'.tr()),
           backgroundColor: Colors.red,
         ),
       );

@@ -1,8 +1,11 @@
 {
   "login": {
+    "isSuccess": "ログインに成功しました。",
+    "isFailed": "ログインに失敗しました。再度お試しください。",
     "admin": {
       "descriptionText": "モバイルアプリでは管理者の登録を提供していません。",
-      "textButton1": "学生ログインに移動"
+      "textButton1": "学生ログインに移動",
+      "noPrivilege": "管理者権限がありません。事務所にお問い合わせください。"
     },
     "student": {
       "descriptionText": "学校メールがある場合",
@@ -16,8 +19,45 @@
       "loginButton": "ログイン",
       "forgotPassword": "パスワードを忘れた場合",
       "automaticLogin": "自動ログイン"
+    },
+    "googleLogin" : {
+      "description": "追加情報を入力してください。",
+      "isSuccess": "追加情報の入力が完了しました。もう一度ログインしてください。",
+      "isFailed": "追加情報の入力に失敗しました。再度お試しください。",
+      "button": "追加情報入力",
+      "form" : {
+        "phoneNumber": "電話番号",
+        "studentNumber": "学籍番号",
+        "validatorText": {
+          "phoneNumber" : "電話番号を入力してください。",
+          "studentNumber" : "学籍番号を入力してください。"
+        }
+      }
     }
   },
+  "informationUpdate": {
+      "title": "情報更新",
+      "isError": "ログイン情報が無効です。再度ログインしてください。",
+      "description": "情報を更新してください。",
+      "isSuccess": "情報が更新されました。",
+      "isFailed": "情報の更新に失敗しました。再度お試しください。",
+      "form": {
+        "name": "名前",
+        "phoneNumber": "電話番号",
+        "studentNumber": "学籍番号",
+        "currentPassword": "パスワード",
+        "newPassword": "新しいパスワード",
+        "updateButton": "更新",
+        "validatorText": {
+          "name": "名前を入力してください。",
+          "phoneNumber": "電話番号を入力してください。",
+          "studentNumber": "学籍番号を入力してください。",
+          "emailFormat": "メールアドレスの形式が正しくありません。",
+          "newPassword": "新しいパスワードを入力してください。",
+          "currentPassword": "現在のパスワードを入力してください。"
+        }
+      }
+    },
 
   "registration" : {
     "description": "情報を入力してください。",
@@ -146,6 +186,8 @@
     },
     "salonBooking": {
       "title": "予約",
+      "isSuccess": "予約が完了しました。",
+      "isFailed": "予約に失敗しました。再度お試しください。",
       "description": "美容室予約",
       "currency": "ウォン",
       "stepOne": {
@@ -174,8 +216,12 @@
     },
     "myBookingList": {
       "title": "予約リスト",
+      "emptyText": "予約がありません。",
       "defaultText1": "された記録が",
       "defaultText2": "件あります。",
+      "cancelSuccess": "予約をキャンセルしました。",
+      "cancelFailed": "予約のキャンセルに失敗しました。再度お試しください。",
+      "cancelError": "エラーが発生しました。再度お試しください。",
       "refresh" : "更新",
       "bookingModal" : {
         "title": "予約詳細",

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -26,7 +27,7 @@ class UpdateUserInfoUseCase {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('로그인 정보가 유효하지 않습니다. 다시 로그인해 주세요.'),
+            content: Text('informationUpdate.isError'.tr()),
             backgroundColor: Colors.red,
           ),
         );
@@ -45,16 +46,19 @@ class UpdateUserInfoUseCase {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('정보 업데이트에 성공하였습니다.'),
+              content: Text('informationUpdate.isSuccess'.tr()),
               backgroundColor: Palette.mainColor),
         );
+
+        // 완료 시 이전 페이지로 이동
+        Navigator.pop(context);
       
     } catch (e) {
       // 추가정보 입력 시 에러 메시지 표시
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('추가 정보 입력 실패. 다시 시도해 주세요. 에러: $e'),
+            content: Text('informationUpdate.isFailed'.tr()),
             backgroundColor: Colors.red,
           ),
         );

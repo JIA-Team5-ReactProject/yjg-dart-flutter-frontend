@@ -61,19 +61,57 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               style: TextStyle(letterSpacing: -0.5),
             ),
             tiles: <SettingsTile>[
-              // TODO: 추후 언어 설정 추가
+
+              // * 언어 설정
               SettingsTile.navigation(
                 leading: Icon(Icons.language),
                 title: Text(
                   'settings.common.language.title'.tr(),
                   style: TextStyle(letterSpacing: -0.5, fontSize: 15.0),
                 ),
-                value: Text(
-                  'settings.common.language.ko'.tr(),
-                  style: TextStyle(letterSpacing: -0.5, fontSize: 16.0),
-                ),
-                onPressed: ((context) {}),
+                onPressed: ((context) async {
+                  await showDialog<Locale>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('settings.common.language.title'.tr(),
+                          style: TextStyle(
+                              letterSpacing: -0.5,
+                              fontSize: 15.0,
+                              color: Palette.textColor,
+                              fontWeight: FontWeight.w600)),
+                      content: DropdownButton<Locale>(
+                        value: context.locale,
+                        items: [
+                          DropdownMenuItem(
+                            value: Locale('ja'),
+                            child: Text('日本語',
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    letterSpacing: -0.5,
+                                    color: Palette.textColor)),
+                          ),
+                          DropdownMenuItem(
+                            value: Locale('ko'),
+                            child: Text('한국어',
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    letterSpacing: -0.5,
+                                    color: Palette.textColor)),
+                          ),
+                        ],
+                        onChanged: (Locale? newLocale) {
+                          if (newLocale != null) {
+                            context.setLocale(newLocale);
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                }),
               ),
+
+              // * 푸쉬 알림 설정
               SettingsTile.switchTile(
                 activeSwitchColor: Palette.mainColor,
                 title: Text(
@@ -137,23 +175,28 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   final confirmDelete = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text('settings.account.withdrawal.confirm.title'.tr(),
+                      title: Text(
+                          'settings.account.withdrawal.confirm.title'.tr(),
                           style: TextStyle(
                               color: Palette.textColor,
                               fontSize: 16.0,
                               fontWeight: FontWeight.w600)),
-                      content: Text('settings.account.withdrawal.confirm.description').tr(),
+                      content: Text(
+                              'settings.account.withdrawal.confirm.description')
+                          .tr(),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('settings.account.withdrawal.confirm.no'.tr(),
+                          child: Text(
+                              'settings.account.withdrawal.confirm.no'.tr(),
                               style: TextStyle(
                                   color: Palette.stateColor4,
                                   fontWeight: FontWeight.w600)),
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: Text('settings.account.withdrawal.confirm.yes'.tr(),
+                          child: Text(
+                              'settings.account.withdrawal.confirm.yes'.tr(),
                               style: TextStyle(
                                   color: Palette.stateColor3,
                                   fontWeight: FontWeight.w600)),
@@ -168,7 +211,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('settings.account.withdrawal.withdrawalSuccess').tr(),
+                            content: Text(
+                                    'settings.account.withdrawal.withdrawalSuccess')
+                                .tr(),
                             backgroundColor: Palette.mainColor,
                           ),
                         );
@@ -180,7 +225,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('settings.account.withdrawal.withdrawalFailed').tr(),
+                            content: Text(
+                                    'settings.account.withdrawal.withdrawalFailed')
+                                .tr(),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -196,4 +243,3 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     );
   }
 }
-

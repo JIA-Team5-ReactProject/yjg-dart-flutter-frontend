@@ -1,228 +1,274 @@
 {
   "login": {
+    "isSuccess": "로그인 성공",
+    "isFailed": "로그인 실패. 다시 시도해주세요.",
     "admin": {
-      "descriptionText": "モバイルアプリでは管理者の登録を提供していません。",
-      "textButton1": "学生ログインに移動"
+      "descriptionText": "모바일 앱에서는 관리자 회원가입을 제공하지 않습니다.",
+      "textButton1": "학생 로그인으로 이동",
+      "noPrivilege": "관리자 권한이 없습니다. 사무실에 문의하십시오."
     },
     "student": {
-      "descriptionText": "学校メールがある場合",
-      "textButton1": "アカウントがない場合",
-      "textButton2": "管理者ログインに移動",
-      "googleLoginButton": "Googleでログイン"
+      "descriptionText": "학교 이메일이 있는 경우",
+      "textButton1": "계정이 없는 경우",
+      "textButton2": "관리자 로그인으로 이동",
+      "googleLoginButton": "구글 아이디로 로그인"
     },
     "sharedForm": {
-      "email": "メールアドレス",
-      "password": "パスワード",
-      "loginButton": "ログイン",
-      "forgotPassword": "パスワードを忘れた場合",
-      "automaticLogin": "自動ログイン"
+      "email": "이메일",
+      "password": "비밀번호",
+      "loginButton": "로그인",
+      "forgotPassword": "비밀번호 찾기",
+      "automaticLogin": "자동 로그인"
+    },
+    "googleLogin" : {
+      "description": "추가 정보를 입력하세요.",
+      "isSuccess": "추가 정보 입력이 완료되었습니다. 다시 로그인해주세요.",
+      "isFailed": "추가 정보 입력에 실패했습니다. 다시 시도해주세요.",
+      "button": "입력 완료",
+      "form" : {
+        "phoneNumber": "전화번호",
+        "studentNumber": "학번",
+        "validatorText": {
+          "phoneNumber" : "전화번호를 입력하세요.",
+          "studentNumber" : "학번을 입력하세요."
+        }
+      }
     }
   },
+  "informationUpdate": {
+      "title": "정보 업데이트",
+      "isError": "로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.",
+      "description": "정보를 업데이트하세요.",
+      "isSuccess": "정보가 업데이트되었습니다.",
+      "isFailed": "정보 업데이트에 실패했습니다. 다시 시도해주세요.",
+      "form": {
+        "name": "이름",
+        "phoneNumber": "전화번호",
+        "studentNumber": "학번",
+        "currentPassword": "현재 비밀번호",
+        "newPassword": "새 비밀번호",
+        "updateButton": "업데이트",
+        "validatorText": {
+          "name": "이름을 입력하세요.",
+          "phoneNumber": "전화번호를 입력하세요.",
+          "studentNumber": "학번을 입력하세요.",
+          "emailFormat": "이메일 형식이 올바르지 않습니다.",
+          "newPassword": "새 비밀번호를 입력하세요.",
+          "currentPassword": "현재 비밀번호를 입력하세요."
+        }
+      }
+    },
 
   "registration" : {
-    "description": "情報を入力してください。",
-    "isSuccess": "登録が完了しました。",
+    "description": "정보를 입력하세요.",
+    "isSuccess": "등록이 완료되었습니다.",
     "form": {
-      "name": "名前",
-      "email": "メールアドレス",
-      "password": "パスワード",
-      "phoneNumber": "電話番号",
-      "studentNumber": "学籍番号",
-      "registerButton": "登録",
+      "name": "이름",
+      "email": "이메일",
+      "password": "비밀번호",
+      "phoneNumber": "전화번호",
+      "studentNumber": "학번",
+      "registerButton": "등록",
       "validatorText" : {
-        "isRequiredField": "必須項目です。",
-        "isEmail": "メールアドレスの形式が正しくありません。",
-        "isPasswordMinLength": "パスワードは8文字以上で入力してください。",
-        "name": "名前を入力してください。",
-        "email": "メールアドレスを入力してください。",
-        "emailExist": "このメールアドレスは既に登録されています。",
-        "emailNotExist": "このメールアドレスは登録されていません。",
-        "emailDuplicateCheck": "メールの重複チェックを行ってください。",
-        "password": "パスワードを入力してください。",
-        "phoneNumber": "電話番号を入力してください。",
-        "studentNumber": "学籍番号を入力してください。",
-        "emailFormat": "メールアドレスの形式が正しくありません。",
-        "phoneFormat": "電話番号の形式が正しくありません。",
-        "studentNumberFormat": "学籍番号の形式が正しくありません。",
-        "formInvalid": "全ての項目を入力してください。"
+        "isRequiredField": "필수 항목입니다.",
+        "isEmail": "이메일 형식이 올바르지 않습니다.",
+        "isPasswordMinLength": "비밀번호는 8자 이상 입력하세요.",
+        "name": "이름을 입력하세요.",
+        "email": "이메일을 입력하세요.",
+        "emailExist": "이 이메일은 이미 등록되어 있습니다.",
+        "emailNotExist": "이 이메일은 등록되어 있지 않습니다.",
+        "emailDuplicateCheck": "이메일 중복 확인을 진행하세요.",
+        "password": "비밀번호를 입력하세요.",
+        "phoneNumber": "전화번호를 입력하세요.",
+        "studentNumber": "학번을 입력하세요.",
+        "emailFormat": "이메일 형식이 올바르지 않습니다.",
+        "phoneFormat": "전화번호 형식이 올바르지 않습니다.",
+        "studentNumberFormat": "학번 형식이 올바르지 않습니다.",
+        "formInvalid": "모든 항목을 입력하세요."
       }
     }
   },
 
   "forgotPassword": {
-    "verificationCode": "認証コード",
-    "isVerificationCodeEntered": "メールで受け取った6桁の認証コードを入力してください。",
-    "isVerificationCodeExpired" : "認証コードの有効期限が切れました。再送信してください。",
+    "verificationCode": "인증 코드",
+    "isVerificationCodeEntered": "이메일로 받은 6자리 인증 코드를 입력하세요.",
+    "isVerificationCodeExpired" : "인증 코드 유효기간이 만료되었습니다. 다시 전송하세요.",
     "resetPassword" : {
-      "description": "新しいパスワードを入力してください。",
-      "passwordResetSuccess": "パスワードがリセットされました。ログインしてください。",
-      "passwordResetFailed": "パスワードのリセットに失敗しました。再度お試しください。",
+      "description": "새로운 비밀번호를 입력하세요.",
+      "passwordResetSuccess": "비밀번호가 재설정되었습니다. 로그인해주세요.",
+      "passwordResetFailed": "비밀번호 재설정에 실패했습니다. 다시 시도해주세요.",
       "form": {
-        "resetButton": "パスワードリセット",
-        "newPassword" : "新しいパスワード",
-        "newPasswordValidatorText" : "パスワードは8文字以上で入力してください。"
+        "resetButton": "비밀번호 재설정",
+        "newPassword" : "새 비밀번호",
+        "newPasswordValidatorText" : "비밀번호는 8자 이상 입력하세요."
       }
     },
     "form": {
-      "sendButton": "メール送信",
-      "resetButton": "パスワードリセット",
-      "isUserNotFound": "ユーザー情報が存在しません。再度ご確認ください。",
-      "isVerificationSuccessful" : "認証に成功しました。パスワードを再設定してください。",
-      "isVerificationCodeInvalid" : "認証番号が正しくありません。再度ご確認ください。"
+      "sendButton": "이메일 전송",
+      "resetButton": "비밀번호 재설정",
+      "isUserNotFound": "사용자 정보가 없습니다. 다시 확인하세요.",
+      "isVerificationSuccessful" : "인증에 성공했습니다. 비밀번호를 재설정하세요.",
+      "isVerificationCodeInvalid" : "인증 번호가 올바르지 않습니다. 다시 확인하세요."
     }
   },
 
   "mainDashboard": {
     "qrButton": {
-      "bus": "バスQR",
-      "restaurant": "学食QR"
+      "bus": "버스 QR",
+      "restaurant": "학식 QR"
     },
     "navigation": {
       "bus": {
-        "title": "バス",
-        "description": "バス時刻表など"
+        "title": "버스",
+        "description": "버스 시간표 등"
       },
       "salon": {
-        "title": "美容室",
-        "description": "美容室予約など"
+        "title": "미용실",
+        "description": "미용실 예약 등"
       },
       "restaurant": {
-        "title": "学食",
-        "description": "学食申請など"
+        "title": "식수",
+        "description": "식수 신청 등"
       },
       "administration": {
-        "title": "学校行政",
-        "description": "お知らせなど"
+        "title": "행정",
+        "description": "공지사항 등"
       }
     }
   },
 
   "bus": {
-    "appbar": "バス",
+    "appbar": "버스",
     "qrRoundedBox": {
-      "title": "QRコードスキャン",
-      "description": "バス乗車時にQRコードを提示してください。",
-      "textButton": "QRコードを表示"
+      "title": "QR 코드 스캔",
+      "description": "버스 탑승 시 QR 코드를 제시하세요.",
+      "textButton": "QR 코드 표시"
     },
     "descriptionText": {
-      "title1": "バス利用",
-      "title2": "バスお知らせ"
+      "title1": "버스 이용",
+      "title2": "버스 공지사항"
     },
     "busSchedule": {
-      "title": "バス時刻表",
-      "description": "バスの時刻表を確認してください。",
+      "title": "버스 시간표",
+      "description": "버스 시간표를 확인하세요.",
       "busStop": {
-        "title1": "バス路線のフィルタリングを選択してください。",
-        "title2": "バス路線",
+        "title1": "버스 노선 필터링을 선택하세요.",
+        "title2": "버스 노선",
         "filterTitle": {
-          "s/v": "学期休み",
-          "w/w": "平日週末",
-          "b/e": "起点選択"
+          "s/v": "학기방학",
+          "w/w": "평일주말",
+          "b/e": "기점선택"
         },
         "filter": {
-          "semester": "学期",
-          "vacation": "夏・冬休み",
-          "weekend": "週末",
-          "weekday": "平日",
-          "bokhyeon": "ポッヒョン",
-          "english": "英語村"
+          "semester": "학기",
+          "vacation": "여름/겨울 방학",
+          "weekend": "주말",
+          "weekday": "평일",
+          "bokhyeon": "복현",
+          "english": "영어마을"
         }
       }
     }
   },
 
   "salon": {
-    "appbar": "美容室",
+    "appbar": "미용실",
     "bookingRoundedBox": {
-      "title1": "美容室予約があります。",
-      "title2": "美容室予約がありません。",
-      "description1": "予約時間を必ず守ってください。",
-      "description2": "美容室を利用してみてください！",
-      "textButton": "予約確認"
+      "title1": "미용실 예약이 있습니다.",
+      "title2": "미용실 예약이 없습니다.",
+      "description1": "예약 시간을 반드시 준수하세요.",
+      "description2": "미용실를 이용해 보세요!",
+      "textButton": "예약 확인"
     },
     "descriptionText": {
-      "title1": "美容室利用",
-      "title2": "美容室お知らせ"
+      "title1": "미용실 이용",
+      "title2": "미용실 공지사항"
     },
     "salonBooking": {
-      "title": "予約",
-      "description": "美容室予約",
-      "currency": "ウォン",
+      "title": "예약",
+      "isSuccess": "예약이 완료되었습니다.",
+      "isFailed": "예약에 실패했습니다. 다시 시도해주세요.",
+      "description": "미용실 예약",
+      "currency": "원",
       "stepOne": {
-        "description1": "1.サービスを選択してください。",
+        "description1": "1. 서비스를 선택하세요.",
         "filterText": {
-          "gender": "性別",
-          "type": "種類"
+          "gender": "성별",
+          "type": "종류"
         },
-        "description2": "お支払い金額",
-        "nextButton": "次へ"
+        "description2": "결제 금액",
+        "nextButton": "다음"
       },
       "stepTwo": {
-        "description1": "2.日付を選択してください。",
-        "description2": "3.時間を選択してください。",
-        "bookingButton": "予約"
+        "description1": "2. 날짜를 선택하세요.",
+        "description2": "3. 시간을 선택하세요.",
+        "bookingButton": "예약"
       }
     },
     "salonPriceList": {
-      "title": "価格表",
-      "description": "美容室の価格案内",
+      "title": "가격표",
+      "description": "미용실의 가격 안내",
       "PriceListPage": {
-        "title1": "フィルター選択",
-        "title2": "サービス一覧",
-        "description": "サービスと料金は変動する可能性があります。"
+        "title1": "필터 선택",
+        "title2": "서비스 목록",
+        "description": "서비스 및 요금은 변동될 수 있습니다."
       }
     },
     "myBookingList": {
-      "title": "予約リスト",
-      "defaultText1": "された記録が",
-      "defaultText2": "件あります。",
-      "refresh" : "更新",
+      "title": "예약 목록",
+      "emptyText": "예약이 없습니다.",
+      "defaultText1": "된 기록이",
+      "defaultText2": "건 있습니다.",
+      "cancelSuccess": "예약을 취소했습니다.",
+      "cancelFailed": "예약 취소에 실패했습니다. 다시 시도해주세요.",
+      "cancelError": "오류가 발생했습니다. 다시 시도해주세요.",
+      "refresh" : "새로고침",
       "bookingModal" : {
-        "title": "予約詳細",
-        "service": "サービス名",
-        "price": "料金",
-        "dateTime": "日時",
-        "state": "状態",
-        "cancelButton": "予約キャンセル",
+        "title": "예약 상세",
+        "service": "서비스명",
+        "price": "가격",
+        "dateTime": "날짜 및 시간",
+        "state": "상태",
+        "cancelButton": "예약 취소",
         "cancelModal": {
-          "description": "予約をキャンセルしますか？",
-          "noButton": "いいえ",
-          "yesButton": "はい"
+          "description": "예약을 취소하시겠습니까?",
+          "noButton": "아니요",
+          "yesButton": "예"
         }
       },
       "bookingType": {
-        "accepted": "受付",
-        "rejected": "拒否",
-        "approved": "承認",
-        "unknown": "不明"
+        "accepted": "접수됨",
+        "rejected": "거절됨",
+        "approved": "승인됨",
+        "unknown": "미확인"
       }
     }
   },
 
   "settings": {
-    "title": "設定",
+    "title": "설정",
     "common": {
-      "title": "共通",
+      "title": "공통",
       "language": {
-        "title": "言語",
-        "ko": "韓国語",
-        "ja": "日本語"
+        "title": "언어",
+        "ko": "한국어",
+        "ja": "일본어"
       },
-      "notification": "通知"
+      "notification": "알림"
   },
   "account": {
-    "title": "アカウント",
-    "informationUpdate": "情報更新",
-    "logout": "ログアウト",
+    "title": "계정",
+    "informationUpdate": "정보 업데이트",
+    "logout": "로그아웃",
     "withdrawal": {
-      "title": "退会",
-      "withdrawalSuccess": "退会が完了しました。ログイン画面に戻ります。",
-      "withdrawalFailed": "退会に失敗しました。再度お試しください。",
+      "title": "회원 탈퇴",
+      "withdrawalSuccess": "회원 탈퇴가 완료되었습니다. 로그인 화면으로 돌아갑니다.",
+      "withdrawalFailed": "회원 탈퇴에 실패했습니다. 다시 시도해주세요.",
       "confirm": {
-        "title": "退会確認",
-        "description": "本当に退会しますか？退会後の復旧は不可能です。",
-        "yes": "はい",
-        "no": "いいえ"
+        "title": "회원 탈퇴 확인",
+        "description": "정말 회원 탈퇴하시겠습니까? 탈퇴 후 복구가 불가능합니다.",
+        "yes": "예",
+        "no": "아니요"
       }
     }
     }
@@ -230,39 +276,39 @@
 
   "QR": {
     "bus": {
-      "appbar": "バスQR",
-      "title": "バスQRコード",
-      "description": "バス乗車時にQRコードを提示してください。"
+      "appbar": "버스 QR",
+      "title": "버스 QR 코드",
+      "description": "버스 탑승 시 QR 코드를 제시하세요."
     },
     "restaurant": {
-      "appbar": "学食QR",
-      "title": "学食QRコード",
-      "description": "学食利用時にQRコードを提示してください。"
+      "appbar": "식수 QR",
+      "title": "식수 QR 코드",
+      "description": "학식 이용 시 QR 코드를 제시하세요."
     }
   },
 
   "drawer": {
     "bus": {
-      "title": "バス",
-      "busSchedule": "時刻表"
+      "title": "버스",
+      "busSchedule": "시간표"
     },
     "restaurant": {
-      "title": "学食",
-      "menu": "メニュー",
-      "weekendApply": "週末学食申請"
+      "title": "식수",
+      "menu": "메뉴",
+      "weekendApply": "주말 식수 신청"
     },
     "salon": {
-      "title": "美容室",
-      "salonBooking": "美容室予約",
-      "priceList": "価格表"
+      "title": "미용실",
+      "salonBooking": "미용실 예약",
+      "priceList": "가격표"
     },
     "administration": {
-      "title": "学校行政",
-      "notice": "お知らせ",
-      "as": "設備修理申請",
-      "meetingRoom": "会議室予約",
-      "sleepover": "外泊・外出申請"
+      "title": "학교 행정",
+      "notice": "공지사항",
+      "as": "AS 신청",
+      "meetingRoom": "회의실 예약",
+      "sleepover": "외박・외출 신청"
     },
-    "logout": "ログアウト"
+    "logout": "로그아웃"
   }
 }

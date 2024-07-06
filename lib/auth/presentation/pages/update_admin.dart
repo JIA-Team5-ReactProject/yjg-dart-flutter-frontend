@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
@@ -50,7 +51,7 @@ class _UpdateAdmin extends ConsumerState<UpdateAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BaseAppBar(
-        title: '개인정보 수정',
+        title: 'information.update.title'.tr(),
       ),
       drawer: BaseDrawer(),
       bottomNavigationBar: const CustomBottomNavigationBar(),
@@ -68,8 +69,8 @@ class _UpdateAdmin extends ConsumerState<UpdateAdmin> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: const Text(
-                '빈칸 없이 모든 정보를 입력해 주세요.',
+              child: Text(
+                'registration.form.validatorText.formInvalid'.tr(),
                 style: TextStyle(
                   fontSize: 15.0,
                   color: Palette.textColor,
@@ -92,8 +93,8 @@ class _UpdateAdmin extends ConsumerState<UpdateAdmin> {
                           horizontal: 8, vertical: 16),
                       child: AuthTextFormField(
                         controller: nameController,
-                        labelText: "이름",
-                        validatorText: "이름을 입력해 주세요.",
+                        labelText: "informationUpdate.form.name".tr(),
+                        validatorText: "informationUpdate.form.validatorText.name".tr(),
                       ),
                     ),
                     Padding(
